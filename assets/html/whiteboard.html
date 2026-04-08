@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyLearn Whiteboard - Advanced Tool</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.2/math.min.js"></script>
+
+    <style>
+        :root {
+            --whiteboard-primary-color: #4a89dc;
+            --whiteboard-secondary-color: #e9e9e9;
+            --whiteboard-danger-color: #da4453;
+            --whiteboard-success-color: #8cc152;
+            --whiteboard-engineering-color: #ff9800;
+            --whiteboard-medical-color: #4caf50;
+            --whiteboard-text-primary: #333;
+            --whiteboard-text-secondary: #777;
+            --whiteboard-bg-light: #ffffff;
+            --whiteboard-bg-medium: #f9f9f9;
+            --whiteboard-border-color: #ddd;
+            --whiteboard-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --whiteboard-border-radius: 8px;
+        }
+
+        .whiteboard-body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--whiteboard-bg-medium);
+            color: var(--whiteboard-text-primary);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .whiteboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background-color: var(--whiteboard-bg-light);
+            border-bottom: 1px solid var(--whiteboard-border-color);
+            flex-shrink: 0;
+        }
+
+        .whiteboard-header h1 {
+            font-size: 1.5rem;
+            color: var(--whiteboard-primary-color);
+            margin: 0;
+        }
+
+        .whiteboard-header-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .whiteboard-main-container {
+            display: flex;
+            flex-grow: 1;
+            gap: 16px;
+            padding: 16px;
+            overflow: hidden;
+        }
+
+        .whiteboard-sidebar {
+            width: 380px;
+            flex-shrink: 0;
+            background-color: var(--whiteboard-bg-light);
+            border-radius: var(--whiteboard-border-radius);
+            box-shadow: var(--whiteboard-shadow);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .whiteboard-canvas-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--whiteboard-bg-light);
+            border-radius: var(--whiteboard-border-radius);
+            box-shadow: var(--whiteboard-shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .whiteboard-canvas-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--whiteboard-border-color);
+            padding: 8px 16px 0;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .whiteboard-tab {
+            padding: 10px 16px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-bottom: 3px solid transparent;
+            font-size: 0.95rem;
+            color: var(--whiteboard-text-secondary);
+        }
+
+        .whiteboard-tab.active {
+            color: var(--whiteboard-primary-color);
+            border-bottom-color: var(--whiteboard-primary-color);
+            font-weight: 600;
+        }
+
+        .whiteboard-canvas-content {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        #graphCanvas, #whiteboardCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #whiteboardCanvas { z-index: 10; }
+
+        .whiteboard-input-group { margin-bottom: 1.25rem; }
+        .whiteboard-input-group h3, .whiteboard-input-group h4, .whiteboard-input-group h5 {
+             margin-top: 1.5rem; margin-bottom: 0.75rem;
+             border-bottom: 1px solid var(--whiteboard-border-color);
+             padding-bottom: 0.5rem;
+        }
+        .whiteboard-input-group h3.engineering-title { border-color: var(--whiteboard-engineering-color); }
+        .whiteboard-input-group h3.medical-title { border-color: var(--whiteboard-medical-color); }
+
+        .whiteboard-input-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--whiteboard-text-secondary); }
+        .whiteboard-input, .whiteboard-textarea, .whiteboard-select {
+            width: 100%; padding: 10px; border: 1px solid var(--whiteboard-border-color);
+            border-radius: var(--whiteboard-border-radius); font-size: 1rem; box-sizing: border-box;
+        }
+        .whiteboard-textarea { resize: vertical; }
+
+        .whiteboard-function-input-container { position: relative; }
+        .whiteboard-function-suggestions {
+            position: absolute; top: 100%; left: 0; right: 0; background: white;
+            border: 1px solid #e1e1e1; border-radius: 8px; box-shadow: var(--whiteboard-shadow);
+            max-height: 200px; overflow-y: auto; z-index: 1000; display: none;
+        }
+        .whiteboard-suggestion-item { padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
+        .whiteboard-suggestion-item:hover { background: #f8f9fa; }
+        .whiteboard-suggestion-item:last-child { border-bottom: none; }
+
+        .whiteboard-range-container { display: flex; align-items: center; gap: 10px; }
+        .whiteboard-range-input { flex-grow: 1; }
+        .whiteboard-range-value { min-width: 40px; text-align: right; }
+
+        .whiteboard-control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+        .whiteboard-btn {
+            padding: 10px 20px; border-radius: var(--whiteboard-border-radius); border: none;
+            cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s ease;
+        }
+        .whiteboard-btn:active { transform: scale(0.98); }
+        .whiteboard-btn-primary { background-color: var(--whiteboard-primary-color); color: white; }
+        .whiteboard-btn-primary:hover { background-color: #357bd8; }
+        .whiteboard-btn-secondary { background-color: var(--whiteboard-secondary-color); color: var(--whiteboard-text-primary); }
+        .whiteboard-btn-secondary:hover { background-color: #dcdcdc; }
+        .whiteboard-btn-danger { background-color: var(--whiteboard-danger-color); color: white; }
+        .whiteboard-btn-danger:hover { background-color: #c9302c; }
+        .whiteboard-btn-small { padding: 6px 12px; font-size: 0.85rem; }
+
+        .whiteboard-main-section-toggle {
+            padding: 8px 16px; border: 1px solid var(--whiteboard-border-color);
+            background: var(--whiteboard-bg-light); cursor: pointer; border-radius: var(--whiteboard-border-radius);
+        }
+        .whiteboard-main-section-toggle.active {
+            background-color: var(--whiteboard-primary-color); color: white; border-color: var(--whiteboard-primary-color);
+        }
+
+        .whiteboard-hidden-section { display: none !important; }
+
+        .whiteboard-function-list, .whiteboard-manual-points-list {
+            max-height: 150px; overflow-y: auto; border: 1px solid var(--whiteboard-border-color);
+            border-radius: var(--whiteboard-border-radius); margin-bottom: 1rem;
+        }
+        .whiteboard-function-item, .whiteboard-point-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; border-bottom: 1px solid #f0f0f0;
+        }
+        .whiteboard-function-item:last-child, .whiteboard-point-item:last-child { border-bottom: none; }
+        .whiteboard-function-info, .whiteboard-point-info { display: flex; align-items: center; gap: 10px; }
+        .whiteboard-function-color { width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0; }
+
+        .whiteboard-control-panel, .whiteboard-info-panel {
+            position: absolute; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px);
+            padding: 12px; border-radius: var(--whiteboard-border-radius); box-shadow: var(--whiteboard-shadow); z-index: 20;
+        }
+        .whiteboard-control-panel { bottom: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; }
+        .whiteboard-info-panel { bottom: 16px; left: 16px; }
+        .whiteboard-info-row { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .whiteboard-info-row span:first-child { font-weight: 600; }
+        .whiteboard-info-row span:last-child { color: var(--whiteboard-text-secondary); }
+
+        .whiteboard-modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;
+        }
+        .whiteboard-modal.active { display: flex; }
+        .whiteboard-modal-content {
+            background-color: var(--whiteboard-bg-light); padding: 24px; border-radius: var(--whiteboard-border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 600px;
+        }
+        .whiteboard-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .whiteboard-modal-title { margin: 0; font-size: 1.5rem; }
+        .whiteboard-close-btn { font-size: 2rem; border: none; background: none; cursor: pointer; }
+
+        .whiteboard-tools {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px; margin-bottom: 1rem;
+        }
+        .whiteboard-tool-btn {
+            padding: 8px; border: 1px solid var(--whiteboard-border-color); border-radius: var(--whiteboard-border-radius);
+            text-align: center; cursor: pointer; transition: all 0.2s ease; font-size: 0.75rem;
+        }
+        .whiteboard-tool-btn.active {
+            background-color: var(--whiteboard-primary-color); color: white; border-color: var(--whiteboard-primary-color);
+        }
+        .whiteboard-color-picker { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+        .whiteboard-color-option {
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent;
+        }
+        .whiteboard-color-option.active { border-color: var(--whiteboard-primary-color); transform: scale(1.1); }
+
+        .whiteboard-calculator { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .whiteboard-calculator input {
+            grid-column: 1 / -1; margin-bottom: 5px; text-align: right;
+            padding-right: 15px; background-color: #f0f0f0;
+        }
+        .whiteboard-calculator button {
+            padding: 15px 0; font-size: 1.1rem; background-color: var(--whiteboard-secondary-color);
+            border: none; border-radius: var(--whiteboard-border-radius); cursor: pointer;
+        }
+        .whiteboard-calculator .operator { background-color: var(--whiteboard-engineering-color); color: white; }
+        .whiteboard-calculator .double-width { grid-column: span 2; }
+
+        /* --- Mobile Responsive Styles --- */
+        @media (max-width: 800px) {
+            .whiteboard-main-container {
+                flex-direction: column;
+                padding: 8px;
+                gap: 8px;
+            }
+            .whiteboard-sidebar {
+                width: 100%;
+                max-height: 45vh;
+                flex-shrink: 1;
+                padding: 12px;
+            }
+            .whiteboard-header-controls {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: 5px;
+            }
+            .whiteboard-header h1 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="whiteboard-body">
+<div class="whiteboard-header">
+    <h1>EasyLearn Whiteboard</h1>
+    <div class="whiteboard-header-controls">
+        <button class="whiteboard-main-section-toggle active" id="toggleGraphing" onclick="switchMainSection('graphing', this)">📈 Graphing</button>
+        <button class="whiteboard-main-section-toggle" id="toggleEngineering" onclick="switchMainSection('engineering', this)">🛠️ Engineering</button>
+        <button class="whiteboard-main-section-toggle" id="toggleMedical" onclick="switchMainSection('medical', this)">⚕️ Medical</button>
+        <button class="whiteboard-btn whiteboard-btn-secondary whiteboard-btn-small" onclick="showHelp()">❓ Help</button>
+        <button class="whiteboard-btn whiteboard-btn-secondary whiteboard-btn-small" onclick="document.getElementById('aiModal').style.display='flex'">🤖 AI Assistant</button>
+    </div>
+</div>
+
+<div class="whiteboard-main-container">
+    <div class="whiteboard-sidebar">
+        <div id="graphingSidebarSection">
+            <h3>Function Plotting</h3>
+            <div class="whiteboard-input-group">
+                <label for="functionInput">Function Expression (y = f(x))</label>
+                <div class="whiteboard-function-input-container">
+                    <textarea id="functionInput" class="whiteboard-textarea" placeholder="e.g., x^2, sin(x)" rows="2">x^2</textarea>
+                    <div class="whiteboard-function-suggestions" id="functionSuggestions"></div>
+                </div>
+            </div>
+            <div class="whiteboard-input-group whiteboard-control-grid">
+                <div>
+                    <label>Color</label>
+                    <select id="colorSelect" class="whiteboard-select">
+                        <option value="#ff0000">Red</option><option value="#0000ff" selected>Blue</option>
+                        <option value="#00ff00">Green</option><option value="#000000">Black</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Style</label>
+                    <select id="lineStyle" class="whiteboard-select">
+                        <option value="solid">Solid</option><option value="dashed">Dashed</option><option value="dotted">Dotted</option>
+                    </select>
+                </div>
+            </div>
+            <div class="whiteboard-input-group">
+                <label for="lineThickness">Line Thickness (Graph)</label>
+                <div class="whiteboard-range-container">
+                    <input type="range" id="lineThickness" class="whiteboard-range-input" min="1" max="10" value="2">
+                    <span id="lineThicknessValue" class="whiteboard-range-value">2px</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <button class="whiteboard-btn whiteboard-btn-primary" onclick="addFunction()" style="flex: 1;">📊 Plot</button>
+                <button class="whiteboard-btn whiteboard-btn-secondary" onclick="analyzeFunction()">🔍 Analyze</button>
+            </div>
+            <div class="whiteboard-input-group">
+                <label>Active Functions</label>
+                <div class="whiteboard-function-list" id="functionList"></div>
+            </div>
+            <div class="whiteboard-input-group">
+                <h3>Manual Point Plotting</h3>
+                <div class="whiteboard-control-grid">
+                    <input type="number" id="manualX" class="whiteboard-input" placeholder="X">
+                    <input type="number" id="manualY" class="whiteboard-input" placeholder="Y">
+                </div>
+                <button class="whiteboard-btn whiteboard-btn-primary whiteboard-btn-small" onclick="addManualPoint()" style="width:100%; margin-top: 0.5rem;">📍 Add Point</button>
+                <div class="whiteboard-manual-points-list" id="manualPointsList"></div>
+            </div>
+            <div class="whiteboard-input-group">
+                <h3>Graph Controls</h3>
+                <div class="whiteboard-control-grid">
+                    <input type="number" id="xMin" placeholder="X Min" onchange="updateRange()">
+                    <input type="number" id="xMax" placeholder="X Max" onchange="updateRange()">
+                    <input type="number" id="yMin" placeholder="Y Min" onchange="updateRange()">
+                    <input type="number" id="yMax" placeholder="Y Max" onchange="updateRange()">
+                </div>
+<!--                <button class="whiteboard-btn whiteboard-btn-secondary whiteboard-btn-small" onclick="exportGraph()" style="width:100%; margin-top: 0.5rem;">💾 Export</button>-->
+            </div>
+        </div>
+
+        <div id="engineeringSidebarSection" class="whiteboard-hidden-section">
+            <h3 class="engineering-title">Engineering Tools</h3>
+            <div class="whiteboard-input-group">
+                <h5>Scientific Calculator</h5>
+                <div class="whiteboard-calculator">
+                    <input type="text" id="sciCalcDisplay" class="whiteboard-input" readonly placeholder="0">
+                    <button onclick="sciCalcAppend('(')">(</button><button onclick="sciCalcAppend(')')">)</button><button onclick="sciCalcClearEntry()">CE</button><button onclick="sciCalcClearAll()">C</button>
+                    <button onclick="sciCalcAppend('7')">7</button><button onclick="sciCalcAppend('8')">8</button><button onclick="sciCalcAppend('9')">9</button><button class="operator" onclick="sciCalcAppend('/')">/</button>
+                    <button onclick="sciCalcAppend('4')">4</button><button onclick="sciCalcAppend('5')">5</button><button onclick="sciCalcAppend('6')">6</button><button class="operator" onclick="sciCalcAppend('*')">x</button>
+                    <button onclick="sciCalcAppend('1')">1</button><button onclick="sciCalcAppend('2')">2</button><button onclick="sciCalcAppend('3')">3</button><button class="operator" onclick="sciCalcAppend('-')">-</button>
+                    <button onclick="sciCalcAppend('0')">0</button><button onclick="sciCalcAppend('.')">.</button><button class="operator double-width" onclick="sciCalcCalculate()">=</button><button class="operator" onclick="sciCalcAppend('+')">+</button>
+                </div>
+            </div>
+            <div class="whiteboard-input-group">
+                <h5>SI Units Converter</h5>
+                <select id="unitCategory" class="whiteboard-select" onchange="updateUnitOptions()">
+                    <option value="length">Length</option><option value="mass">Mass</option><option value="time">Time</option>
+                </select>
+                <div class="whiteboard-control-grid" style="margin-top: 0.5rem;">
+                    <select id="fromUnit" class="whiteboard-select"></select>
+                    <select id="toUnit" class="whiteboard-select"></select>
+                </div>
+                <input type="number" id="unitInput" class="whiteboard-input" placeholder="Enter value" oninput="convertUnits()">
+                <input type="text" id="unitResult" class="whiteboard-input" readonly placeholder="Result">
+            </div>
+        </div>
+
+        <div id="medicalSidebarSection" class="whiteboard-hidden-section">
+            <h3 class="medical-title">Medical & Biology</h3>
+            <div class="whiteboard-input-group">
+                <h4>Anatomical Viewer</h4>
+                <select id="medicalShapeCategory" class="whiteboard-select" onchange="updateMedicalShapes(this.value)">
+                    <option value="human">Human Anatomy</option><option value="plant">Plant Biology</option>
+                </select>
+                <select id="medicalShapeSelect" class="whiteboard-select" onchange="displayMedicalShape(this.value)" style="margin-top:0.5rem"></select>
+            </div>
+        </div>
+
+        <div id="whiteboardToolsSection" class="whiteboard-hidden-section">
+            <div class="whiteboard-input-group">
+                <h4>Drawing Tools</h4>
+                <div class="whiteboard-tools">
+                    <div class="whiteboard-tool-btn active" onclick="setTool('pencil', this)">✏️ Pencil</div>
+                    <div class="whiteboard-tool-btn" onclick="setTool('brush', this)">🖌️ Brush</div>
+                    <div class="whiteboard-tool-btn" onclick="setTool('line', this)">📏 Line</div>
+                    <div class="whiteboard-tool-btn" onclick="setTool('rectangle', this)">⬜ Rect</div>
+                    <div class="whiteboard-tool-btn" onclick="setTool('ellipse', this)">⭕ Ellipse</div>
+                    <div class="whiteboard-tool-btn" onclick="setTool('text', this)">Aa Text</div>
+                    <div class="whiteboard-tool-btn" onclick="setTool('eraser', this)">🧹 Eraser</div>
+                    <div class="whiteboard-tool-btn" onclick="setTool('eyedropper', this)">💧 Pick</div>
+                </div>
+            </div>
+            <div class="whiteboard-input-group">
+                <h4>Color & Size</h4>
+                <div class="whiteboard-color-picker" id="drawColorPicker">
+                    <div class="whiteboard-color-option active" style="background: #000000" onclick="setDrawColor('#000000', this)"></div>
+                    <div class="whiteboard-color-option" style="background: #ef4444" onclick="setDrawColor('#ef4444', this)"></div>
+                    <div class="whiteboard-color-option" style="background: #3b82f6" onclick="setDrawColor('#3b82f6', this)"></div>
+                    <div class="whiteboard-color-option" style="background: #22c55e" onclick="setDrawColor('#22c55e', this)"></div>
+                    <div class="whiteboard-color-option" style="background: #f97316" onclick="setDrawColor('#f97316', this)"></div>
+                    <div class="whiteboard-color-option" style="background: #a855f7" onclick="setDrawColor('#a855f7', this)"></div>
+                </div>
+                <label for="brushSize">Brush Size</label>
+                <div class="whiteboard-range-container">
+                    <input type="range" id="brushSize" class="whiteboard-range-input" min="1" max="50" value="3">
+                    <span id="brushSizeValue" class="whiteboard-range-value">3px</span>
+                </div>
+            </div>
+            <button class="whiteboard-btn whiteboard-btn-danger" id="clearWhiteboardBtn" onclick="clearWhiteboard()" style="width:100%;">🗑️ Clear Canvas</button>
+        </div>
+    </div>
+
+    <div class="whiteboard-canvas-container">
+        <div class="whiteboard-canvas-tabs">
+            <button class="whiteboard-tab active" id="graphViewTab" onclick="switchTab('graph', this)">📊 Graph</button>
+            <button class="whiteboard-tab" id="whiteboardTab" onclick="switchTab('whiteboard', this)">🎨 Whiteboard</button>
+            <button class="whiteboard-tab" id="combinedTab" onclick="switchTab('combined', this)">🔗 Combined</button>
+            <button class="whiteboard-tab whiteboard-hidden-section" id="medicalViewTab" onclick="switchTab('medicalView', this)">🔬 Medical</button>
+        </div>
+
+        <div class="whiteboard-canvas-content">
+            <canvas id="graphCanvas"></canvas>
+            <canvas id="whiteboardCanvas"></canvas>
+
+            <div class="whiteboard-control-panel" id="graphControlPanel">
+                <div class="whiteboard-control-row">
+                    <button class="whiteboard-control-btn" onclick="zoom(1.2)" title="Zoom In">+</button>
+                    <button class="whiteboard-control-btn" onclick="zoom(0.8)" title="Zoom Out">−</button>
+                </div>
+                <div class="whiteboard-control-row">
+                    <button class="whiteboard-control-btn" onclick="resetView()" title="Reset View">🏠</button>
+                    <button class="whiteboard-control-btn" onclick="toggleGrid()" title="Toggle Grid">⋮</button>
+                </div>
+            </div>
+
+            <div class="whiteboard-info-panel" id="infoPanel">
+                <div class="whiteboard-info-row"><span>Coords:</span><span id="coordinates">x:0, y:0</span></div>
+                <div class="whiteboard-info-row"><span>Scale:</span><span id="scaleInfo">1:1</span></div>
+                <div class="whiteboard-info-row"><span>Funcs:</span><span id="functionCount">0</span></div>
+                <div class="whiteboard-info-row"><span>Points:</span><span id="manualPointCount">0</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="whiteboard-modal" id="helpModal"><div class="whiteboard-modal-content"><div class="whiteboard-modal-header"><h2 class="whiteboard-modal-title">Help</h2><button class="whiteboard-close-btn" onclick="hideHelp()">&times;</button></div><div class="whiteboard-modal-body"><h3>Supported Functions</h3><p><strong>Basic:</strong> +, -, *, /, ^, sqrt(), abs()</p><p><strong>Trigonometric:</strong> sin(), cos(), tan()</p><p><strong>Logarithmic:</strong> log10(), log()</p><h3>Keyboard Shortcuts</h3><p><strong>Ctrl/Cmd +/=:</strong> Zoom In | <strong>Ctrl/Cmd -:</strong> Zoom Out</p></div></div></div>
+<div class="whiteboard-modal" id="aiModal"><div class="whiteboard-modal-content"><div class="whiteboard-modal-header"><h2 class="whiteboard-modal-title">AI Assistant</h2><button class="whiteboard-close-btn" onclick="document.getElementById('aiModal').style.display='none'">&times;</button></div><textarea id="aiInput" class="whiteboard-textarea" placeholder="Ask the AI something..." style="height:100px; margin-bottom:1rem;"></textarea><button class="whiteboard-btn whiteboard-btn-primary" style="width:100%;" onclick="callAIAssistant()">Send</button><div id="aiResponse" style="margin-top:1rem; padding:0.5rem; border:1px solid #eee; border-radius:8px; min-height:50px; background:#f9f9f9;"></div></div></div>
+<div class="whiteboard-modal" id="analysisModal"><div class="whiteboard-modal-content"><div class="whiteboard-modal-header"><h2 class="whiteboard-modal-title">Function Analysis</h2><button class="whiteboard-close-btn" onclick="this.parentElement.parentElement.parentElement.style.display='none'">&times;</button></div><div id="analysisResult"></div></div></div>
+
+<script>
+    // --- GLOBAL VARIABLES ---
+    let graphCanvas, whiteboardCanvas, graphCtx, whiteboardCtx;
+    let functions = [], manualPoints = [];
+    let scale = 40, originX, originY, offsetX = 0, offsetY = 0;
+    let showGrid = true;
+    let currentMainSection = 'graphing', currentTab = 'graph';
+    let isDrawing = false, currentTool = 'pencil', currentDrawColor = '#000000', currentBrushSize = 3, lineThickness = 2;
+    let whiteboardPaths = [];
+    let tempPath = null;
+    let isDragging = false, lastMouseX, lastMouseY;
+    const functionSuggestionsList = ['x^2', 'sin(x)', 'cos(x)', 'log10(x)', 'sqrt(x)'];
+    let currentMedicalImage = null;
+
+    // --- INITIALIZATION ---
+    function initCanvases() {
+        graphCanvas = document.getElementById('graphCanvas');
+        whiteboardCanvas = document.getElementById('whiteboardCanvas');
+        graphCtx = graphCanvas.getContext('2d');
+        whiteboardCtx = whiteboardCanvas.getContext('2d');
+
+        resizeCanvases();
+        setupEventListeners();
+
+        if (document.getElementById('functionInput').value.trim()) addFunction(false);
+        switchMainSection('graphing', document.getElementById('toggleGraphing'));
+        initUnitConverter();
+        initMedicalViewer();
+        updateRange();
+    }
+
+    function resizeCanvases() {
+        const container = document.querySelector('.whiteboard-canvas-content');
+        const rect = container.getBoundingClientRect();
+        [graphCanvas, whiteboardCanvas].forEach(c => { if(c) { c.width = rect.width; c.height = rect.height; }});
+        originX = rect.width / 2;
+        originY = rect.height / 2;
+        updateDisplay();
+    }
+
+    function setupEventListeners() {
+        const canvasContainer = document.querySelector('.whiteboard-canvas-content');
+
+        function convertTouchEvent(e, type) {
+            if (e.touches && e.touches.length > 0) {
+                const touch = e.touches[0];
+                return {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY,
+                    button: 0,
+                    preventDefault: () => e.preventDefault(),
+                    isTouchEvent: true
+                };
+            }
+            return null;
+        }
+
+        let initialPinchDistance = null;
+
+        canvasContainer.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
+                isDrawing = false;
+                isDragging = false;
+                return;
+            }
+            const touchEvent = convertTouchEvent(e);
+            if (touchEvent) {
+                e.preventDefault();
+                handleMouseDown(touchEvent);
+            }
+        }, { passive: false });
+
+        canvasContainer.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialPinchDistance) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const currentPinchDistance = Math.sqrt(dx * dx + dy * dy);
+                const zoomFactor = currentPinchDistance / initialPinchDistance;
+                const centerPoint = {
+                    x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                    y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+                };
+                const mousePos = getMousePos(graphCanvas, { clientX: centerPoint.x, clientY: centerPoint.y });
+                zoom(zoomFactor, mousePos);
+                initialPinchDistance = currentPinchDistance;
+                return;
+            }
+            if (e.touches.length === 1) {
+                const touchEvent = convertTouchEvent(e);
+                if (touchEvent) {
+                    e.preventDefault();
+                    handleMouseMove(touchEvent);
+                }
+            }
+        }, { passive: false });
+
+        canvasContainer.addEventListener('touchend', (e) => {
+            initialPinchDistance = null;
+            handleMouseUp();
+        });
+        canvasContainer.addEventListener('touchcancel', (e) => {
+            initialPinchDistance = null;
+            handleMouseUp();
+        });
+
+        canvasContainer.addEventListener('mousedown', handleMouseDown);
+        canvasContainer.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        canvasContainer.addEventListener('mouseout', handleMouseUp);
+        canvasContainer.addEventListener('wheel', handleWheel, { passive: false });
+
+        window.addEventListener('resize', resizeCanvases);
+        document.getElementById('functionInput').addEventListener('input', showFunctionSuggestions);
+        document.getElementById('brushSize').addEventListener('input', (e) => {
+            currentBrushSize = e.target.value;
+            document.getElementById('brushSizeValue').textContent = `${e.target.value}px`;
+        });
+        document.getElementById('lineThickness').addEventListener('input', (e) => {
+            lineThickness = e.target.value;
+            document.getElementById('lineThicknessValue').textContent = `${e.target.value}px`;
+        });
+        document.addEventListener('keydown', handleKeyDown);
+    }
+
+    function getMousePos(canvas, evt) {
+        const rect = canvas.getBoundingClientRect();
+        return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+    }
+
+    function handleMouseDown(e) {
+        if (e.button !== 0 && !e.isTouchEvent) return;
+        const pos = getMousePos(whiteboardCanvas, e);
+
+        if (currentTab === 'graph' || currentTab === 'combined') {
+             isDragging = true;
+             lastMouseX = e.clientX;
+             lastMouseY = e.clientY;
+        }
+        if ((currentTab === 'whiteboard' || currentTab === 'combined' || currentTab === 'medicalView') && !document.getElementById('whiteboardToolsSection').classList.contains('whiteboard-hidden-section')) {
+            isDrawing = true;
+            if (currentTool === 'eyedropper') {
+                const p = whiteboardCtx.getImageData(pos.x, pos.y, 1, 1).data;
+                setDrawColor(`rgb(${p[0]}, ${p[1]}, ${p[2]})`);
+                isDrawing = false; return;
+            }
+            tempPath = { tool: currentTool, color: currentDrawColor, size: currentBrushSize, points: [pos], startX: pos.x, startY: pos.y, endX: pos.x, endY: pos.y };
+            if (currentTool === 'text') {
+                const text = prompt('Enter text:', '');
+                if (text) {
+                    tempPath.text = text;
+                    whiteboardPaths.push(tempPath);
+                    updateDisplay();
+                }
+                isDrawing = false; tempPath = null;
+            }
+        }
+    }
+
+    function handleMouseMove(e) {
+        const graphPos = getMousePos(graphCanvas, e);
+        const currentOriginX = originX + offsetX;
+        const currentOriginY = originY + offsetY;
+        const graphX = (graphPos.x - currentOriginX) / scale;
+        const graphY = -(graphPos.y - currentOriginY) / scale;
+        document.getElementById('coordinates').textContent = `x: ${graphX.toFixed(2)}, y: ${graphY.toFixed(2)}`;
+
+        if (isDragging) {
+             const dx = e.clientX - lastMouseX;
+             const dy = e.clientY - lastMouseY;
+             lastMouseX = e.clientX;
+             lastMouseY = e.clientY;
+             offsetX += dx;
+             offsetY += dy;
+             updateDisplay();
+        }
+
+        if (!isDrawing || !tempPath) return;
+
+        const drawPos = getMousePos(whiteboardCanvas, e);
+        if (tempPath.tool === 'pencil' || tempPath.tool === 'brush' || tempPath.tool === 'eraser') {
+            tempPath.points.push(drawPos);
+        } else {
+            tempPath.endX = drawPos.x;
+            tempPath.endY = drawPos.y;
+        }
+        updateDisplay();
+    }
+
+    function handleMouseUp() {
+        if (isDragging) isDragging = false;
+        if (isDrawing && tempPath && tempPath.tool !== 'text') {
+            whiteboardPaths.push(tempPath);
+        }
+        isDrawing = false;
+        tempPath = null;
+        updateDisplay();
+    }
+
+    function handleWheel(e) {
+        e.preventDefault();
+        const zoomFactor = e.deltaY < 0 ? 1.2 : 0.8;
+        zoom(zoomFactor, getMousePos(graphCanvas, e));
+    }
+
+    function handleKeyDown(e) {
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+        const ctrlOrCmd = e.ctrlKey || e.metaKey;
+        if (ctrlOrCmd && (e.key === '=' || e.key === '+')) { e.preventDefault(); zoom(1.2); }
+        else if (ctrlOrCmd && e.key === '-') { e.preventDefault(); zoom(0.8); }
+        else if (ctrlOrCmd && e.key === '0') { e.preventDefault(); resetView(); }
+    }
+
+    function switchMainSection(sectionName, buttonElement) {
+        currentMainSection = sectionName;
+        document.querySelectorAll('.whiteboard-main-section-toggle').forEach(btn => btn.classList.remove('active'));
+        buttonElement.classList.add('active');
+
+        ['graphingSidebarSection', 'engineeringSidebarSection', 'medicalSidebarSection'].forEach(id => document.getElementById(id).classList.add('whiteboard-hidden-section'));
+        document.getElementById(sectionName + 'SidebarSection').classList.remove('whiteboard-hidden-section');
+
+        ['graphViewTab', 'whiteboardTab', 'combinedTab', 'medicalViewTab'].forEach(id => document.getElementById(id).classList.add('whiteboard-hidden-section'));
+
+        if (sectionName === 'medical') {
+            document.getElementById('medicalViewTab').classList.remove('whiteboard-hidden-section');
+            switchTab('medicalView', document.getElementById('medicalViewTab'));
+        } else {
+            ['graphViewTab', 'whiteboardTab', 'combinedTab'].forEach(id => document.getElementById(id).classList.remove('whiteboard-hidden-section'));
+            switchTab('graph', document.getElementById('graphViewTab'));
+        }
+    }
+
+    function switchTab(tabName, tabElement) {
+        currentTab = tabName;
+        document.querySelectorAll('.whiteboard-tab').forEach(t => t.classList.remove('active'));
+        tabElement.classList.add('active');
+        const showWbTools = tabName === 'whiteboard' || tabName === 'combined' || tabName === 'medicalView';
+        document.getElementById('whiteboardToolsSection').classList.toggle('whiteboard-hidden-section', !showWbTools);
+        graphCanvas.style.pointerEvents = (tabName === 'graph') ? 'auto' : 'none';
+        whiteboardCanvas.style.pointerEvents = (tabName === 'whiteboard' || tabName === 'combined' || tabName === 'medicalView') ? 'auto' : 'none';
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        requestAnimationFrame(() => {
+            const showGraph = currentTab === 'graph' || currentTab === 'combined';
+            const showWb = currentTab === 'whiteboard' || currentTab === 'combined' || currentTab === 'medicalView';
+            graphCtx.clearRect(0,0,graphCanvas.width, graphCanvas.height);
+            whiteboardCtx.clearRect(0, 0, whiteboardCanvas.width, whiteboardCanvas.height);
+            graphCanvas.style.display = showGraph ? 'block' : 'none';
+            whiteboardCanvas.style.display = showWb ? 'block' : 'none';
+            if(showGraph) drawGraph();
+            if(showWb) drawWhiteboard();
+            document.getElementById('graphControlPanel').style.display = showGraph ? 'flex' : 'none';
+            document.getElementById('infoPanel').style.display = showGraph ? 'block' : 'none';
+            if(showGraph) updateInfoPanel();
+        });
+    }
+
+    function drawGraph() {
+        drawAxesAndGrid();
+        functions.forEach(func => plotGraphFunction(graphCtx, func));
+        manualPoints.forEach(p => plotManualPoint(graphCtx, p));
+    }
+
+    function drawAxesAndGrid() {
+        const w = graphCanvas.width, h = graphCanvas.height;
+        const currentOriginX = originX + offsetX, currentOriginY = originY + offsetY;
+        graphCtx.strokeStyle = '#ccc';
+        graphCtx.lineWidth = 1;
+        graphCtx.font = '12px Arial';
+        graphCtx.fillStyle = '#666';
+
+        if (showGrid) {
+            for (let x = currentOriginX % scale; x < w; x += scale) {
+                graphCtx.beginPath();
+                graphCtx.moveTo(x, 0);
+                graphCtx.lineTo(x, h);
+                graphCtx.stroke();
+                if (currentOriginY >=0 && currentOriginY <= h && x !== currentOriginX) {
+                    const valX = ((x - currentOriginX) / scale).toFixed(0);
+                    if (valX != 0) graphCtx.fillText(valX, x + 3, currentOriginY + 15);
+                }
+            }
+            for (let y = currentOriginY % scale; y < h; y += scale) {
+                graphCtx.beginPath();
+                graphCtx.moveTo(0, y);
+                graphCtx.lineTo(w, y);
+                graphCtx.stroke();
+                if (currentOriginX >=0 && currentOriginX <= w && y !== currentOriginY) {
+                    const valY = -((y - currentOriginY) / scale).toFixed(0);
+                    if (valY != 0) graphCtx.fillText(valY, currentOriginX - 25, y + 3);
+                }
+            }
+        }
+        graphCtx.strokeStyle = '#000';
+        graphCtx.lineWidth = 1.5;
+        graphCtx.beginPath();
+        graphCtx.moveTo(0, currentOriginY);
+        graphCtx.lineTo(w, currentOriginY);
+        graphCtx.stroke();
+        graphCtx.beginPath();
+        graphCtx.moveTo(currentOriginX, 0);
+        graphCtx.lineTo(currentOriginX, h);
+        graphCtx.stroke();
+        graphCtx.fillStyle = '#666';
+        graphCtx.fillText('0', currentOriginX + 5, currentOriginY - 5);
+    }
+
+    function plotGraphFunction(ctx, funcData) {
+        ctx.beginPath();
+        ctx.strokeStyle = funcData.color;
+        ctx.lineWidth = funcData.thickness;
+        if (funcData.style === 'dashed') ctx.setLineDash([10, 5]);
+        else if (funcData.style === 'dotted') ctx.setLineDash([2, 3]);
+        else ctx.setLineDash([]);
+        const currentOriginX = originX + offsetX, currentOriginY = originY + offsetY;
+        let firstPoint = true;
+        for (let px = 0; px < graphCanvas.width; px++) {
+            const x = (px - currentOriginX) / scale;
+            const y = evaluateFunction(funcData.expression, x);
+            if (!isNaN(y) && isFinite(y)) {
+                const py = currentOriginY - y * scale;
+                if (firstPoint) { ctx.moveTo(px, py); firstPoint = false; } else { ctx.lineTo(px, py); }
+            } else { firstPoint = true; }
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+
+    function plotManualPoint(ctx, point) {
+        const px = (originX + offsetX) + point.x * scale;
+        const py = (originY + offsetY) - point.y * scale;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = point.color || '#da4453';
+        ctx.fill();
+    }
+
+    function drawWhiteboard() {
+        if (currentMedicalImage) {
+            const canvasWidth = whiteboardCtx.canvas.width;
+            const canvasHeight = whiteboardCtx.canvas.height;
+            const imgAspectRatio = currentMedicalImage.width / currentMedicalImage.height;
+            const canvasAspectRatio = canvasWidth / canvasHeight;
+            let drawWidth = canvasWidth, drawHeight = canvasHeight, drawX = 0, drawY = 0;
+            if (imgAspectRatio > canvasAspectRatio) {
+                drawHeight = canvasWidth / imgAspectRatio;
+                drawY = (canvasHeight - drawHeight) / 2;
+            } else {
+                drawWidth = canvasHeight * imgAspectRatio;
+                drawX = (canvasWidth - drawWidth) / 2;
+            }
+            whiteboardCtx.drawImage(currentMedicalImage, drawX, drawY, drawWidth, drawHeight);
+        }
+
+        const allPaths = [...whiteboardPaths, ...(isDrawing && tempPath ? [tempPath] : [])];
+        allPaths.forEach(path => {
+            whiteboardCtx.strokeStyle = path.color;
+            whiteboardCtx.fillStyle = path.color;
+            whiteboardCtx.lineWidth = path.size;
+            whiteboardCtx.globalAlpha = (path.tool === 'brush') ? 0.7 : 1.0;
+            whiteboardCtx.lineCap = 'round';
+            whiteboardCtx.lineJoin = 'round';
+            whiteboardCtx.globalCompositeOperation = (path.tool === 'eraser') ? 'destination-out' : 'source-over';
+            whiteboardCtx.beginPath();
+            if (path.tool === 'pencil' || path.tool === 'brush' || path.tool === 'eraser') {
+                path.points.forEach((p, i) => i === 0 ? whiteboardCtx.moveTo(p.x, p.y) : whiteboardCtx.lineTo(p.x, p.y));
+            } else if (path.tool === 'line') {
+                whiteboardCtx.moveTo(path.startX, path.startY);
+                whiteboardCtx.lineTo(path.endX, path.endY);
+            } else if (path.tool === 'rectangle') {
+                whiteboardCtx.rect(path.startX, path.startY, path.endX - path.startX, path.endY - path.startY);
+            } else if (path.tool === 'ellipse') {
+                const centerX = (path.startX + path.endX) / 2;
+                const centerY = (path.startY + path.endY) / 2;
+                const radiusX = Math.abs(path.endX - path.startX) / 2;
+                const radiusY = Math.abs(path.endY - path.startY) / 2;
+                whiteboardCtx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+            } else if (path.tool === 'text' && path.text) {
+                 whiteboardCtx.font = `${path.size * 2}px Arial`;
+                 whiteboardCtx.fillText(path.text, path.startX, path.startY);
+            }
+            whiteboardCtx.stroke();
+        });
+        whiteboardCtx.globalCompositeOperation = 'source-over';
+        whiteboardCtx.globalAlpha = 1.0;
+    }
+
+    function evaluateFunction(expr, x) { try { return math.evaluate(expr, {x}); } catch { return NaN; } }
+
+    function addFunction(clearInput = true) {
+        const input = document.getElementById('functionInput');
+        if (!input.value.trim()) return;
+        try { math.parse(input.value).compile().evaluate({x:1}); } catch (e) { alert("Invalid function: " + e.message); return; }
+        functions.push({ expression: input.value, color: document.getElementById('colorSelect').value, style: document.getElementById('lineStyle').value, thickness: lineThickness });
+        if (clearInput) input.value = '';
+        updateFunctionList();
+        updateDisplay();
+    }
+    function updateFunctionList() {
+        const listEl = document.getElementById('functionList');
+        listEl.innerHTML = '';
+        functions.forEach((f, i) => {
+            const item = document.createElement('div');
+            item.className = 'whiteboard-function-item';
+            item.innerHTML = `<div class="whiteboard-function-info"><div class="whiteboard-function-color" style="background-color:${f.color};"></div><span>${f.expression}</span></div><button class="whiteboard-btn whiteboard-btn-danger whiteboard-btn-small" onclick="removeFunction(${i})">🗑️</button>`;
+            listEl.appendChild(item);
+        });
+    }
+    function removeFunction(i) { functions.splice(i, 1); updateFunctionList(); updateDisplay(); }
+
+    function addManualPoint() {
+        const x = parseFloat(document.getElementById('manualX').value);
+        const y = parseFloat(document.getElementById('manualY').value);
+        if(isNaN(x) || isNaN(y)) { alert("Invalid point coordinates"); return; }
+        manualPoints.push({ x, y, color: '#da4453'});
+        document.getElementById('manualX').value = '';
+        document.getElementById('manualY').value = '';
+        updateManualPointsList();
+        updateDisplay();
+    }
+    function updateManualPointsList() {
+        const list = document.getElementById('manualPointsList');
+        list.innerHTML = '';
+        manualPoints.forEach((p, i) => {
+            const item = document.createElement('div');
+            item.className = 'whiteboard-point-item';
+            item.innerHTML = `<span>(${p.x}, ${p.y})</span> <button class="whiteboard-btn whiteboard-btn-danger whiteboard-btn-small" onclick="removeManualPoint(${i})">X</button>`;
+            list.appendChild(item);
+        });
+    }
+    function removeManualPoint(i) { manualPoints.splice(i, 1); updateManualPointsList(); updateDisplay(); }
+
+    function zoom(factor, mousePos) {
+        const prevScale = scale;
+        scale = Math.max(5, Math.min(500, scale * factor));
+        if (mousePos) {
+            const worldX = (mousePos.x - (originX + offsetX)) / prevScale;
+            const worldY = (mousePos.y - (originY + offsetY)) / prevScale;
+            offsetX = mousePos.x - originX - worldX * scale;
+            offsetY = mousePos.y - originY - worldY * scale;
+        } else {
+            offsetX *= (scale/prevScale);
+            offsetY *= (scale/prevScale);
+        }
+        updateDisplay();
+    }
+
+    function resetView() { scale = 40; offsetX = 0; offsetY = 0; updateRange(); updateDisplay(); }
+    function toggleGrid() { showGrid = !showGrid; updateDisplay(); }
+    function showHelp() { document.getElementById('helpModal').classList.add('active'); }
+    function hideHelp() { document.getElementById('helpModal').classList.remove('active'); }
+
+    function setTool(tool, el) {
+        currentTool = tool;
+        document.querySelectorAll('.whiteboard-tool-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        whiteboardCanvas.style.pointerEvents = 'auto';
+        if (currentTool === 'eyedropper') {
+             graphCanvas.style.pointerEvents = 'auto';
+        } else {
+            graphCanvas.style.pointerEvents = 'none';
+        }
+    }
+    function setDrawColor(color, el) {
+        currentDrawColor = color;
+        if(el) {
+            document.querySelectorAll('.whiteboard-color-option').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        } else {
+            const colorOptions = document.getElementById('drawColorPicker').children;
+            for (let i = 0; i < colorOptions.length; i++) {
+                const elmColor = colorOptions[i].style.backgroundColor.replace(/\s/g, '');
+                const pickedColor = color.replace(/\s/g, '');
+                if (elmColor === pickedColor || (elmColor.startsWith('rgb') && pickedColor.startsWith('rgb') && elmColor === pickedColor)) {
+                    colorOptions[i].classList.add('active');
+                } else {
+                    colorOptions[i].classList.remove('active');
+                }
+            }
+        }
+    }
+    function clearWhiteboard() {
+        whiteboardPaths = [];
+        tempPath = null;
+        currentMedicalImage = null;
+        updateDisplay();
+    }
+
+    function updateRange() {
+        const xMin = parseFloat(document.getElementById('xMin').value);
+        const xMax = parseFloat(document.getElementById('xMax').value);
+        const yMin = parseFloat(document.getElementById('yMin').value);
+        const yMax = parseFloat(document.getElementById('yMax').value);
+        if(isNaN(xMin) || isNaN(xMax) || isNaN(yMin) || isNaN(yMax)) return;
+        const graphW = graphCanvas.width;
+        const graphH = graphCanvas.height;
+        const newScaleX = graphW / (xMax - xMin);
+        const newScaleY = graphH / (yMax - yMin);
+        scale = Math.min(newScaleX, newScaleY);
+        offsetX = originX - (xMin * scale);
+        offsetY = originY + (yMin * scale);
+        updateDisplay();
+    }
+
+    function updateInfoPanel() {
+        document.getElementById('scaleInfo').textContent = `1:${scale.toFixed(1)}`;
+        document.getElementById('functionCount').textContent = functions.length;
+        document.getElementById('manualPointCount').textContent = manualPoints.length;
+        const currentOriginX = originX + offsetX;
+        const currentOriginY = originY + offsetY;
+        const xMin = (-currentOriginX / scale);
+        const xMax = ((graphCanvas.width - currentOriginX) / scale);
+        const yMin = (-(graphCanvas.height - currentOriginY) / scale);
+        const yMax = (currentOriginY / scale);
+        document.getElementById('xMin').value = xMin.toFixed(1);
+        document.getElementById('xMax').value = xMax.toFixed(1);
+        document.getElementById('yMin').value = yMin.toFixed(1);
+        document.getElementById('yMax').value = yMax.toFixed(1);
+    }
+
+    function showFunctionSuggestions() {
+        const input = document.getElementById('functionInput');
+        const suggestionsDiv = document.getElementById('functionSuggestions');
+        const value = input.value.toLowerCase();
+        suggestionsDiv.innerHTML = '';
+        if (value.length === 0) { suggestionsDiv.style.display = 'none'; return; }
+        const filtered = functionSuggestionsList.filter(s => s.toLowerCase().includes(value));
+        filtered.forEach(s => {
+            const item = document.createElement('div');
+            item.className = 'whiteboard-suggestion-item';
+            item.textContent = s;
+            item.onclick = () => { input.value = s; suggestionsDiv.style.display = 'none'; };
+            suggestionsDiv.appendChild(item);
+        });
+        suggestionsDiv.style.display = filtered.length > 0 ? 'block' : 'none';
+    }
+
+    function analyzeFunction() {
+        const expr = document.getElementById('functionInput').value;
+        if (!expr) { alert("Please enter a function."); return; }
+        let resultHTML = `<p><strong>Roots:</strong> Not implemented yet.</p><p><strong>Derivatives:</strong> Not implemented yet.</p>`;
+        document.getElementById('analysisResult').innerHTML = resultHTML;
+        document.getElementById('analysisModal').style.display = 'flex';
+    }
+
+<!--    function exportGraph() {-->
+<!--        const link = document.createElement('a');-->
+<!--        link.download = 'whiteboard-export.png';-->
+<!--        const exportCanvas = document.createElement('canvas');-->
+<!--        exportCanvas.width = graphCanvas.width;-->
+<!--        exportCanvas.height = graphCanvas.height;-->
+<!--        const exportCtx = exportCanvas.getContext('2d');-->
+<!--        exportCtx.fillStyle = 'white';-->
+<!--        exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);-->
+<!--        if (graphCanvas.style.display !== 'none') {-->
+<!--            exportCtx.drawImage(graphCanvas, 0, 0);-->
+<!--        }-->
+<!--        if (whiteboardCanvas.style.display !== 'none') {-->
+<!--            exportCtx.drawImage(whiteboardCanvas, 0, 0);-->
+<!--        }-->
+<!--        link.href = exportCanvas.toDataURL();-->
+<!--        link.click();-->
+<!--    }-->
+
+    // --- ENGINEERING & MEDICAL TOOLS ---
+    function sciCalcAppend(v){ let d = document.getElementById('sciCalcDisplay'); if(d.value==='0'||d.value==='Error')d.value=''; d.value+=v; }
+    function sciCalcClearAll(){ document.getElementById('sciCalcDisplay').value='0'; }
+    function sciCalcClearEntry(){ let d = document.getElementById('sciCalcDisplay'); d.value=d.value.slice(0,-1); if(d.value==='')d.value='0';}
+    function sciCalcCalculate(){ try {document.getElementById('sciCalcDisplay').value=math.evaluate(document.getElementById('sciCalcDisplay').value);}catch{document.getElementById('sciCalcDisplay').value='Error';}}
+
+    const unitFactors = {
+        length: { meter: 1, km: 1000, cm: 0.01, mm: 0.001, mile: 1609.34, foot: 0.3048 },
+        mass: { gram: 1, kg: 1000, mg: 0.001, pound: 453.592 },
+        time: { second: 1, minute: 60, hour: 3600 }
+    };
+    function initUnitConverter() { updateUnitOptions(); }
+    function updateUnitOptions() {
+        const category = document.getElementById('unitCategory').value;
+        const fromUnit = document.getElementById('fromUnit');
+        const toUnit = document.getElementById('toUnit');
+        fromUnit.innerHTML = ''; toUnit.innerHTML = '';
+        Object.keys(unitFactors[category]).forEach(unit => {
+            fromUnit.add(new Option(unit, unit));
+            toUnit.add(new Option(unit, unit));
+        });
+        convertUnits();
+    }
+    function convertUnits() {
+        const val = parseFloat(document.getElementById('unitInput').value);
+        const category = document.getElementById('unitCategory').value;
+        const from = document.getElementById('fromUnit').value;
+        const to = document.getElementById('toUnit').value;
+        if(isNaN(val)) { document.getElementById('unitResult').value = 'Invalid'; return; }
+        const result = val * unitFactors[category][from] / unitFactors[category][to];
+        document.getElementById('unitResult').value = result.toPrecision(5);
+    }
+
+    const medicalShapesData = {
+        human: {
+            "Brain": "https://k12.easylearn.org.in/public/Easylearn/images/whiteboard/human_brain.png",
+            "Heart": "https://k12.easylearn.org.in/public/Easylearn/images/whiteboard/human_heart.png",
+            "Lungs": "https://k12.easylearn.org.in/public/Easylearn/images/whiteboard/human_lungs.png"
+        },
+        plant: {
+            "Leaf": "https://k12.easylearn.org.in/public/Easylearn/images/whiteboard/plant_leaf.png",
+            "Flower": "https://k12.easylearn.org.in/public/Easylearn/images/whiteboard/plant_flower.png"
+        }
+    };
+
+    function initMedicalViewer() { updateMedicalShapes(document.getElementById('medicalShapeCategory').value); }
+    function updateMedicalShapes(category) {
+        const shapeSelect = document.getElementById('medicalShapeSelect');
+        shapeSelect.innerHTML = '<option value="">Select a part...</option>';
+        if (medicalShapesData[category]) {
+            Object.keys(medicalShapesData[category]).forEach(name => shapeSelect.add(new Option(name, name)));
+        }
+        displayMedicalShape("");
+    }
+
+    function displayMedicalShape(shapeName) {
+        currentMedicalImage = null;
+        clearWhiteboard();
+        const category = document.getElementById('medicalShapeCategory').value;
+        const imagePath = medicalShapesData[category]?.[shapeName];
+        if (imagePath) {
+            const img = new Image();
+            img.onload = () => {
+                currentMedicalImage = img;
+                updateDisplay();
+            };
+            img.onerror = (e) => {
+                console.error("Error loading image:", imagePath, e);
+                alert('Failed to load image: ' + imagePath);
+                currentMedicalImage = null;
+                updateDisplay();
+            };
+            img.src = imagePath;
+        } else {
+            updateDisplay();
+        }
+    }
+
+    async function callAIAssistant() {
+        const responseContainer = document.getElementById("aiResponse");
+        responseContainer.textContent = "AI Assistant feature is a placeholder and not connected to a live model.";
+    }
+
+    window.onload = initCanvases;
+</script>
+</body>
+</html>

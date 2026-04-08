@@ -1,0 +1,75 @@
+name: easylearn
+description: "EasyLearn Flutter Module for AthenaStar OTT"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Networking
+  http: ^1.1.0
+  intl: ^0.19.0   # ← yeh add karo
+
+  # WebView — ✅ FIX: 3.16.0 → 4.10.0 (v1 embedding removed tha, ab fixed)
+  webview_flutter: ^4.7.0
+  webview_flutter_android: ^4.10.0
+  webview_flutter_wkwebview: ^3.15.0
+  webview_flutter_web: ^0.2.3+4
+  
+  # URL & Links
+  url_launcher: ^6.2.1
+
+  # Video Player
+  vdocipher_flutter: ^2.7.8
+  flutter_tts: ^4.0.2
+
+  # State Management
+  provider: ^6.1.1
+
+  # Device & System
+  wakelock_plus: ^1.2.5
+  device_info_plus: ^9.1.0
+  package_info_plus: 8.3.0
+
+  # Storage
+  shared_preferences: ^2.5.3
+
+  # UI & Utilities
+  qr_flutter: ^4.1.0
+  google_sign_in: ^6.2.1
+  cupertino_icons: ^1.0.8
+
+dependency_overrides:
+  package_info_plus: 8.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+
+flutter:
+  module:
+    androidX: true
+    androidPackage: com.example.easylearn
+    iosBundleIdentifier: com.example.easylearn
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/powered_by_logo.png
+    - assets/images/logo.png
+    - assets/images/logo_horizontal.png
+    - assets/icon/app_icon.png
+    - assets/html/whiteboard.html

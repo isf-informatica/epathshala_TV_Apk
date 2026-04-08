@@ -1,0 +1,87 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter pub get --no-example
+
+## exception
+
+PathAccessException: PathAccessException: Deletion failed, path = 'C:\Athenastar_easylearn\.android' (OS Error: The process cannot access the file because it is being used by another process, errno = 32)
+
+```
+#0      _Directory._deleteSync (dart:io/directory_impl.dart:220:7)
+#1      FileSystemEntity.deleteSync (dart:io/file_system_entity.dart:425:7)
+#2      ForwardingFileSystemEntity.deleteSync (package:file/src/forwarding/forwarding_file_system_entity.dart:70:16)
+#3      ErrorHandlingDirectory.deleteSync.<anonymous closure> (package:flutter_tools/src/base/error_handling_io.dart:451:22)
+#4      _runSync (package:flutter_tools/src/base/error_handling_io.dart:552:14)
+#5      ErrorHandlingDirectory.deleteSync (package:flutter_tools/src/base/error_handling_io.dart:450:12)
+#6      ErrorHandlingFileSystem.deleteIfExists (package:flutter_tools/src/base/error_handling_io.dart:90:14)
+#7      AndroidProject._regenerateLibrary (package:flutter_tools/src/project.dart:893:29)
+#8      AndroidProject.ensureReadyForPlatformSpecificTooling (package:flutter_tools/src/project.dart:860:13)
+#9      FlutterProject.ensureReadyForPlatformSpecificTooling (package:flutter_tools/src/project.dart:402:21)
+<asynchronous suspension>
+#10     PackagesGetCommand.runCommand (package:flutter_tools/src/commands/packages.dart:395:9)
+<asynchronous suspension>
+#11     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1559:27)
+<asynchronous suspension>
+#12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#13     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#14     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:487:9)
+<asynchronous suspension>
+#15     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#16     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:422:5)
+<asynchronous suspension>
+#17     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+<asynchronous suspension>
+#18     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#19     main (package:flutter_tools/executable.dart:103:3)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel main, 3.43.0-0.2.pre, on Microsoft Windows [Version 10.0.26200.8037], locale en-IN) [14.0s]
+    • Flutter version 3.43.0-0.2.pre on channel main at C:\Flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 05d6005dd8 (4 months ago), 2025-12-01 04:15:13 -0500
+    • Engine revision 05d6005dd8
+    • Dart version 3.11.0 (build 3.11.0-189.0.dev)
+    • DevTools version 2.52.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration
+
+[✓] Windows Version (11 Pro 64-bit, 25H2, 2009) [13.6s]
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 35.0.0) [20.5s]
+    • Android SDK at C:\Users\ISF-3\AppData\Local\Android\sdk
+    • Emulator version 35.6.11.0 (build_id 13610412) (CL:N/A)
+    • Platform android-36, build-tools 35.0.0
+    • Java binary at: C:\Program Files\Android\Android Studio1\jbr\bin\java
+      This is the JDK bundled with the latest Android Studio installation on this machine.
+      To manually set the JDK path, use: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 21.0.6+-13391695-b895.109)
+    • All Android licenses accepted.
+
+[✓] Chrome - develop for the web [1,336ms]
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[✗] Visual Studio - develop Windows apps [1,329ms]
+    ✗ Visual Studio not installed; this is necessary to develop Windows apps.
+      Download at https://visualstudio.microsoft.com/downloads/.
+      Please install the "Desktop development with C++" workload, including all of its default components
+
+[✓] Connected device (3 available) [887ms]
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.26200.8037]
+    • Chrome (web)      • chrome  • web-javascript • Google Chrome 146.0.7680.81
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 145.0.3800.97
+
+[✓] Network resources [1,148ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+```
