@@ -359,7 +359,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(child: Column(children: [
           _buildHeader(),
           Expanded(child: _buildBody()),
@@ -413,11 +413,11 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
         color: bg,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: focused ? const Color(0xFFFFA600) : Colors.transparent,
+          color: focused ? const Color(0xFFBF360C) : Colors.transparent,
           width: focused ? 3.5 : 0,
         ),
         boxShadow: focused
-            ? [BoxShadow(color: const Color(0xFFFFA600).withOpacity(0.5), blurRadius: 20, spreadRadius: 3)]
+            ? [BoxShadow(color: const Color(0xFFBF360C).withOpacity(0.5), blurRadius: 20, spreadRadius: 3)]
             : [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 10, offset: const Offset(2, 4))],
       ),
       child: Padding(
@@ -474,11 +474,11 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
         color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: focused ? const Color(0xFFFFA600) : Colors.white.withOpacity(0.12),
+          color: focused ? const Color(0xFFBF360C) : Colors.white.withOpacity(0.12),
           width: focused ? 3.5 : 1.5,
         ),
         boxShadow: focused
-            ? [BoxShadow(color: const Color(0xFFFFA600).withOpacity(0.4), blurRadius: 20, spreadRadius: 2)]
+            ? [BoxShadow(color: const Color(0xFFBF360C).withOpacity(0.4), blurRadius: 20, spreadRadius: 2)]
             : [],
       ),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -487,7 +487,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
           width: focused ? 56 : 48, height: focused ? 56 : 48,
           decoration: BoxDecoration(
             color: focused
-                ? const Color(0xFFFFA600)
+                ? const Color(0xFFBF360C)
                 : const Color(0xFFF59E0B).withOpacity(0.15),
             shape: BoxShape.circle,
           ),
@@ -497,7 +497,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
         ),
         const SizedBox(height: 12),
         Text('New Note', style: TextStyle(
-          color: focused ? const Color(0xFFFFA600) : Colors.white38,
+          color: focused ? const Color(0xFFBF360C) : Colors.white38,
           fontSize: 14, fontWeight: FontWeight.w700,
         )),
         const SizedBox(height: 4),
@@ -673,7 +673,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: active
-                  ? const Color(0xFFFFA600)
+                  ? const Color(0xFFBF360C)
                   : focused
                       ? Colors.white38
                       : Colors.white.withOpacity(0.1),
@@ -689,7 +689,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
               ),
             )),
             if (active) Container(width: 2, height: 18,
-              color: const Color(0xFFFFA600),
+              color: const Color(0xFFBF360C),
               margin: const EdgeInsets.only(left: 4)),
           ]),
         ),
@@ -727,7 +727,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1A3E),
+        color: const Color(0xFF1A0800),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
@@ -751,7 +751,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
                     height: 32,
                     decoration: BoxDecoration(
                       color: focused
-                          ? const Color(0xFFFFA600)
+                          ? const Color(0xFFBF360C)
                           : Colors.white.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
@@ -791,7 +791,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
       width: 460,
       padding: const EdgeInsets.all(36),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1A3E),
+        color: const Color(0xFF1A0800),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white.withOpacity(0.1)),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 40)],
@@ -902,7 +902,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
       height: 74,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: const BoxDecoration(
-        color: Color(0xFF0D1A3E),
+        color: Color(0xFF1A0800),
         border: Border(bottom: BorderSide(color: Colors.white12)),
       ),
       child: Row(children: [
@@ -944,7 +944,7 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
         const Spacer(),
         if (_saving) ...[
           const SizedBox(width: 14, height: 14,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFFFA600))),
+            child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFBF360C))),
           const SizedBox(width: 8),
           const Text('Saving...', style: TextStyle(color: Colors.white38, fontSize: 12)),
           const SizedBox(width: 16),
@@ -967,14 +967,14 @@ class _StickyNotesPageState extends State<StickyNotesPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFA600).withOpacity(0.1),
+            color: const Color(0xFFBF360C).withOpacity(0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFFFA600).withOpacity(0.3)),
+            border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3)),
           ),
           child: const Row(children: [
-            Icon(Icons.build_rounded, color: Color(0xFFFFA600), size: 13),
+            Icon(Icons.build_rounded, color: Color(0xFFBF360C), size: 13),
             SizedBox(width: 5),
-            Text('Tools', style: TextStyle(color: Color(0xFFFFA600), fontSize: 12, fontWeight: FontWeight.w600)),
+            Text('Tools', style: TextStyle(color: Color(0xFFBF360C), fontSize: 12, fontWeight: FontWeight.w600)),
           ]),
         ),
       ]),

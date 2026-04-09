@@ -146,7 +146,7 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(
             children: [
@@ -180,8 +180,12 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: const BoxDecoration(
-        color: Color(0xFF0D1A3E),
-        border: Border(bottom: BorderSide(color: Color(0x22FFFFFF))),
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Color(0xFFBF360C), Color(0xFFE64A19), Color(0xFFFF6D00)],
+        ),
+        border: Border(bottom: BorderSide(color: Color(0x22000000))),
       ),
       child: Row(
         children: [
@@ -190,9 +194,9 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white.withOpacity(0.12)),
+                border: Border.all(color: Colors.white.withOpacity(0.25)),
               ),
               child: const Row(
                 children: [
@@ -208,7 +212,7 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
             width: 44, height: 44,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFFFFA600), Color(0xFFE08000)],
+                colors: [Color(0xFFBF360C), Color(0xFFE64A19)],
               ),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -248,17 +252,21 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         decoration: BoxDecoration(
-          color: const Color(0xFF0D1A3E),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isFocused ? tool.color : Colors.white.withOpacity(0.08),
+            color: isFocused ? const Color(0xFFBF360C) : const Color(0xFFE8D5CC),
             width: isFocused ? 2.5 : 1.5,
           ),
           boxShadow: isFocused
-              ? [BoxShadow(color: tool.color.withOpacity(0.35), blurRadius: 20, spreadRadius: 2)]
-              : [const BoxShadow(color: Color(0x44000000), blurRadius: 8, offset: Offset(0, 4))],
+              ? [BoxShadow(color: const Color(0xFFBF360C).withOpacity(0.35), blurRadius: 20, spreadRadius: 2)]
+              : [const BoxShadow(color: Color(0x33000000), blurRadius: 8, offset: Offset(0, 4))],
         ),
-        child: Padding(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+          color: const Color(0xFFFFF8F5),
+          child: Padding(
           padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,7 +275,7 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
               Container(
                 width: 52, height: 52,
                 decoration: BoxDecoration(
-                  color: tool.color.withOpacity(0.15),
+                  color: tool.color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: tool.color.withOpacity(0.3)),
                 ),
@@ -279,8 +287,8 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
               // Title
               Text(
                 tool.title,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   height: 1.2,
@@ -293,8 +301,8 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
               Expanded(
                 child: Text(
                   tool.description,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                  style: const TextStyle(
+                    color: Color(0xFF7A4030),
                     fontSize: 12,
                     height: 1.4,
                   ),
@@ -312,15 +320,15 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: isFocused && isAvailable
-                      ? tool.color
+                      ? const Color(0xFFBF360C)
                       : isAvailable
-                          ? tool.color.withOpacity(0.15)
-                          : Colors.white.withOpacity(0.05),
+                          ? const Color(0xFFBF360C).withOpacity(0.1)
+                          : const Color(0xFFE8D5CC),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: isAvailable
-                        ? tool.color.withOpacity(isFocused ? 1.0 : 0.4)
-                        : Colors.white.withOpacity(0.1),
+                        ? const Color(0xFFBF360C).withOpacity(isFocused ? 1.0 : 0.4)
+                        : const Color(0xFFE8D5CC),
                   ),
                 ),
                 child: Row(
@@ -328,14 +336,22 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
                   children: [
                     Icon(
                       isAvailable ? tool.buttonIcon : Icons.lock_outline_rounded,
-                      color: isAvailable ? Colors.white : Colors.white30,
+                      color: isFocused && isAvailable
+                          ? Colors.white
+                          : isAvailable
+                              ? const Color(0xFFBF360C)
+                              : const Color(0xFF7A4030),
                       size: 14,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       isAvailable ? tool.buttonLabel : 'Coming Soon',
                       style: TextStyle(
-                        color: isAvailable ? Colors.white : Colors.white30,
+                        color: isFocused && isAvailable
+                            ? Colors.white
+                            : isAvailable
+                                ? const Color(0xFFBF360C)
+                                : const Color(0xFF7A4030),
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -344,6 +360,8 @@ class _ToolsPageState extends State<ToolsPage> with TickerProviderStateMixin {
                 ),
               ),
             ],
+          ),
+        ),
           ),
         ),
       ),

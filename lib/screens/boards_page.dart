@@ -247,7 +247,11 @@ class _BoardsPageState extends State<BoardsPage> {
         Container(
           width: sidebarWidth,
           decoration: const BoxDecoration(
-            color: Color(0xFF0D1A3E),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF1A0800), Color(0xFF3A1200)],
+            ),
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(32),
               bottomRight: Radius.circular(32),
@@ -273,8 +277,9 @@ class _BoardsPageState extends State<BoardsPage> {
                       horizontal: screenWidth < 600 ? 6 : 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color(0xFFFFF8F5),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFBF360C), width: 1.5),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -285,21 +290,21 @@ class _BoardsPageState extends State<BoardsPage> {
                           fit: BoxFit.contain,
                           errorBuilder: (_, __, ___) => Icon(
                             Icons.school,
-                            color: const Color(0xFF1A3A7C),
+                            color: const Color(0xFFBF360C),
                             size: screenWidth < 600 ? 30 : 42,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text('EASY LEARN',
                             style: TextStyle(
-                              color: const Color(0xFF1A3A7C),
+                              color: const Color(0xFFBF360C),
                               fontSize: screenWidth < 600 ? 9 : 11,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 1.2,
                             )),
                         Text('EDUCATION FOR ALL',
                             style: TextStyle(
-                              color: const Color(0xFF6B8AB5),
+                              color: const Color(0xFF8B3A2A),
                               fontSize: screenWidth < 600 ? 6 : 7.5,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 0.8,
@@ -344,7 +349,7 @@ class _BoardsPageState extends State<BoardsPage> {
                                 width: isTvFocus ? 12 : 10,
                                 height: isTvFocus ? 12 : 10,
                                 decoration: BoxDecoration(
-                                  color: isActive ? const Color(0xFFFFA600) : Colors.white,
+                                  color: isActive ? const Color(0xFFBF360C) : Colors.white,
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
@@ -354,7 +359,7 @@ class _BoardsPageState extends State<BoardsPage> {
                                   label,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: isActive ? const Color(0xFFFFA600) : Colors.white,
+                                    color: isActive ? const Color(0xFFBF360C) : Colors.white,
                                     fontSize: screenWidth < 600
                                         ? (isTvFocus ? 14 : 13)
                                         : (isTvFocus ? 20 : 19),
@@ -370,6 +375,39 @@ class _BoardsPageState extends State<BoardsPage> {
                   ),
                 ),
               ),
+
+          // ── Powered By Logo ──────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Powered by',
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Image.asset(
+                  'assets/images/powered_by_logo.png',
+                  height: 44,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Text(
+                    'EasyLearn',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
             ],
           ),
         ),
@@ -381,7 +419,7 @@ class _BoardsPageState extends State<BoardsPage> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.white, Color(0xFFCCCCCC), Colors.white, Colors.transparent],
+                colors: [Colors.transparent, Color(0xFFBF360C), Color(0xFFE64A19), Color(0xFFBF360C), Colors.transparent],
                 stops: [0.0, 0.15, 0.5, 0.85, 1.0],
               ),
             ),
@@ -395,7 +433,13 @@ class _BoardsPageState extends State<BoardsPage> {
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: const Color(0xFF0D1C45),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Color(0xFFBF360C), Color(0xFFE64A19), Color(0xFFFF6D00)],
+        ),
+      ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -435,47 +479,31 @@ class _BoardsPageState extends State<BoardsPage> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         decoration: BoxDecoration(
-          color: const Color(0xFF0D1C45),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isFocused ? const Color(0xFFFFA600) : const Color(0xFF1A2E55),
-            width: isFocused ? 4 : 3,
+            color: isFocused ? const Color(0xFFBF360C) : const Color(0xFFE8D5CC),
+            width: isFocused ? 4 : 2,
           ),
           boxShadow: isFocused
-              ? [BoxShadow(color: const Color(0xFFFFA600).withOpacity(0.5), blurRadius: 18, spreadRadius: 2)]
-              : [const BoxShadow(color: Color(0x99000000), blurRadius: 8, offset: Offset(0, 4))],
+              ? [BoxShadow(color: const Color(0xFFBF360C).withOpacity(0.4), blurRadius: 18, spreadRadius: 2)]
+              : [const BoxShadow(color: Color(0x33000000), blurRadius: 8, offset: Offset(0, 4))],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0xFF5DD4EE), Color(0xFF2A8BBE), Color(0xFF0D4080)],
-                  stops: [0.0, 0.5, 1.0],
-                ),
-              ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(board.icon, color: Colors.white, size: 48),
-                      const SizedBox(height: 12),
-                      Text(
-                        board.title,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600,
-                          letterSpacing: 0.3,
-                          shadows: [Shadow(color: Color(0x88000000), blurRadius: 6, offset: Offset(0, 2))],
-                        ),
-                      ),
-                    ],
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            color: const Color(0xFFFFF8F5),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  board.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
+                    fontSize: 18,
+                    fontWeight: isFocused ? FontWeight.w700 : FontWeight.w600,
+                    letterSpacing: 0.3,
                   ),
                 ),
               ),
@@ -497,7 +525,7 @@ class _BoardsPageState extends State<BoardsPage> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,

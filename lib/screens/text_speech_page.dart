@@ -283,7 +283,7 @@ class _TextSpeechPageState extends State<TextSpeechPage>
   void _showSnack(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(msg),
-      backgroundColor: const Color(0xFF1A2E55),
+      backgroundColor: const Color(0xFF2A0C00),
       duration: const Duration(seconds: 2),
     ));
   }
@@ -304,7 +304,7 @@ class _TextSpeechPageState extends State<TextSpeechPage>
       children: [
         TextSpan(text: before),
         TextSpan(text: current, style: const TextStyle(
-          color: Color(0xFFFFA600), fontWeight: FontWeight.w700,
+          color: Color(0xFFBF360C), fontWeight: FontWeight.w700,
           backgroundColor: Color(0x33FFA600),
         )),
         TextSpan(text: after),
@@ -388,13 +388,13 @@ class _TextSpeechPageState extends State<TextSpeechPage>
             borderRadius: BorderRadius.circular(7),
             border: Border.all(color: decF ? Colors.white : Colors.white24),
           ),
-          child: Icon(Icons.remove, color: decF ? const Color(0xFF0D1C45) : Colors.white, size: 15),
+          child: Icon(Icons.remove, color: decF ? const Color(0xFF1A0800) : Colors.white, size: 15),
         )),
         const SizedBox(width: 8),
         Expanded(child: Stack(children: [
           Container(height: 5, decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(3))),
           FractionallySizedBox(widthFactor: pct, child: Container(height: 5, decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [Color(0xFF3B82F6), Color(0xFFFFA600)]),
+            gradient: const LinearGradient(colors: [Color(0xFF3B82F6), Color(0xFFBF360C)]),
             borderRadius: BorderRadius.circular(3),
           ))),
         ])),
@@ -407,11 +407,11 @@ class _TextSpeechPageState extends State<TextSpeechPage>
             borderRadius: BorderRadius.circular(7),
             border: Border.all(color: incF ? Colors.white : Colors.white24),
           ),
-          child: Icon(Icons.add, color: incF ? const Color(0xFF0D1C45) : Colors.white, size: 15),
+          child: Icon(Icons.add, color: incF ? const Color(0xFF1A0800) : Colors.white, size: 15),
         )),
         const SizedBox(width: 8),
         SizedBox(width: 40, child: Text(displayVal,
-          style: const TextStyle(color: Color(0xFFFFA600), fontSize: 13, fontWeight: FontWeight.w700),
+          style: const TextStyle(color: Color(0xFFBF360C), fontSize: 13, fontWeight: FontWeight.w700),
           textAlign: TextAlign.right)),
       ]),
     );
@@ -428,7 +428,7 @@ class _TextSpeechPageState extends State<TextSpeechPage>
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(child: Column(children: [
           _buildHeader(),
           Expanded(child: SingleChildScrollView(
@@ -441,14 +441,14 @@ class _TextSpeechPageState extends State<TextSpeechPage>
                 // Input box
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0D1A3E),
+                    color: const Color(0xFF1A0800),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: _isFocused(0) ? const Color(0xFFFFA600) : Colors.white.withOpacity(0.12), width: 1.5),
+                    border: Border.all(color: _isFocused(0) ? const Color(0xFFBF360C) : Colors.white.withOpacity(0.12), width: 1.5),
                   ),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     const Padding(
                       padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
-                      child: Text('Enter Text', style: TextStyle(color: Color(0xFFFFA600), fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: 0.8)),
+                      child: Text('Enter Text', style: TextStyle(color: Color(0xFFBF360C), fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: 0.8)),
                     ),
                     TextField(
                       controller: _textController, maxLines: 7,
@@ -497,9 +497,9 @@ class _TextSpeechPageState extends State<TextSpeechPage>
                     ),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
-                        const Icon(Icons.auto_awesome, color: Color(0xFFFFA600), size: 13),
+                        const Icon(Icons.auto_awesome, color: Color(0xFFBF360C), size: 13),
                         const SizedBox(width: 6),
-                        const Text('LIVE PREVIEW', style: TextStyle(color: Color(0xFFFFA600), fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2)),
+                        const Text('LIVE PREVIEW', style: TextStyle(color: Color(0xFFBF360C), fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2)),
                         const Spacer(),
                         if (isPlaying)
                           AnimatedBuilder(
@@ -528,7 +528,7 @@ class _TextSpeechPageState extends State<TextSpeechPage>
                     onTap: _speak, enabled: text.isNotEmpty && !isPlaying),
                   const SizedBox(width: 16),
                   _actionButton(focusIdx: 2, icon: isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded,
-                    label: isPaused ? 'Resume' : 'Pause', color: const Color(0xFFFFA600),
+                    label: isPaused ? 'Resume' : 'Pause', color: const Color(0xFFBF360C),
                     onTap: _pause, enabled: isPlaying || isPaused),
                   const SizedBox(width: 16),
                   _actionButton(focusIdx: 3, icon: Icons.stop_rounded, label: 'Stop',
@@ -542,7 +542,7 @@ class _TextSpeechPageState extends State<TextSpeechPage>
               SizedBox(width: 270, child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0D1A3E),
+                  color: const Color(0xFF1A0800),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: Colors.white.withOpacity(0.1)),
                 ),
@@ -550,7 +550,7 @@ class _TextSpeechPageState extends State<TextSpeechPage>
 
                   // Title
                   const Row(children: [
-                    Icon(Icons.tune_rounded, color: Color(0xFFFFA600), size: 16),
+                    Icon(Icons.tune_rounded, color: Color(0xFFBF360C), size: 16),
                     SizedBox(width: 8),
                     Text('Voice Settings', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700)),
                   ]),
@@ -565,12 +565,12 @@ class _TextSpeechPageState extends State<TextSpeechPage>
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: _isFocused(4) ? const Color(0xFFFFA600) : Colors.white.withOpacity(0.12)),
+                      border: Border.all(color: _isFocused(4) ? const Color(0xFFBF360C) : Colors.white.withOpacity(0.12)),
                     ),
                     child: DropdownButtonHideUnderline(child: DropdownButton<String>(
                       value: _languages.contains(_selectedLanguage) ? _selectedLanguage : (_languages.isNotEmpty ? _languages.first : null),
                       isExpanded: true,
-                      dropdownColor: const Color(0xFF0D1A3E),
+                      dropdownColor: const Color(0xFF1A0800),
                       style: const TextStyle(color: Colors.white, fontSize: 13),
                       icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white38),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -633,22 +633,22 @@ class _TextSpeechPageState extends State<TextSpeechPage>
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                     decoration: BoxDecoration(
                       color: isPlaying ? const Color(0xFF3B82F6).withOpacity(0.15)
-                           : isPaused  ? const Color(0xFFFFA600).withOpacity(0.15)
+                           : isPaused  ? const Color(0xFFBF360C).withOpacity(0.15)
                            : Colors.white.withOpacity(0.07),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: isPlaying ? const Color(0xFF3B82F6).withOpacity(0.4)
-                           : isPaused  ? const Color(0xFFFFA600).withOpacity(0.4)
+                           : isPaused  ? const Color(0xFFBF360C).withOpacity(0.4)
                            : Colors.white.withOpacity(0.1)),
                     ),
                     child: Row(children: [
                       Container(width: 7, height: 7, decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isPlaying ? const Color(0xFF3B82F6) : isPaused ? const Color(0xFFFFA600) : Colors.white24,
+                        color: isPlaying ? const Color(0xFF3B82F6) : isPaused ? const Color(0xFFBF360C) : Colors.white24,
                       )),
                       const SizedBox(width: 8),
                       Text(isPlaying ? 'Speaking' : isPaused ? 'Paused' : 'Ready',
                         style: TextStyle(
-                          color: isPlaying ? const Color(0xFF3B82F6) : isPaused ? const Color(0xFFFFA600) : Colors.white38,
+                          color: isPlaying ? const Color(0xFF3B82F6) : isPaused ? const Color(0xFFBF360C) : Colors.white38,
                           fontSize: 12, fontWeight: FontWeight.w600)),
                     ]),
                   ),
@@ -677,7 +677,7 @@ class _TextSpeechPageState extends State<TextSpeechPage>
       height: 74,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: const BoxDecoration(
-        color: Color(0xFF0D1A3E),
+        color: Color(0xFF1A0800),
         border: Border(bottom: BorderSide(color: Colors.white12)),
       ),
       child: Row(children: [
@@ -711,14 +711,14 @@ class _TextSpeechPageState extends State<TextSpeechPage>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFA600).withOpacity(0.1),
+            color: const Color(0xFFBF360C).withOpacity(0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFFFA600).withOpacity(0.3)),
+            border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3)),
           ),
           child: const Row(children: [
-            Icon(Icons.build_rounded, color: Color(0xFFFFA600), size: 13),
+            Icon(Icons.build_rounded, color: Color(0xFFBF360C), size: 13),
             SizedBox(width: 5),
-            Text('Tools', style: TextStyle(color: Color(0xFFFFA600), fontSize: 12, fontWeight: FontWeight.w600)),
+            Text('Tools', style: TextStyle(color: Color(0xFFBF360C), fontSize: 12, fontWeight: FontWeight.w600)),
           ]),
         ),
       ]),

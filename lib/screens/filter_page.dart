@@ -609,7 +609,7 @@ class _FilterPageState extends State<FilterPage> with TickerProviderStateMixin {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D2B55),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(children: [
             Expanded(
@@ -816,22 +816,48 @@ class _FilterPageState extends State<FilterPage> with TickerProviderStateMixin {
         return Container(
           width: double.infinity,
           height: double.infinity,
-          color: const Color(0xFF0D2B55),
+          decoration: const BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.center,
+              radius: 1.2,
+              colors: [
+                Color(0xFF3A1200),
+                Color(0xFF1A0800),
+              ],
+            ),
+          ),
           child: Column(
             children: [
               // Title
               Padding(
                 padding: EdgeInsets.only(top: screenH * 0.08, bottom: screenH * 0.06),
-                child: Text(
-                  'SELECT YOUR BOARD',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    color: Colors.white,
-                    fontSize: 55.0 * scale,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
+                child: Column(
+                  children: [
+                    Text(
+                      'SELECT YOUR BOARD',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: Colors.white,
+                        fontSize: 55.0 * scale,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                    SizedBox(height: 10 * scale),
+              Center(
+                child: Container(
+                  width: 120 * scale,
+                  height: 4 * scale,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFBF360C), Color(0xFFFFB74D)],
+                    ),
+                    borderRadius: BorderRadius.circular(2),
                   ),
+                ),
+              ),
+                  ],
                 ),
               ),
 
@@ -972,22 +998,48 @@ class _FilterPageState extends State<FilterPage> with TickerProviderStateMixin {
         return Container(
           width: double.infinity,
           height: double.infinity,
-          color: const Color(0xFF0D2B55),
+          decoration: const BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.center,
+              radius: 1.2,
+              colors: [
+                Color(0xFF3A1200),
+                Color(0xFF1A0800),
+              ],
+            ),
+          ),
           child: Column(
             children: [
               // Title
               Padding(
                 padding: EdgeInsets.only(top: screenH * 0.04, bottom: screenH * 0.02),
-                child: Text(
-                  'SELECT YOUR STATE',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    color: Colors.white,
-                    fontSize: 55.0 * scale,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
+                child: Column(
+                  children: [
+                    Text(
+                      'SELECT YOUR STATE',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: Colors.white,
+                        fontSize: 55.0 * scale,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                    SizedBox(height: 10 * scale),
+              Center(
+                child: Container(
+                  width: 120 * scale,
+                  height: 4 * scale,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFBF360C), Color(0xFFFFB74D)],
+                    ),
+                    borderRadius: BorderRadius.circular(2),
                   ),
+                ),
+              ),
+                  ],
                 ),
               ),
 
@@ -1183,25 +1235,52 @@ class _FilterPageState extends State<FilterPage> with TickerProviderStateMixin {
         final scale   = screenW / 1920;
 
         return Container(
-          color: const Color(0xFF0D2B55),
+          decoration: const BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.center,
+              radius: 1.2,
+              colors: [
+                Color(0xFF3A1200), // warm dark brown center
+                Color(0xFF1A0800), // very dark edges
+              ],
+            ),
+          ),
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // ── Title — same font/padding as board/state/medium ──
             Padding(
               padding: EdgeInsets.only(top: screenH * 0.08, bottom: screenH * 0.04),
-              child: SizedBox(
-                width: double.infinity,
-                child: Text('SELECT YOUR CLASS',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    color: Colors.white,
-                    fontSize: 55.0 * scale,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text('SELECT YOUR CLASS',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: Colors.white,
+                        fontSize: 55.0 * scale,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(height: 10 * scale),
+                  // ── Orange accent underline (same as board/state/medium pages) ──
+                  Center(
+                    child: Container(
+                      width: 120 * scale,
+                      height: 4 * scale,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFBF360C), Color(0xFFFFB74D)],
+                        ),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -1373,22 +1452,48 @@ class _FilterPageState extends State<FilterPage> with TickerProviderStateMixin {
         return Container(
           width: double.infinity,
           height: double.infinity,
-          color: const Color(0xFF0D2B55),
+          decoration: const BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.center,
+              radius: 1.2,
+              colors: [
+                Color(0xFF3A1200),
+                Color(0xFF1A0800),
+              ],
+            ),
+          ),
           child: Column(
             children: [
               // Title — same as board page
               Padding(
                 padding: EdgeInsets.only(top: screenH * 0.08, bottom: screenH * 0.06),
-                child: Text(
-                  'SELECT MEDIUM',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    color: Colors.white,
-                    fontSize: 55.0 * scale,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
+                child: Column(
+                  children: [
+                    Text(
+                      'SELECT MEDIUM',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: Colors.white,
+                        fontSize: 55.0 * scale,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                    SizedBox(height: 10 * scale),
+              Center(
+                child: Container(
+                  width: 120 * scale,
+                  height: 4 * scale,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFBF360C), Color(0xFFFFB74D)],
+                    ),
+                    borderRadius: BorderRadius.circular(2),
                   ),
+                ),
+              ),
+                  ],
                 ),
               ),
 

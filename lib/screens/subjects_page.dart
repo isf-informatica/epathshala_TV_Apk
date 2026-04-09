@@ -859,7 +859,7 @@ class _SubjectsPageState extends State<SubjectsPage>
           const SizedBox(height: 8),
           const Text(
             'Preparing your curriculum...',
-            style: TextStyle(fontSize: 14, color: Color(0xFF8B949E)),
+            style: TextStyle(fontSize: 14, color: Colors.white60),
           ),
         ],
       ),
@@ -891,7 +891,7 @@ class _SubjectsPageState extends State<SubjectsPage>
           const SizedBox(height: 8),
           const Text(
             'No subjects available for this course.\nPlease try again later.',
-            style: TextStyle(fontSize: 14, color: Color(0xFF8B949E), height: 1.4),
+            style: TextStyle(fontSize: 14, color: Colors.white60, height: 1.4),
             textAlign: TextAlign.center,
           ),
         ],
@@ -911,7 +911,7 @@ class _SubjectsPageState extends State<SubjectsPage>
           child: Row(
             children: [
               const Text('Library Collection',
-                  style: TextStyle(color: Color(0xFFFFA600),
+                  style: TextStyle(color: Color(0xFFBF360C),
                       fontSize: 40, fontWeight: FontWeight.w800)),
               const Spacer(),
               if (_libSearchActive)
@@ -920,19 +920,19 @@ class _SubjectsPageState extends State<SubjectsPage>
                     height: 48,
                     margin: const EdgeInsets.only(left: 16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1A2E55),
+                      color: const Color(0xFF2A0C00),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: const Color(0xFFFFA600), width: 2),
+                      border: Border.all(color: const Color(0xFFBF360C), width: 2),
                     ),
                     child: Row(children: [
                       const SizedBox(width: 12),
-                      const Icon(Icons.search, color: Color(0xFFFFA600), size: 22),
+                      const Icon(Icons.search, color: Color(0xFFBF360C), size: 22),
                       const SizedBox(width: 8),
                       Expanded(child: TextField(
                         controller: _libSearchCtrl,
                         autofocus: true,
                         style: const TextStyle(color: Colors.white, fontSize: 18),
-                        cursorColor: const Color(0xFFFFA600),
+                        cursorColor: const Color(0xFFBF360C),
                         decoration: const InputDecoration(
                           hintText: 'Search...',
                           hintStyle: TextStyle(color: Colors.white38),
@@ -950,7 +950,7 @@ class _SubjectsPageState extends State<SubjectsPage>
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: Icon(Icons.close, color: Color(0xFFFFA600), size: 22),
+                          child: Icon(Icons.close, color: Color(0xFFBF360C), size: 22),
                         ),
                       ),
                     ]),
@@ -962,15 +962,15 @@ class _SubjectsPageState extends State<SubjectsPage>
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1A2E55),
+                      color: const Color(0xFF2A0C00),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: const Color(0xFFFFA600).withOpacity(0.5), width: 1.5),
+                          color: const Color(0xFFBF360C).withOpacity(0.5), width: 1.5),
                     ),
                     child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.search, color: Color(0xFFFFA600), size: 24),
+                      Icon(Icons.search, color: Color(0xFFBF360C), size: 24),
                       SizedBox(width: 8),
-                      Text('Search', style: TextStyle(color: Color(0xFFFFA600),
+                      Text('Search', style: TextStyle(color: Color(0xFFBF360C),
                           fontSize: 20, fontWeight: FontWeight.w700)),
                     ]),
                   ),
@@ -986,7 +986,7 @@ class _SubjectsPageState extends State<SubjectsPage>
         // Books grid
         if (_libLoading)
           const Expanded(child: Center(
-              child: CircularProgressIndicator(color: Color(0xFFFFA600))))
+              child: CircularProgressIndicator(color: Color(0xFFBF360C))))
         else if (_libError != null)
           Expanded(child: Center(child: Text(_libError!,
               style: const TextStyle(color: Colors.red, fontSize: 16))))
@@ -1055,7 +1055,7 @@ class _SubjectsPageState extends State<SubjectsPage>
                       ),
                       child: Text('More...', style: TextStyle(
                         color: _libFocusOnMore
-                            ? const Color(0xFFFFA600) : Colors.white,
+                            ? const Color(0xFFBF360C) : Colors.white,
                         fontSize: 28, fontWeight: FontWeight.w700)),
                     ),
                   ),
@@ -1095,13 +1095,13 @@ class _SubjectsPageState extends State<SubjectsPage>
         height: rowH,
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: isFocused ? const Color(0xFF1A4E8A) : const Color(0xFF2D6FB5),
+          color: isFocused ? const Color(0xFFFFF8F5) : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(6),
           border: isFocused
-              ? Border.all(color: const Color(0xFFFFA600), width: 2)
-              : Border.all(color: const Color(0xFF1A4A80), width: 1),
+              ? Border.all(color: const Color(0xFFBF360C), width: 2)
+              : Border.all(color: const Color(0xFFE8D5CC), width: 1),
           boxShadow: isFocused
-              ? [BoxShadow(color: const Color(0xFFFFA600).withOpacity(0.25),
+              ? [BoxShadow(color: const Color(0xFFBF360C).withOpacity(0.25),
                   blurRadius: 8, offset: const Offset(0, 2))]
               : [],
         ),
@@ -1109,7 +1109,7 @@ class _SubjectsPageState extends State<SubjectsPage>
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             SizedBox(width: 46, child: Text(displayNum, style: TextStyle(
-              color: isFocused ? const Color(0xFFFFA600) : Colors.white,
+              color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
               fontSize: 26, fontWeight: FontWeight.w700))),
             Expanded(child: Column(
               mainAxisAlignment:  MainAxisAlignment.center,
@@ -1117,17 +1117,17 @@ class _SubjectsPageState extends State<SubjectsPage>
               children: [
                 Text(bookName, maxLines: 1, overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: isFocused ? const Color(0xFFFFA600) : Colors.white,
+                      color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
                       fontSize: 24,
                       fontWeight: isFocused ? FontWeight.w700 : FontWeight.w600)),
                 if (author.isNotEmpty)
                   Text(author, maxLines: 1, overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.white54, fontSize: 14)),
+                      style: const TextStyle(color: Color(0xFF8B5E52), fontSize: 14)),
               ],
             )),
             if (hasDoc)
               Icon(Icons.picture_as_pdf_rounded,
-                  color: isFocused ? const Color(0xFFFFA600) : Colors.white38,
+                  color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000).withOpacity(0.4),
                   size: 22),
           ]),
         ),
@@ -1146,16 +1146,20 @@ class _SubjectsPageState extends State<SubjectsPage>
         Container(
       width: sidebarWidth,
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1A3E),
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF1A0800), Color(0xFF3A1200)],
+        ),
         borderRadius: const BorderRadius.only(
           topRight: Radius.circular(32),
           bottomRight: Radius.circular(32),
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x55000000),
-            blurRadius: 12,
-            offset: Offset(3, 0),
+            color: Color(0x88000000),
+            blurRadius: 16,
+            offset: Offset(4, 0),
           ),
         ],
       ),
@@ -1182,8 +1186,9 @@ class _SubjectsPageState extends State<SubjectsPage>
                   horizontal: screenWidth < 600 ? 6 : 10,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFFFFF8F5),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3), width: 1.5),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -1194,7 +1199,7 @@ class _SubjectsPageState extends State<SubjectsPage>
                       fit: BoxFit.contain,
                       errorBuilder: (_, __, ___) => Icon(
                         Icons.school,
-                        color: const Color(0xFF1A3A7C),
+                        color: const Color(0xFFBF360C),
                         size: screenWidth < 600 ? 30 : 42,
                       ),
                     ),
@@ -1202,7 +1207,7 @@ class _SubjectsPageState extends State<SubjectsPage>
                     Text(
                       'EASY LEARN',
                       style: TextStyle(
-                        color: const Color(0xFF1A3A7C),
+                        color: const Color(0xFFBF360C),
                         fontSize: screenWidth < 600 ? 9 : 11,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.2,
@@ -1211,7 +1216,7 @@ class _SubjectsPageState extends State<SubjectsPage>
                     Text(
                       'EDUCATION FOR ALL',
                       style: TextStyle(
-                        color: const Color(0xFF6B8AB5),
+                        color: const Color(0xFFBF7060),
                         fontSize: screenWidth < 600 ? 6 : 7.5,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.8,
@@ -1265,10 +1270,10 @@ class _SubjectsPageState extends State<SubjectsPage>
                             height: isTvFocus ? 12 : 10,
                             decoration: BoxDecoration(
                               color: isActive
-                                  ? const Color(0xFFFFA600)
+                                  ? const Color(0xFFBF360C)
                                   : isTvFocus
                                       ? Colors.white
-                                      : Colors.white,
+                                      : Colors.white60,
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -1279,10 +1284,10 @@ class _SubjectsPageState extends State<SubjectsPage>
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: isActive
-                                    ? const Color(0xFFFFA600)
+                                    ? const Color(0xFFBF360C)
                                     : isTvFocus
                                         ? Colors.white
-                                        : Colors.white,
+                                        : Colors.white70,
                                 fontSize: screenWidth < 600
                                     ? (isTvFocus ? 14 : 13)
                                     : (isTvFocus ? 20 : 19),
@@ -1298,6 +1303,44 @@ class _SubjectsPageState extends State<SubjectsPage>
                   );
                 }).toList(),
               ),
+            ),
+          ),
+
+          // ── Powered By Logo ───────────────────────────────────
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              screenWidth < 600 ? 8 : 12,
+              0,
+              screenWidth < 600 ? 8 : 12,
+              screenWidth < 600 ? 10 : 14,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Powered by',
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: screenWidth < 600 ? 7 : 9,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Image.asset(
+                  'assets/images/powered_by_logo.png',
+                  height: screenWidth < 600 ? 36 : 44,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Text(
+                    'EasyLearn',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: screenWidth < 600 ? 8 : 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -1316,9 +1359,9 @@ class _SubjectsPageState extends State<SubjectsPage>
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.white,
-                  Color(0xFFCCCCCC),
-                  Colors.white,
+                  Color(0xFFBF360C),
+                  Color(0xFFE64A19),
+                  Color(0xFFBF360C),
                   Colors.transparent,
                 ],
                 stops: [0.0, 0.15, 0.5, 0.85, 1.0],
@@ -1335,7 +1378,14 @@ class _SubjectsPageState extends State<SubjectsPage>
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: const Color(0xFF0D1C45),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Color(0xFFBF360C), Color(0xFFE64A19), Color(0xFFFF6D00)],
+          stops: [0.0, 0.5, 1.0],
+        ),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -1344,11 +1394,11 @@ class _SubjectsPageState extends State<SubjectsPage>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('CLASS - ${_toRoman(widget.grade)}',
-                  style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600)),
+              Text('CLASS — ${_toRoman(widget.grade)}',
+                  style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
               const SizedBox(height: 4),
-              Text('MEDIUM - ${_activeMedium.split(' ')[0]}',
-                  style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600)),
+              Text('MEDIUM — ${_activeMedium.split(' ')[0]}',
+                  style: const TextStyle(color: Color(0xFFFFD0B0), fontSize: 18, fontWeight: FontWeight.w600)),
             ],
           ),
           const Spacer(),
@@ -1361,7 +1411,7 @@ class _SubjectsPageState extends State<SubjectsPage>
                   style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w900)),
               SizedBox(height: 3),
               Text('Select your Subject',
-                  style: TextStyle(color: Color(0xFFFFA600), fontSize: 17, fontWeight: FontWeight.w700)),
+                  style: TextStyle(color: Color(0xFFFFE0B2), fontSize: 17, fontWeight: FontWeight.w600, letterSpacing: 0.3)),
             ],
           ),
         ],
@@ -1369,7 +1419,22 @@ class _SubjectsPageState extends State<SubjectsPage>
     );
   }
 
-  // ── Subject grid — exact match ───────────────────────────────
+  // ── Subject icon helper ─────────────────────────────────────
+  IconData _getCardIcon(String subject) {
+    final n = subject.toLowerCase();
+    if (n.contains('math') || n.contains('\u0917\u0923\u093f\u0924')) return Icons.calculate_rounded;
+    if (n.contains('science') || n.contains('\u0935\u093f\u091c\u094d\u091e\u093e\u0928')) return Icons.science_rounded;
+    if (n.contains('social') || n.contains('\u0938\u093e\u092e\u093e\u091c\u093f\u0915')) return Icons.people_alt_rounded;
+    if (n.contains('hindi') || n.contains('\u0939\u093f\u0902\u0926\u0940')) return Icons.translate_rounded;
+    if (n.contains('english') || n.contains('\u0905\u0902\u0917\u094d\u0930\u0947\u091c\u0940')) return Icons.menu_book_rounded;
+    if (n.contains('sanskrit')) return Icons.auto_stories_rounded;
+    if (n.contains('history') || n.contains('\u0907\u0924\u093f\u0939\u093e\u0938')) return Icons.history_edu_rounded;
+    if (n.contains('geography') || n.contains('\u092d\u0942\u0917\u094b\u0932')) return Icons.public_rounded;
+    if (n.contains('computer')) return Icons.computer_rounded;
+    return Icons.book_rounded;
+  }
+
+  // ── Subject grid — epathshala inspired card design ──────────
   Widget _buildSubjectGrid(Size screenSize) {
     final double sidebarWidth = screenSize.width < 600 ? 180.0 : 240.0;
     final double gridWidth = screenSize.width - sidebarWidth;
@@ -1390,6 +1455,7 @@ class _SubjectsPageState extends State<SubjectsPage>
           final subject     = topics[index];
           final subjectName = subject['subject'].toString();
           final isFocused   = !_sidebarFocused && index == _focusedSubjectIndex;
+          final icon        = _getCardIcon(subjectName);
 
           return GestureDetector(
             onTap: () {
@@ -1401,65 +1467,51 @@ class _SubjectsPageState extends State<SubjectsPage>
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              // Outer container — dark bg + orange border (Image 1 style)
               decoration: BoxDecoration(
-                color: const Color(0xFF0D1C45), // dark outer bg (visible as border gap)
-                borderRadius: BorderRadius.circular(14),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isFocused
-                      ? const Color(0xFFFFA600) // thick orange outside border
-                      : const Color(0xFF1A2E55),
-                  width: isFocused ? 4 : 3,
+                      ? const Color(0xFFBF360C)
+                      : const Color(0xFFE8D5CC),
+                  width: isFocused ? 3.5 : 1.5,
                 ),
                 boxShadow: isFocused
-                    ? [BoxShadow(
-                        color: const Color(0xFFFFA600).withOpacity(0.5),
-                        blurRadius: 18,
-                        spreadRadius: 2,
-                      )]
-                    : [const BoxShadow(
-                        color: Color(0x99000000),
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      )],
+                    ? [
+                        BoxShadow(
+                          color: const Color(0xFFBF360C).withOpacity(0.45),
+                          blurRadius: 24,
+                          spreadRadius: 3,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : [
+                        const BoxShadow(
+                          color: Color(0x33000000),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
               ),
-              // Inner card with cyan gradient — inset padding to show dark gap
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFF5DD4EE), // bright cyan top
-                          Color(0xFF2A8BBE), // mid blue
-                          Color(0xFF0D4080), // deep blue bottom
-                        ],
-                        stops: [0.0, 0.5, 1.0],
-                      ),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          subjectName,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.3,
-                            shadows: [
-                              Shadow(
-                                color: Color(0x88000000),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14.5),
+                child: Container(
+                  color: const Color(0xFFFFF8F5),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        subjectName,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: isFocused
+                              ? const Color(0xFFBF360C)
+                              : const Color(0xFF3E1000),
+                          fontSize: 22,
+                          fontWeight: isFocused ? FontWeight.w800 : FontWeight.w700,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ),
@@ -1482,7 +1534,7 @@ class _SubjectsPageState extends State<SubjectsPage>
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1494,17 +1546,20 @@ class _SubjectsPageState extends State<SubjectsPage>
               Expanded(
                 child: _showLibrary
                     ? _buildLibraryPanel()
-                    : Column(
-                        children: [
-                          _buildHeader(),
-                          Expanded(
-                            child: isLoading
-                                ? _buildLoadingState()
-                                : topics.isEmpty
-                                    ? _buildEmptyState()
-                                    : _buildSubjectGrid(screenSize),
-                          ),
-                        ],
+                    : Container(
+                        color: const Color(0xFF1A0800),
+                        child: Column(
+                          children: [
+                            _buildHeader(),
+                            Expanded(
+                              child: isLoading
+                                  ? _buildLoadingState()
+                                  : topics.isEmpty
+                                      ? _buildEmptyState()
+                                      : _buildSubjectGrid(screenSize),
+                            ),
+                          ],
+                        ),
                       ),
               ),
             ],

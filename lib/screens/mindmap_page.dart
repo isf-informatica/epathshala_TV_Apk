@@ -61,7 +61,7 @@ class _MindmapPageState extends State<MindmapPage> {
       // Android/iOS platform ke liye WebView
       _controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(const Color(0xFF0D1C45))
+        ..setBackgroundColor(const Color(0xFF1A0800))
         ..setNavigationDelegate(
           NavigationDelegate(
             onPageStarted: (String url) {
@@ -169,14 +169,14 @@ class _MindmapPageState extends State<MindmapPage> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(
             children: [
               // Header with better UI
               Container(
                 height: 70,
-                color: const Color(0xFF0D1C45),
+                color: const Color(0xFF1A0800),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
@@ -186,9 +186,9 @@ class _MindmapPageState extends State<MindmapPage> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1A2E55),
+                          color: const Color(0xFF2A0C00),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFF2A4070), width: 1),
+                          border: Border.all(color: const Color(0xFF3A1200), width: 1),
                         ),
                         child: const Row(
                           children: [
@@ -215,7 +215,7 @@ class _MindmapPageState extends State<MindmapPage> {
                             letterSpacing: 0.5,
                           )),
                         Text('Generate intelligent mindmaps',
-                          style: TextStyle(color: Color(0xFFFFA600), fontSize: 11, fontWeight: FontWeight.w500)),
+                          style: TextStyle(color: Color(0xFFBF360C), fontSize: 11, fontWeight: FontWeight.w500)),
                       ],
                     ),
                     
@@ -227,9 +227,9 @@ class _MindmapPageState extends State<MindmapPage> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1A2E55),
+                          color: const Color(0xFF2A0C00),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFF2A4070), width: 1),
+                          border: Border.all(color: const Color(0xFF3A1200), width: 1),
                         ),
                         child: const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
                       ),
@@ -250,13 +250,13 @@ class _MindmapPageState extends State<MindmapPage> {
                     // Loading Overlay
                     if (_isLoading)
                       Container(
-                        color: const Color(0xFF0D1C45).withOpacity(0.95),
+                        color: const Color(0xFF1A0800).withOpacity(0.95),
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const CircularProgressIndicator(
-                                color: Color(0xFFFFA600),
+                                color: Color(0xFFBF360C),
                                 strokeWidth: 3,
                               ),
                               const SizedBox(height: 20),
@@ -282,17 +282,17 @@ class _MindmapPageState extends State<MindmapPage> {
                                 padding: const EdgeInsets.all(12),
                                 margin: const EdgeInsets.symmetric(horizontal: 40),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF1A2E55),
+                                  color: const Color(0xFF2A0C00),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Column(
                                   children: [
-                                    const Icon(Icons.lightbulb_outline, color: Color(0xFFFFA600), size: 24),
+                                    const Icon(Icons.lightbulb_outline, color: Color(0xFFBF360C), size: 24),
                                     const SizedBox(height: 8),
                                     const Text(
                                       'Pro Tips',
                                       style: TextStyle(
-                                        color: Color(0xFFFFA600),
+                                        color: Color(0xFFBF360C),
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                       ),

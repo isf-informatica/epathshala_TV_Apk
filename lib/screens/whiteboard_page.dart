@@ -88,7 +88,7 @@ class _WhiteboardPageState extends State<WhiteboardPage> {
   void _initWebView() {
     _ctrl = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0xFF0D1C45))
+      ..setBackgroundColor(const Color(0xFF1A0800))
       ..enableZoom(true)
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) {
@@ -281,7 +281,7 @@ class _WhiteboardPageState extends State<WhiteboardPage> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(children: [
             AnimatedContainer(
@@ -292,7 +292,7 @@ class _WhiteboardPageState extends State<WhiteboardPage> {
             if (_loading && !kIsWeb)
               LinearProgressIndicator(value: _progress / 100,
                   backgroundColor: Colors.white12,
-                  color: const Color(0xFFFFA600), minHeight: 3),
+                  color: const Color(0xFFBF360C), minHeight: 3),
             Expanded(child: _hasError ? _errorState()
                 : kIsWeb ? _webIframe() : _mobileView()),
           ]),
@@ -318,7 +318,7 @@ class _WhiteboardPageState extends State<WhiteboardPage> {
   Widget _toolbar() {
     return Container(
       height: 56,
-      color: const Color(0xFF0D1A3E),
+      color: const Color(0xFF1A0800),
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(children: [
         _btn(Icons.arrow_back_ios_new_rounded, 'Back', _goBack),
@@ -331,7 +331,7 @@ class _WhiteboardPageState extends State<WhiteboardPage> {
             borderRadius: BorderRadius.circular(8),
             child: Image.asset('assets/images/logo.png', fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => const Icon(Icons.school_rounded,
-                    color: Color(0xFF1A3A7C), size: 20)),
+                    color: Color(0xFFBF360C), size: 20)),
           ),
         ),
         const SizedBox(width: 10),
@@ -371,7 +371,7 @@ class _WhiteboardPageState extends State<WhiteboardPage> {
       );
 
   Widget _loadingOverlay() => Container(
-        color: const Color(0xFF0D1C45),
+        color: const Color(0xFF1A0800),
         child: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
           Container(
             width: 72, height: 72,
@@ -392,7 +392,7 @@ class _WhiteboardPageState extends State<WhiteboardPage> {
             child: LinearProgressIndicator(
               value: kIsWeb ? null : _progress / 100,
               backgroundColor: Colors.white12,
-              color: const Color(0xFFFFA600), minHeight: 4,
+              color: const Color(0xFFBF360C), minHeight: 4,
               borderRadius: BorderRadius.circular(4),
             ),
           ),

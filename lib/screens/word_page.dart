@@ -282,7 +282,7 @@ function downloadDoc() {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(children: [
             _buildHeader(),
@@ -297,7 +297,7 @@ function downloadDoc() {
 
               if (_isLoading)
                 Container(
-                  color: const Color(0xFF0D1C45),
+                  color: const Color(0xFF1A0800),
                   child: Center(child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -330,7 +330,7 @@ function downloadDoc() {
 
               if (_hasError && !_isLoading)
                 Container(
-                  color: const Color(0xFF0D1C45),
+                  color: const Color(0xFF1A0800),
                   child: Center(child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -385,7 +385,7 @@ function downloadDoc() {
       height: 74,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: const BoxDecoration(
-        color: Color(0xFF0D1A3E),
+        color: Color(0xFF1A0800),
         border: Border(bottom: BorderSide(color: Colors.white12)),
       ),
       child: Row(children: [
@@ -455,16 +455,16 @@ function downloadDoc() {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFA600).withOpacity(0.1),
+            color: const Color(0xFFBF360C).withOpacity(0.1),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-                color: const Color(0xFFFFA600).withOpacity(0.3)),
+                color: const Color(0xFFBF360C).withOpacity(0.3)),
           ),
           child: const Row(children: [
-            Icon(Icons.build_rounded, color: Color(0xFFFFA600), size: 13),
+            Icon(Icons.build_rounded, color: Color(0xFFBF360C), size: 13),
             SizedBox(width: 5),
             Text('Tools', style: TextStyle(
-                color: Color(0xFFFFA600), fontSize: 12,
+                color: Color(0xFFBF360C), fontSize: 12,
                 fontWeight: FontWeight.w600)),
           ]),
         ),

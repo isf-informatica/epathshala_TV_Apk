@@ -110,7 +110,7 @@ class _MathsToolPageState extends State<MathsToolPage> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(
             children: [
@@ -131,7 +131,7 @@ class _MathsToolPageState extends State<MathsToolPage> {
                     // Loading overlay
                     if (_isLoading)
                       Container(
-                        color: const Color(0xFF0D1C45),
+                        color: const Color(0xFF1A0800),
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -147,19 +147,19 @@ class _MathsToolPageState extends State<MathsToolPage> {
                                   width: 80,
                                   height: 80,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1A2E55),
+                                    color: const Color(0xFF2A0C00),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                        color: const Color(0xFFFFA600),
+                                        color: const Color(0xFFBF360C),
                                         width: 2),
                                   ),
                                   child: const Icon(Icons.calculate_rounded,
-                                      color: Color(0xFFFFA600), size: 40),
+                                      color: Color(0xFFBF360C), size: 40),
                                 ),
                               ),
                               const SizedBox(height: 24),
                               const CircularProgressIndicator(
-                                  color: Color(0xFFFFA600), strokeWidth: 3),
+                                  color: Color(0xFFBF360C), strokeWidth: 3),
                               const SizedBox(height: 20),
                               const Text(
                                 'Loading Mathematics Tools...',
@@ -192,7 +192,7 @@ class _MathsToolPageState extends State<MathsToolPage> {
   Widget _buildHeader(bool isTV) {
     return Container(
       height: 70,
-      color: const Color(0xFF0D1C45),
+      color: const Color(0xFF1A0800),
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         children: [
@@ -203,10 +203,10 @@ class _MathsToolPageState extends State<MathsToolPage> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF1A2E55),
+                color: const Color(0xFF2A0C00),
                 borderRadius: BorderRadius.circular(10),
                 border:
-                    Border.all(color: const Color(0xFF2A4070), width: 1),
+                    Border.all(color: const Color(0xFF3A1200), width: 1),
               ),
               child: const Row(
                 children: [
@@ -241,18 +241,18 @@ class _MathsToolPageState extends State<MathsToolPage> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFF1A2E55),
+              color: const Color(0xFF2A0C00),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Row(
               children: [
                 Icon(Icons.calculate_rounded,
-                    color: Color(0xFFFFA600), size: 16),
+                    color: Color(0xFFBF360C), size: 16),
                 SizedBox(width: 6),
                 Text(
                   'Powered by GeoGebra',
                   style: TextStyle(
-                      color: Color(0xFFFFA600),
+                      color: Color(0xFFBF360C),
                       fontSize: 13,
                       fontWeight: FontWeight.w600),
                 ),
@@ -268,7 +268,7 @@ class _MathsToolPageState extends State<MathsToolPage> {
   Widget _buildTabBar() {
     return Container(
       height: 48,
-      color: const Color(0xFF0D1B3E),
+      color: const Color(0xFF1A0800),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -280,10 +280,10 @@ class _MathsToolPageState extends State<MathsToolPage> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A2E55).withOpacity(0.6),
+                  color: const Color(0xFF2A0C00).withOpacity(0.6),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                      color: const Color(0xFF2A4070).withOpacity(0.5),
+                      color: const Color(0xFF3A1200).withOpacity(0.5),
                       width: 1),
                 ),
                 child: Row(

@@ -443,7 +443,7 @@ class _ExamListPageState extends State<ExamListPage>
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -453,21 +453,7 @@ class _ExamListPageState extends State<ExamListPage>
                 child: Column(
                   children: [
                     _buildHeader(screenSize),
-                    // TV remote hint
-                    Container(
-                      color: const Color(0xFF060F28),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _tvHint('◄ ►', _selectedCourse == null ? 'Course select' : 'Exam select'),
-                          const SizedBox(width: 20),
-                          _tvHint('OK', _selectedCourse == null ? 'Open course' : 'Start exam'),
-                          const SizedBox(width: 20),
-                          _tvHint('Back', _selectedCourse != null ? 'Course list' : 'Exit'),
-                        ],
-                      ),
-                    ),
+                    // TV hint bar removed
                     Expanded(child: _buildBody(screenSize)),
                   ],
                 ),
@@ -487,16 +473,20 @@ class _ExamListPageState extends State<ExamListPage>
         Container(
       width: sidebarWidth,
       decoration: const BoxDecoration(
-        color: Color(0xFF0D1A3E),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF1A0800), Color(0xFF3A1200)],
+        ),
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(32),
           bottomRight: Radius.circular(32),
         ),
         boxShadow: [
           BoxShadow(
-            color: Color(0x55000000),
-            blurRadius: 12,
-            offset: Offset(3, 0),
+            color: Color(0x88000000),
+            blurRadius: 16,
+            offset: Offset(4, 0),
           ),
         ],
       ),
@@ -520,8 +510,9 @@ class _ExamListPageState extends State<ExamListPage>
                   horizontal: screenSize.width < 600 ? 6 : 10,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFFFFF8F5),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3), width: 1.5),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -532,7 +523,7 @@ class _ExamListPageState extends State<ExamListPage>
                       fit: BoxFit.contain,
                       errorBuilder: (_, __, ___) => Icon(
                         Icons.school,
-                        color: const Color(0xFF1A3A7C),
+                        color: const Color(0xFFBF360C),
                         size: screenSize.width < 600 ? 30 : 42,
                       ),
                     ),
@@ -540,7 +531,7 @@ class _ExamListPageState extends State<ExamListPage>
                     Text(
                       'EASY LEARN',
                       style: TextStyle(
-                        color: const Color(0xFF1A3A7C),
+                        color: const Color(0xFFBF360C),
                         fontSize: screenSize.width < 600 ? 9 : 11,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.2,
@@ -549,7 +540,7 @@ class _ExamListPageState extends State<ExamListPage>
                     Text(
                       'EDUCATION FOR ALL',
                       style: TextStyle(
-                        color: const Color(0xFF6B8AB5),
+                        color: const Color(0xFFBF7060),
                         fontSize: screenSize.width < 600 ? 6 : 7.5,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.8,
@@ -599,8 +590,8 @@ class _ExamListPageState extends State<ExamListPage>
                             height: isTvFocus ? 12 : 10,
                             decoration: BoxDecoration(
                               color: isActive
-                                  ? const Color(0xFFFFA600)
-                                  : Colors.white,
+                                  ? const Color(0xFFBF360C)
+                                  : Colors.white60,
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -611,8 +602,8 @@ class _ExamListPageState extends State<ExamListPage>
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: isActive
-                                    ? const Color(0xFFFFA600)
-                                    : Colors.white,
+                                    ? const Color(0xFFBF360C)
+                                    : Colors.white70,
                                 fontSize: screenSize.width < 600
                                     ? (isTvFocus ? 14 : 13)
                                     : (isTvFocus ? 20 : 19),
@@ -628,6 +619,38 @@ class _ExamListPageState extends State<ExamListPage>
                   );
                 }).toList(),
               ),
+            ),
+          ),
+          // ── Powered By Logo ──────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Powered by',
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Image.asset(
+                  'assets/images/powered_by_logo.png',
+                  height: 44,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Text(
+                    'EasyLearn',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -647,9 +670,9 @@ class _ExamListPageState extends State<ExamListPage>
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.white,
-                  Color(0xFFCCCCCC),
-                  Colors.white,
+                  Color(0xFFBF360C),
+                  Color(0xFFE64A19),
+                  Color(0xFFBF360C),
                   Colors.transparent,
                 ],
                 stops: [0.0, 0.15, 0.5, 0.85, 1.0],
@@ -667,15 +690,15 @@ class _ExamListPageState extends State<ExamListPage>
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A2E55),
+          color: const Color(0xFF3A1200),
           borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: const Color(0xFFFFA600), width: 1),
+          border: Border.all(color: const Color(0xFFE64A19), width: 1),
         ),
         child: Text(key, style: const TextStyle(
-            color: Color(0xFFFFA600), fontSize: 10, fontWeight: FontWeight.w700)),
+            color: Color(0xFFFF8A50), fontSize: 10, fontWeight: FontWeight.w700)),
       ),
       const SizedBox(width: 5),
-      Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+      Text(label, style: const TextStyle(color: Colors.white60, fontSize: 10)),
     ]);
   }
 
@@ -684,7 +707,14 @@ class _ExamListPageState extends State<ExamListPage>
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: const Color(0xFF0D1C45),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Color(0xFFBF360C), Color(0xFFE64A19), Color(0xFFFF6D00)],
+          stops: [0.0, 0.5, 1.0],
+        ),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -712,15 +742,13 @@ class _ExamListPageState extends State<ExamListPage>
             children: [
               const Text('EXAMS',
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600)),
+                      color: Colors.white, fontSize: 22,
+                      fontWeight: FontWeight.w800, letterSpacing: 0.5)),
               if (_selectedCourse != null)
                 Text(
                   _selectedCourse!.courseName,
                   style: const TextStyle(
-                      color: Color(0xFF8B949E),
-                      fontSize: 13,
+                      color: Color(0xFFFFD0B0), fontSize: 14,
                       fontWeight: FontWeight.w500),
                 ),
             ],
@@ -739,9 +767,8 @@ class _ExamListPageState extends State<ExamListPage>
               Text(
                   _selectedCourse == null ? 'Select your Course' : 'Select your Exam',
                   style: const TextStyle(
-                      color: Color(0xFFFFA600),
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700)),
+                      color: Color(0xFFFFE0B2), fontSize: 17,
+                      fontWeight: FontWeight.w600, letterSpacing: 0.3)),
             ],
           ),
         ],
@@ -781,60 +808,43 @@ class _ExamListPageState extends State<ExamListPage>
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               decoration: BoxDecoration(
-                color: const Color(0xFF0D1C45),
-                borderRadius: BorderRadius.circular(14),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isFocused
-                      ? const Color(0xFFFFA600)
-                      : const Color(0xFF1A2E55),
-                  width: isFocused ? 4 : 3,
+                      ? const Color(0xFFBF360C)
+                      : const Color(0xFFE8D5CC),
+                  width: isFocused ? 3.5 : 1.5,
                 ),
                 boxShadow: isFocused
                     ? [BoxShadow(
-                        color: const Color(0xFFFFA600).withOpacity(0.5),
-                        blurRadius: 18, spreadRadius: 2,
+                        color: const Color(0xFFBF360C).withOpacity(0.45),
+                        blurRadius: 24, spreadRadius: 3, offset: const Offset(0, 4),
                       )]
                     : [const BoxShadow(
-                        color: Color(0x99000000),
-                        blurRadius: 8, offset: Offset(0, 4),
+                        color: Color(0x33000000),
+                        blurRadius: 10, offset: Offset(0, 4),
                       )],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFF5DD4EE),
-                          Color(0xFF2A8BBE),
-                          Color(0xFF0D4080),
-                        ],
-                        stops: [0.0, 0.5, 1.0],
-                      ),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          course.courseName,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.3,
-                            shadows: [
-                              Shadow(
-                                color: Color(0x88000000),
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14.5),
+                child: Container(
+                  color: const Color(0xFFFFF8F5),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        course.courseName,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: isFocused
+                              ? const Color(0xFFBF360C)
+                              : const Color(0xFF3E1000),
+                          fontSize: 22,
+                          fontWeight: isFocused ? FontWeight.w800 : FontWeight.w700,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ),
@@ -864,12 +874,12 @@ class _ExamListPageState extends State<ExamListPage>
               width: 70, height: 70,
               decoration: BoxDecoration(
                 gradient: const RadialGradient(
-                  colors: [Color(0xFFFFA600), Color(0xFFFF8C00)],
+                  colors: [Color(0xFFBF360C), Color(0xFFE64A19)],
                 ),
                 borderRadius: BorderRadius.circular(35),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFFFA600).withOpacity(0.4),
+                    color: const Color(0xFFBF360C).withOpacity(0.4),
                     blurRadius: 16, offset: const Offset(0, 6),
                   ),
                 ],
@@ -887,10 +897,10 @@ class _ExamListPageState extends State<ExamListPage>
             ),
             const SizedBox(height: 24),
             const Text('Loading Exams',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Colors.white)),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF3E1000))),
             const SizedBox(height: 8),
             const Text('Preparing your exams...',
-                style: TextStyle(fontSize: 14, color: Color(0xFF8B949E))),
+                style: TextStyle(fontSize: 14, color: Color(0xFF8B5E50))),
           ],
         ),
       );
@@ -902,10 +912,10 @@ class _ExamListPageState extends State<ExamListPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.assignment_late_outlined,
-                color: Color(0xFF8B949E), size: 60),
+                color: Color(0xFFBF7060), size: 60),
             const SizedBox(height: 20),
             Text(_errorMessage,
-                style: const TextStyle(color: Colors.white70, fontSize: 16),
+                style: const TextStyle(color: Color(0xFF7A4030), fontSize: 16),
                 textAlign: TextAlign.center),
           ],
         ),
@@ -958,127 +968,95 @@ class _ExamListPageState extends State<ExamListPage>
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              // Outer: dark bg + orange focus border (subjects page exact)
               decoration: BoxDecoration(
-                color: const Color(0xFF0D1C45),
-                borderRadius: BorderRadius.circular(14),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isFocused
-                      ? const Color(0xFFFFA600)
-                      : const Color(0xFF1A2E55),
-                  width: isFocused ? 4 : 3,
+                      ? const Color(0xFFBF360C)
+                      : const Color(0xFFE8D5CC),
+                  width: isFocused ? 3.5 : 1.5,
                 ),
                 boxShadow: isFocused
                     ? [BoxShadow(
-                        color: const Color(0xFFFFA600).withOpacity(0.5),
-                        blurRadius: 18, spreadRadius: 2,
+                        color: const Color(0xFFBF360C).withOpacity(0.45),
+                        blurRadius: 24, spreadRadius: 3, offset: const Offset(0, 4),
                       )]
                     : [const BoxShadow(
-                        color: Color(0x99000000),
-                        blurRadius: 8, offset: Offset(0, 4),
+                        color: Color(0x33000000),
+                        blurRadius: 10, offset: Offset(0, 4),
                       )],
               ),
-              // Inner: cyan gradient card (subjects page exact)
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFF5DD4EE), // bright cyan top
-                          Color(0xFF2A8BBE), // mid blue
-                          Color(0xFF0D4080), // deep blue bottom
-                        ],
-                        stops: [0.0, 0.5, 1.0],
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14.5),
+                child: Container(
+                  color: const Color(0xFFFFF8F5),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 44),
+                          child: Text(
+                            exam.examTitle,
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: isFocused
+                                  ? const Color(0xFFBF360C)
+                                  : const Color(0xFF3E1000),
+                              fontSize: 20,
+                              fontWeight: isFocused ? FontWeight.w800 : FontWeight.w700,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: Stack(
-                      children: [
-                        // Main exam title center
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(12, 12, 12, 36),
-                            child: Text(
-                              exam.examTitle,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.3,
-                                shadows: [
-                                  Shadow(
-                                    color: Color(0x88000000),
-                                    blurRadius: 6,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
+                      Positioned(
+                        bottom: 0, left: 0, right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: isFocused
+                                ? const Color(0xFFBF360C).withOpacity(0.08)
+                                : const Color(0xFFEEE0D8),
+                            border: Border(
+                              top: BorderSide(
+                                color: isFocused
+                                    ? const Color(0xFFBF360C).withOpacity(0.3)
+                                    : const Color(0xFFDDC8BC),
+                                width: 1,
                               ),
                             ),
                           ),
-                        ),
-                        // Bottom info row — Qs + duration + Start
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.3),
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
+                          child: Row(
+                            children: [
+                              _miniChip(Icons.help_outline_rounded,
+                                  '${exam.questions} Qs', const Color(0xFF8B5E50)),
+                              const SizedBox(width: 8),
+                              _miniChip(Icons.timer_outlined,
+                                  _formatDuration(exam.examDuration), const Color(0xFF8B5E50)),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: isFocused
+                                      ? const Color(0xFFBF360C)
+                                      : const Color(0xFFE64A19).withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text('Start',
+                                  style: TextStyle(
+                                    color: isFocused ? Colors.white : const Color(0xFFBF360C),
+                                    fontSize: 13, fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: Row(
-                              children: [
-                                // Questions chip
-                                _miniChip(
-                                  Icons.help_outline_rounded,
-                                  '${exam.questions} Qs',
-                                  Colors.white70,
-                                ),
-                                const SizedBox(width: 6),
-                                // Duration chip
-                                _miniChip(
-                                  Icons.timer_outlined,
-                                  _formatDuration(exam.examDuration),
-                                  Colors.white70,
-                                ),
-                                const Spacer(),
-                                // Start button
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: isFocused
-                                        ? const Color(0xFFFFA600)
-                                        : Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    'Start',
-                                    style: TextStyle(
-                                      color: isFocused
-                                          ? Colors.black
-                                          : Colors.white,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -49,7 +49,7 @@ class _LibraryPageState extends State<LibraryPage>
   // TV sidebar nav state
   int _sidebarNavIndex = 3; // Library = index 3
   static const List<String> _navItems = [
-    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools', 'Logout',
+    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools',
   ];
 
   static const int _pageSize = 12;
@@ -392,7 +392,7 @@ class _LibraryPageState extends State<LibraryPage>
         Container(
       width: sidebarWidth,
       decoration: const BoxDecoration(
-        color: Color(0xFF0D1A3E),
+        color: Color(0xFF1A0800),
         borderRadius: BorderRadius.only(
           topRight:    Radius.circular(32),
           bottomRight: Radius.circular(32),
@@ -420,8 +420,9 @@ class _LibraryPageState extends State<LibraryPage>
                   horizontal: screenWidth < 600 ? 6 : 10,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFFFFF8F5),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFBF360C), width: 1.5),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -439,7 +440,7 @@ class _LibraryPageState extends State<LibraryPage>
                     const SizedBox(height: 4),
                     Text('EASY LEARN',
                         style: TextStyle(
-                          color:        const Color(0xFF1A3A7C),
+                          color:        const Color(0xFFBF360C),
                           fontSize:     screenWidth < 600 ? 9 : 11,
                           fontWeight:   FontWeight.w900,
                           letterSpacing: 1.2,
@@ -491,7 +492,7 @@ class _LibraryPageState extends State<LibraryPage>
                             width:  isTvFocus ? 12 : 10,
                             height: isTvFocus ? 12 : 10,
                             decoration: BoxDecoration(
-                              color: isActive ? const Color(0xFFFFA600) : Colors.white,
+                              color: isActive ? const Color(0xFFBF360C) : Colors.white,
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -501,7 +502,7 @@ class _LibraryPageState extends State<LibraryPage>
                               label,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: isActive ? const Color(0xFFFFA600) : Colors.white,
+                                color: isActive ? const Color(0xFFBF360C) : Colors.white,
                                 fontSize: screenWidth < 600 ? (isTvFocus ? 14 : 13) : (isTvFocus ? 20 : 19),
                                 fontWeight: (isActive || isTvFocus) ? FontWeight.w700 : FontWeight.w400,
                               ),
@@ -513,6 +514,38 @@ class _LibraryPageState extends State<LibraryPage>
                   );
                 }).toList(),
               ),
+            ),
+          ),
+          // ── Powered By Logo ──────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Powered by',
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Image.asset(
+                  'assets/images/powered_by_logo.png',
+                  height: 44,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Text(
+                    'EasyLearn',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -532,9 +565,9 @@ class _LibraryPageState extends State<LibraryPage>
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.white,
-                  Color(0xFFCCCCCC),
-                  Colors.white,
+                  Color(0xFFBF360C),
+                  Color(0xFFE64A19),
+                  Color(0xFFBF360C),
                   Colors.transparent,
                 ],
                 stops: [0.0, 0.15, 0.5, 0.85, 1.0],
@@ -579,15 +612,15 @@ class _LibraryPageState extends State<LibraryPage>
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: isFocused
-              ? const Color(0xFF1A4E8A)
-              : const Color(0xFF2D6FB5),
+              ? const Color(0xFFFFF8F5)
+              : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(6),
           border: isFocused
-              ? Border.all(color: const Color(0xFFFFA600), width: 2)
-              : Border.all(color: const Color(0xFF1A4A80), width: 1),
+              ? Border.all(color: const Color(0xFFBF360C), width: 2)
+              : Border.all(color: const Color(0xFFE8D5CC), width: 1),
           boxShadow: isFocused
               ? [BoxShadow(
-                  color:      const Color(0xFFFFA600).withOpacity(0.25),
+                  color:      const Color(0xFFBF360C).withOpacity(0.25),
                   blurRadius: 8,
                   offset:     const Offset(0, 2))]
               : [],
@@ -603,7 +636,7 @@ class _LibraryPageState extends State<LibraryPage>
                   displayNum,
                   style: TextStyle(
                     color:      isFocused
-                        ? const Color(0xFFFFA600) : Colors.white,
+                        ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
                     fontSize:   26,
                     fontWeight: FontWeight.w700,
                   ),
@@ -620,7 +653,7 @@ class _LibraryPageState extends State<LibraryPage>
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color:      isFocused
-                            ? const Color(0xFFFFA600) : Colors.white,
+                            ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
                         fontSize:   24,
                         fontWeight: isFocused
                             ? FontWeight.w700 : FontWeight.w600,
@@ -632,14 +665,14 @@ class _LibraryPageState extends State<LibraryPage>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              color: Colors.white54, fontSize: 14)),
+                              color: Color(0xFF8B5E52), fontSize: 14)),
                   ],
                 ),
               ),
               if (hasDoc)
                 Icon(Icons.picture_as_pdf_rounded,
                     color: isFocused
-                        ? const Color(0xFFFFA600) : Colors.white38,
+                        ? const Color(0xFFBF360C) : const Color(0xFF3E1000).withOpacity(0.4),
                     size: 22),
             ],
           ),
@@ -689,7 +722,7 @@ class _LibraryPageState extends State<LibraryPage>
           const Text(
             'Library Collection',
             style: TextStyle(
-              color:      Color(0xFFFFA600),
+              color:      Color(0xFFBF360C),
               fontSize:   40,
               fontWeight: FontWeight.w800,
             ),
@@ -704,16 +737,16 @@ class _LibraryPageState extends State<LibraryPage>
                 height: 48,
                 margin: const EdgeInsets.only(left: 16),
                 decoration: BoxDecoration(
-                  color:        const Color(0xFF1A2E55),
+                  color:        const Color(0xFF2A0C00),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                      color: const Color(0xFFFFA600), width: 2),
+                      color: const Color(0xFFBF360C), width: 2),
                 ),
                 child: Row(
                   children: [
                     const SizedBox(width: 12),
                     const Icon(Icons.search,
-                        color: Color(0xFFFFA600), size: 22),
+                        color: Color(0xFFBF360C), size: 22),
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
@@ -724,7 +757,7 @@ class _LibraryPageState extends State<LibraryPage>
                           fontSize:   18,
                           fontWeight: FontWeight.w500,
                         ),
-                        cursorColor: const Color(0xFFFFA600),
+                        cursorColor: const Color(0xFFBF360C),
                         decoration: const InputDecoration(
                           hintText:      'Search by name or author...',
                           hintStyle:     TextStyle(
@@ -742,7 +775,7 @@ class _LibraryPageState extends State<LibraryPage>
                       child: const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         child: Icon(Icons.close,
-                            color: Color(0xFFFFA600), size: 22),
+                            color: Color(0xFFBF360C), size: 22),
                       ),
                     ),
                   ],
@@ -758,22 +791,22 @@ class _LibraryPageState extends State<LibraryPage>
                 padding: const EdgeInsets.symmetric(
                     horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  color:        const Color(0xFF1A2E55),
+                  color:        const Color(0xFF2A0C00),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                      color: const Color(0xFFFFA600).withOpacity(0.5),
+                      color: const Color(0xFFBF360C).withOpacity(0.5),
                       width: 1.5),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.search,
-                        color: Color(0xFFFFA600), size: 24),
+                        color: Color(0xFFBF360C), size: 24),
                     SizedBox(width: 8),
                     Text(
                       'Search',
                       style: TextStyle(
-                        color:      Color(0xFFFFA600),
+                        color:      Color(0xFFBF360C),
                         fontSize:   20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -795,7 +828,7 @@ class _LibraryPageState extends State<LibraryPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(color: Color(0xFFFFA600)),
+              CircularProgressIndicator(color: Color(0xFFBF360C)),
               SizedBox(height: 16),
               Text('Loading books...',
                   style: TextStyle(color: Colors.white54, fontSize: 16)),
@@ -823,7 +856,7 @@ class _LibraryPageState extends State<LibraryPage>
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 10),
                   decoration: BoxDecoration(
-                    color:        const Color(0xFFFFA600),
+                    color:        const Color(0xFFBF360C),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text('Retry',
@@ -845,7 +878,7 @@ class _LibraryPageState extends State<LibraryPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.search_off,
-                  color: Color(0xFFFFA600), size: 72),
+                  color: Color(0xFFBF360C), size: 72),
               const SizedBox(height: 16),
               Text(
                 _searchQuery.isNotEmpty
@@ -864,7 +897,7 @@ class _LibraryPageState extends State<LibraryPage>
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 8),
                     decoration: BoxDecoration(
-                      color:        const Color(0xFFFFA600),
+                      color:        const Color(0xFFBF360C),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text('Clear Search',
@@ -888,7 +921,7 @@ class _LibraryPageState extends State<LibraryPage>
     const tubeOffset = 10.0;
     const rowGap     = 10.0;
     const buffer     = 20.0;
-    const moreH      = 56.0;
+    const moreH      = 80.0;
 
     return Expanded(
       child: Column(
@@ -912,13 +945,13 @@ class _LibraryPageState extends State<LibraryPage>
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final availH  = constraints.maxHeight;
-                final usableH = _hasNextPage ? availH - moreH : availH;
+                final usableH = _hasNextPage ? availH - moreH - 16 : availH;
 
                 final rowH = leftCount > 0
                     ? ((usableH - buffer) / leftCount - rowGap)
                         .clamp(48.0, 120.0)
                     : 70.0;
-                final colH = leftCount * (rowH + rowGap);
+                final colH = (leftCount * (rowH + rowGap)).clamp(0.0, usableH);
 
                 return FadeTransition(
                   opacity: _fadeAnimation,
@@ -962,8 +995,7 @@ class _LibraryPageState extends State<LibraryPage>
                         SizedBox(
                           height: moreH,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                14, 8, 20, 14),
+                            padding: const EdgeInsets.fromLTRB(14, 8, 20, 14),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
@@ -990,7 +1022,7 @@ class _LibraryPageState extends State<LibraryPage>
                                     'More...',
                                     style: TextStyle(
                                       color: _focusOnMore
-                                          ? const Color(0xFFFFA600)
+                                          ? const Color(0xFFBF360C)
                                           : Colors.white,
                                       fontSize:   28,
                                       fontWeight: FontWeight.w700,
@@ -1018,7 +1050,7 @@ class _LibraryPageState extends State<LibraryPage>
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,

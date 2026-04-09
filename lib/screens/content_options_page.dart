@@ -315,7 +315,7 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
@@ -349,7 +349,7 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
         Container(
       width: sidebarWidth,
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1A3E),
+        color: const Color(0xFF1A0800),
         borderRadius: const BorderRadius.only(
           topRight: Radius.circular(32),
           bottomRight: Radius.circular(32),
@@ -374,8 +374,9 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFFFFF8F5),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFBF360C), width: 1.5),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -394,7 +395,7 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
                     const Text(
                       'EASY LEARN',
                       style: TextStyle(
-                        color: Color(0xFF1A3A7C),
+                        color: Color(0xFFBF360C),
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.2,
@@ -442,22 +443,22 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
                             vertical: 16, horizontal: 8),
                         decoration: BoxDecoration(
                           color: isActive
-                              ? const Color(0xFFFFA600)
+                              ? const Color(0xFFBF360C)
                               : isFocused
-                                  ? const Color(0xFF243C6A)
-                                  : const Color(0xFF1A2E55),
+                                  ? const Color(0xFF3A1200)
+                                  : const Color(0xFF2A0800),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: isActive
-                                ? const Color(0xFFFFA600)
+                                ? const Color(0xFFBF360C)
                                 : isFocused
                                     ? Colors.white54
-                                    : const Color(0xFF2A4080),
+                                    : const Color(0xFF3A1200),
                             width: 2,
                           ),
                           boxShadow: isActive
                               ? [BoxShadow(
-                                  color: const Color(0xFFFFA600).withOpacity(0.45),
+                                  color: const Color(0xFFBF360C).withOpacity(0.45),
                                   blurRadius: 14,
                                   offset: const Offset(0, 4))]
                               : [],
@@ -468,7 +469,7 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
                           style: TextStyle(
                             color: isActive
                                 ? Colors.white
-                                : const Color(0xFFFFA600),
+                                : const Color(0xFFFFF8F5),
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
                           ),
@@ -497,9 +498,9 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.white,
-                  Color(0xFFCCCCCC),
-                  Colors.white,
+                  Color(0xFFBF360C),
+                  Color(0xFFE64A19),
+                  Color(0xFFBF360C),
                   Colors.transparent,
                 ],
                 stops: [0.0, 0.15, 0.5, 0.85, 1.0],
@@ -514,12 +515,16 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
   // ── Top bar ───────────────────────────────────────────────────
   Widget _buildTopBar() {
     return Container(
-      color: const Color(0xFF0D1C45),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFBF360C), Color(0xFFE64A19), Color(0xFFFF6D00)],
+        ),
+      ),
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
       child: Text(
         '${_getChapterNumber()}  $_chapterName',
         style: const TextStyle(
-          color: Color(0xFFFFA600),
+          color: Colors.white,
           fontSize: 32,
           fontWeight: FontWeight.w800,
         ),
@@ -532,9 +537,9 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 8, 16, 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF16253D),
+        color: const Color(0xFF1A0800),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF2A4080), width: 1.5),
+        border: Border.all(color: const Color(0xFF3A1200), width: 1.5),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(11),
@@ -553,7 +558,7 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircularProgressIndicator(color: Color(0xFFFFA600)),
+              const CircularProgressIndicator(color: Color(0xFFBF360C)),
               const SizedBox(height: 16),
               Text(
                 _retryCount > 0
@@ -599,11 +604,11 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
                   padding: const EdgeInsets.symmetric(
                       horizontal: 32, vertical: 14),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFA600),
+                    color: const Color(0xFFBF360C),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFA600).withOpacity(0.4),
+                        color: const Color(0xFFBF360C).withOpacity(0.4),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -649,7 +654,7 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
     if (_activeTab == 'book') {
       if (_bookLoading) {
         return const Center(
-            child: CircularProgressIndicator(color: Color(0xFFFFA600)));
+            child: CircularProgressIndicator(color: Color(0xFFBF360C)));
       }
       if (_bookUrl != null && _bookUrl!.isNotEmpty) {
         return WebViewPage(
@@ -661,8 +666,8 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
         Icons.menu_book_rounded,
         'Book load failed',
         subtitle: 'please click book button',
-        iconColor: const Color(0xFFFFA600),
-        textColor: const Color(0xFFFFA600),
+        iconColor: const Color(0xFFBF360C),
+        textColor: const Color(0xFFBF360C),
       );
     }
 
@@ -689,8 +694,8 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
     IconData icon,
     String title, {
     String? subtitle,
-    Color iconColor = const Color(0xFF3A5070),
-    Color textColor = const Color(0xFF3A5070),
+    Color iconColor = const Color(0xFF5C3020),
+    Color textColor = const Color(0xFF5C3020),
   }) {
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -723,7 +728,7 @@ class _ContentOptionsPageState extends State<ContentOptionsPage>
           padding: const EdgeInsets.all(32),
           margin: const EdgeInsets.symmetric(horizontal: 32),
           decoration: BoxDecoration(
-            color: const Color(0xFF0D1B3E),
+            color: const Color(0xFF2A0C00),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
                 color: const Color(0xFF059669).withOpacity(0.4), width: 2),

@@ -524,7 +524,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
           final confirmed = await showDialog<bool>(
             context: context,
             builder: (c) => AlertDialog(
-              backgroundColor: const Color(0xFF1A2E55),
+              backgroundColor: const Color(0xFF2A0C00),
               title: const Text('Delete Schedule',
                   style: TextStyle(color: Colors.white)),
               content: const Text('Are you sure?',
@@ -614,7 +614,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -649,7 +649,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
         Container(
           width: sidebarWidth,
           decoration: const BoxDecoration(
-            color: Color(0xFF0D1A3E),
+            color: Color(0xFF1A0800),
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(32),
               bottomRight: Radius.circular(32),
@@ -682,8 +682,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                       horizontal: screenSize.width < 600 ? 6 : 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color(0xFFFFF8F5),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFBF360C), width: 1.5),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -695,7 +696,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                           filterQuality: FilterQuality.high,
                           errorBuilder: (_, __, ___) => Icon(
                             Icons.school,
-                            color: const Color(0xFF1A3A7C),
+                            color: const Color(0xFF7A1800),
                             size: screenSize.width < 600 ? 30 : 42,
                           ),
                         ),
@@ -703,7 +704,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                         Text(
                           'EASY LEARN',
                           style: TextStyle(
-                            color: const Color(0xFF1A3A7C),
+                            color: const Color(0xFFBF360C),
                             fontSize: screenSize.width < 600 ? 9 : 11,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.2,
@@ -764,7 +765,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                                 height: isTvFocus ? 12 : 10,
                                 decoration: BoxDecoration(
                                   color: isActive
-                                      ? const Color(0xFFFFA600)
+                                      ? const Color(0xFFBF360C)
                                       : Colors.white,
                                   borderRadius: BorderRadius.circular(2),
                                 ),
@@ -777,7 +778,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: isActive
-                                        ? const Color(0xFFFFA600)
+                                        ? const Color(0xFFBF360C)
                                         : Colors.white,
                                     fontSize: screenSize.width < 600
                                         ? (isTvFocus ? 14 : 13)
@@ -796,6 +797,39 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                   ),
                 ),
               ),
+
+          // ── Powered By Logo ──────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Powered by',
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Image.asset(
+                  'assets/images/powered_by_logo.png',
+                  height: 44,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Text(
+                    'EasyLearn',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
             ],
           ),
         ),
@@ -813,9 +847,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.white,
-                  Color(0xFFCCCCCC),
-                  Colors.white,
+                  Color(0xFFBF360C),
+                  Color(0xFFE64A19),
+                  Color(0xFFBF360C),
                   Colors.transparent,
                 ],
                 stops: [0.0, 0.15, 0.5, 0.85, 1.0],
@@ -832,7 +866,13 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: const Color(0xFF0D1C45),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Color(0xFFBF360C), Color(0xFFE64A19), Color(0xFFFF6D00)],
+        ),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -860,11 +900,11 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4169E1),
+                  color: const Color(0xFFBF360C),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF4169E1).withOpacity(0.4),
+                      color: const Color(0xFFBF360C).withOpacity(0.4),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -918,11 +958,11 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
               height: 70,
               decoration: BoxDecoration(
                 gradient: const RadialGradient(
-                    colors: [Color(0xFF4169E1), Color(0xFF1A3A7C)]),
+                    colors: [Color(0xFFBF360C), Color(0xFF7A1800)]),
                 borderRadius: BorderRadius.circular(35),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF4169E1).withOpacity(0.4),
+                    color: const Color(0xFFBF360C).withOpacity(0.4),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -974,7 +1014,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4169E1)),
+                  backgroundColor: const Color(0xFFBF360C)),
             ),
           ],
         ),
@@ -1029,9 +1069,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
     ];
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF091530),
+        color: const Color(0xFFFFF8F5),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF1A3060), width: 1.5),
+        border: Border.all(color: const Color(0xFFE8D5CC), width: 1.5),
       ),
       padding: const EdgeInsets.all(4),
       child: Row(
@@ -1052,14 +1092,14 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                 decoration: BoxDecoration(
                   gradient: isActive
                       ? const LinearGradient(
-                          colors: [Color(0xFF3A5FD5), Color(0xFF5479F7)],
+                          colors: [Color(0xFFBF360C), Color(0xFFE64A19)],
                         )
                       : null,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: isActive
                       ? [
                           BoxShadow(
-                            color: const Color(0xFF4169E1).withOpacity(0.35),
+                            color: const Color(0xFFBF360C).withOpacity(0.35),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           )
@@ -1074,7 +1114,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                       size: isTv ? 18 : 14,
                       color: isActive
                           ? Colors.white
-                          : const Color(0xFF4B6080),
+                          : const Color(0xFF8B5E52),
                     ),
                     const SizedBox(width: 5),
                     Text(
@@ -1082,7 +1122,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                       style: TextStyle(
                         color: isActive
                             ? Colors.white
-                            : const Color(0xFF4B6080),
+                            : const Color(0xFF8B5E52),
                         fontSize: isTv ? 15 : 12,
                         fontWeight:
                             isActive ? FontWeight.w700 : FontWeight.w500,
@@ -1152,7 +1192,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                         Text(
                           ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.weekday % 7],
                           style: TextStyle(
-                            color: isToday ? const Color(0xFFFFA600) : const Color(0xFF8B949E),
+                            color: isToday ? const Color(0xFFBF360C) : const Color(0xFF8B949E),
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                           ),
@@ -1163,13 +1203,13 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                           height: 28,
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? const Color(0xFF4169E1)
+                                ? const Color(0xFFBF360C)
                                 : isToday
-                                    ? const Color(0xFFFFA600).withOpacity(0.2)
+                                    ? const Color(0xFFBF360C).withOpacity(0.2)
                                     : Colors.transparent,
                             shape: BoxShape.circle,
                             border: isToday && !isSelected
-                                ? Border.all(color: const Color(0xFFFFA600), width: 1.5)
+                                ? Border.all(color: const Color(0xFFBF360C), width: 1.5)
                                 : null,
                           ),
                           child: Center(
@@ -1193,7 +1233,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
         ),
 
         const SizedBox(height: 4),
-        const Divider(color: Color(0xFF1A2E55), height: 1),
+        const Divider(color: Color(0xFF3A1200), height: 1),
 
         // Scrollable time grid
         Expanded(
@@ -1236,7 +1276,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                               decoration: BoxDecoration(
                                 border: Border(
                                   top: BorderSide(
-                                      color: const Color(0xFF1A2E55).withOpacity(0.5),
+                                      color: const Color(0xFF3A1200).withOpacity(0.5),
                                       width: 0.5),
                                 ),
                               ),
@@ -1297,7 +1337,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
           onToday: () => setState(() => _selectedDay = DateTime.now()),
           onNext: () => setState(() => _selectedDay = day.add(const Duration(days: 1))),
         ),
-        const Divider(color: Color(0xFF1A2E55), height: 1),
+        const Divider(color: Color(0xFF3A1200), height: 1),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 16),
@@ -1322,7 +1362,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                     decoration: BoxDecoration(
                       border: Border(
                         top: BorderSide(
-                            color: const Color(0xFF1A2E55).withOpacity(0.5)),
+                            color: const Color(0xFF3A1200).withOpacity(0.5)),
                       ),
                     ),
                     child: Row(
@@ -1427,7 +1467,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                 DateTime(_focusedMonth.year, _focusedMonth.month + 1);
           }),
         ),
-        const Divider(color: Color(0xFF1A2E55), height: 1),
+        const Divider(color: Color(0xFF3A1200), height: 1),
         if (monthKeys.isEmpty)
           Expanded(
             child: Center(
@@ -1467,13 +1507,13 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                           horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: isToday
-                            ? const Color(0xFFFFA600).withOpacity(0.15)
-                            : const Color(0xFF0D1A3E),
+                            ? const Color(0xFFBF360C).withOpacity(0.15)
+                            : const Color(0xFF1A0800),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                             color: isToday
-                                ? const Color(0xFFFFA600).withOpacity(0.5)
-                                : const Color(0xFF1A2E55)),
+                                ? const Color(0xFFBF360C).withOpacity(0.5)
+                                : const Color(0xFF3A1200)),
                       ),
                       child: Row(
                         children: [
@@ -1481,7 +1521,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                             '$dateKey',
                             style: TextStyle(
                                 color: isToday
-                                    ? const Color(0xFFFFA600)
+                                    ? const Color(0xFFBF360C)
                                     : Colors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700),
@@ -1491,7 +1531,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                             dow,
                             style: TextStyle(
                                 color: isToday
-                                    ? const Color(0xFFFFA600)
+                                    ? const Color(0xFFBF360C)
                                     : const Color(0xFF8B949E),
                                 fontSize: 12),
                           ),
@@ -1623,12 +1663,12 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
               width:  isTv ? 44 : 36,
               height: isTv ? 44 : 36,
               decoration: BoxDecoration(
-                color: const Color(0xFF091530),
+                color: const Color(0xFFFFF8F5),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFF1A3060)),
+                border: Border.all(color: const Color(0xFFE8D5CC)),
               ),
               child: Icon(Icons.chevron_left,
-                  color: Colors.white54, size: isTv ? 24 : 18),
+                  color: const Color(0xFFBF360C), size: isTv ? 24 : 18),
             ),
           ),
           const SizedBox(width: 8),
@@ -1640,12 +1680,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                   horizontal: isTv ? 18 : 12,
                   vertical:   isTv ? 11 : 8),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF1A3A7C), Color(0xFF2B4FA3)],
-                ),
+                color: const Color(0xFFBF360C),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    color: const Color(0xFF3A5FD5).withOpacity(0.5)),
               ),
               child: Text('today',
                   style: TextStyle(
@@ -1663,12 +1699,12 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
               width:  isTv ? 44 : 36,
               height: isTv ? 44 : 36,
               decoration: BoxDecoration(
-                color: const Color(0xFF091530),
+                color: const Color(0xFFFFF8F5),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFF1A3060)),
+                border: Border.all(color: const Color(0xFFE8D5CC)),
               ),
               child: Icon(Icons.chevron_right,
-                  color: Colors.white54, size: isTv ? 24 : 18),
+                  color: const Color(0xFFBF360C), size: isTv ? 24 : 18),
             ),
           ),
           const SizedBox(width: 14),
@@ -1677,7 +1713,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
             child: Text(
               title,
               style: TextStyle(
-                color: Colors.white,
+                color: const Color(0xFFBF360C),
                 fontSize: isTv ? 18 : 14,
                 fontWeight: FontWeight.w700,
               ),
@@ -1707,9 +1743,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1A3E),
+        color: const Color(0xFFFFF8F5),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1A2E55), width: 1.5),
+        border: Border.all(color: const Color(0xFFE8D5CC), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
@@ -1727,7 +1763,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
               children: [
                 IconButton(
                   icon: const Icon(Icons.chevron_left,
-                      color: Colors.white70, size: 22),
+                      color: Color(0xFFBF360C), size: 22),
                   onPressed: () => setState(() {
                     _focusedMonth = DateTime(
                         _focusedMonth.year, _focusedMonth.month - 1);
@@ -1739,14 +1775,14 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                     _fmtMonthYear(_focusedMonth),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFFBF360C),
                         fontSize: 15,
                         fontWeight: FontWeight.w700),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right,
-                      color: Colors.white70, size: 22),
+                      color: Color(0xFFBF360C), size: 22),
                   onPressed: () => setState(() {
                     _focusedMonth = DateTime(
                         _focusedMonth.year, _focusedMonth.month + 1);
@@ -1762,8 +1798,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
             height: labelH,
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(color: Color(0xFF1A2E55)),
-                bottom: BorderSide(color: Color(0xFF1A2E55)),
+                top: BorderSide(color: Color(0xFFE8D5CC)),
+                bottom: BorderSide(color: Color(0xFFE8D5CC)),
               ),
             ),
             child: Row(
@@ -1772,7 +1808,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                         child: Center(
                           child: Text(d,
                               style: const TextStyle(
-                                  color: Color(0xFF8B949E),
+                                  color: Color(0xFFBF360C),
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700)),
                         ),
@@ -1800,7 +1836,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                   return Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: const Color(0xFF1A2E55).withOpacity(0.4),
+                          color: const Color(0xFFE8D5CC).withOpacity(0.6),
                           width: 0.5),
                     ),
                   );
@@ -1823,16 +1859,16 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                     duration: const Duration(milliseconds: 150),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFF4169E1).withOpacity(0.25)
+                          ? const Color(0xFFBF360C).withOpacity(0.12)
                           : isToday
-                              ? const Color(0xFFFFA600).withOpacity(0.08)
-                              : Colors.transparent,
+                              ? const Color(0xFFBF360C).withOpacity(0.05)
+                              : Colors.white,
                       border: Border.all(
                         color: isSelected
-                            ? const Color(0xFF4169E1)
+                            ? const Color(0xFFBF360C)
                             : isToday
-                                ? const Color(0xFFFFA600).withOpacity(0.5)
-                                : const Color(0xFF1A2E55).withOpacity(0.4),
+                                ? const Color(0xFFBF360C).withOpacity(0.5)
+                                : const Color(0xFFE8D5CC).withOpacity(0.8),
                         width: isSelected || isToday ? 1.5 : 0.5,
                       ),
                     ),
@@ -1848,9 +1884,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                             height: 22,
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFF4169E1)
+                                  ? const Color(0xFFBF360C)
                                   : isToday
-                                      ? const Color(0xFFFFA600)
+                                      ? const Color(0xFFBF360C)
                                       : Colors.transparent,
                               shape: BoxShape.circle,
                             ),
@@ -1860,7 +1896,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                                 style: TextStyle(
                                   color: isSelected || isToday
                                       ? Colors.white
-                                      : Colors.white70,
+                                      : const Color(0xFF3E1000),
                                   fontSize: 11,
                                   fontWeight: isSelected || isToday
                                       ? FontWeight.w800
@@ -1969,9 +2005,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
       return Container(
         margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         decoration: BoxDecoration(
-          color: const Color(0xFF091530),
+          color: const Color(0xFF1A0800),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFF1A3060), width: 1),
+          border: Border.all(color: const Color(0xFF3A1200), width: 1),
         ),
         child: Center(
           child: Column(
@@ -1981,11 +2017,11 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                 width: isTv ? 70 : 54,
                 height: isTv ? 70 : 54,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4169E1).withOpacity(0.1),
+                  color: const Color(0xFFBF360C).withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.touch_app_rounded,
-                    color: const Color(0xFF4169E1).withOpacity(0.5),
+                    color: const Color(0xFFBF360C).withOpacity(0.5),
                     size: isTv ? 36 : 28),
               ),
               const SizedBox(height: 12),
@@ -2019,7 +2055,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
               colors: [Color(0xFF0F2050), Color(0xFF091A40)],
             ),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF1A3060)),
+            border: Border.all(color: const Color(0xFF3A1200)),
           ),
           child: Row(
             children: [
@@ -2057,7 +2093,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                           colors: [Color(0xFF3A5FD5), Color(0xFF5479F7)],
                         ),
                   color: daySchedules.isEmpty
-                      ? const Color(0xFF1A3060)
+                      ? const Color(0xFF3A1200)
                       : null,
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -2116,7 +2152,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF4169E1)
+                                  color: const Color(0xFFBF360C)
                                       .withOpacity(0.35),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
@@ -2162,10 +2198,10 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                       child: Container(
                         margin: EdgeInsets.only(bottom: isTv ? 14 : 10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF091530),
+                          color: const Color(0xFF1A0800),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                              color: const Color(0xFF1A3060), width: 1.5),
+                              color: const Color(0xFF3A1200), width: 1.5),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.25),
@@ -2416,8 +2452,8 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
       builder: (ctx, child) => Theme(
         data: ThemeData.dark().copyWith(
           colorScheme: const ColorScheme.dark(
-              primary: Color(0xFF4169E1),
-              surface: Color(0xFF0D1A3E)),
+              primary: Color(0xFFBF360C),
+              surface: Color(0xFF1A0800)),
         ),
         child: child!,
       ),
@@ -2435,8 +2471,8 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
       builder: (ctx, child) => Theme(
         data: ThemeData.dark().copyWith(
           colorScheme: const ColorScheme.dark(
-              primary: Color(0xFF4169E1),
-              surface: Color(0xFF0D1A3E)),
+              primary: Color(0xFFBF360C),
+              surface: Color(0xFF1A0800)),
         ),
         child: child!,
       ),
@@ -2488,9 +2524,9 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
       child: Container(
         width: 480,
         decoration: BoxDecoration(
-          color: const Color(0xFF0D1A3E),
+          color: const Color(0xFF1A0800),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFF1A2E55)),
+          border: Border.all(color: const Color(0xFF3A1200)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -2500,7 +2536,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
               padding: const EdgeInsets.symmetric(
                   horizontal: 20, vertical: 16),
               decoration: const BoxDecoration(
-                color: Color(0xFF4169E1),
+                color: Color(0xFFBF360C),
                 borderRadius:
                     BorderRadius.vertical(top: Radius.circular(16)),
               ),
@@ -2582,7 +2618,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                   horizontal: 20, vertical: 14),
               decoration: const BoxDecoration(
                   border: Border(
-                      top: BorderSide(color: Color(0xFF1A2E55)))),
+                      top: BorderSide(color: Color(0xFF3A1200)))),
               child: Row(
                 children: [
                   Expanded(
@@ -2605,7 +2641,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                     child: ElevatedButton(
                       onPressed: _isSaving ? null : _submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4169E1),
+                        backgroundColor: const Color(0xFFBF360C),
                         padding:
                             const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
@@ -2649,19 +2685,19 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
             hintText: hint,
             hintStyle: const TextStyle(color: Color(0xFF30363D)),
             filled: true,
-            fillColor: const Color(0xFF0D1C45),
+            fillColor: const Color(0xFF1A0800),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF4169E1))),
+                    const BorderSide(color: Color(0xFFBF360C))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
@@ -2688,17 +2724,17 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
               style: const TextStyle(color: Colors.white, fontSize: 14),
               decoration: InputDecoration(
                 suffixIcon: const Icon(Icons.calendar_today_rounded,
-                    color: Color(0xFF4169E1), size: 18),
+                    color: Color(0xFFBF360C), size: 18),
                 filled: true,
-                fillColor: const Color(0xFF0D1C45),
+                fillColor: const Color(0xFF1A0800),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF1A2E55))),
+                        const BorderSide(color: Color(0xFF3A1200))),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF1A2E55))),
+                        const BorderSide(color: Color(0xFF3A1200))),
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12, vertical: 10),
               ),
@@ -2725,9 +2761,9 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
             padding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF0D1C45),
+              color: const Color(0xFF1A0800),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFF1A2E55)),
+              border: Border.all(color: const Color(0xFF3A1200)),
             ),
             child: Row(
               children: [
@@ -2744,7 +2780,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                   ),
                 ),
                 const Icon(Icons.access_time_rounded,
-                    color: Color(0xFF4169E1), size: 18),
+                    color: Color(0xFFBF360C), size: 18),
               ],
             ),
           ),
@@ -2765,19 +2801,19 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           value: _color,
-          dropdownColor: const Color(0xFF0D1A3E),
+          dropdownColor: const Color(0xFF1A0800),
           style: const TextStyle(color: Colors.white, fontSize: 14),
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xFF0D1C45),
+            fillColor: const Color(0xFF1A0800),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
@@ -2829,21 +2865,21 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           value: safeValue,
-          dropdownColor: const Color(0xFF0D1A3E),
+          dropdownColor: const Color(0xFF1A0800),
           style: const TextStyle(color: Colors.white, fontSize: 14),
           hint: Text('Select $label',
               style: const TextStyle(color: Color(0xFF8B949E))),
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xFF0D1C45),
+            fillColor: const Color(0xFF1A0800),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
@@ -2878,13 +2914,13 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
           padding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
           decoration: BoxDecoration(
-            color: const Color(0xFF0D1C45),
+            color: const Color(0xFF1A0800),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF1A2E55)),
+            border: Border.all(color: const Color(0xFF3A1200)),
           ),
           child: Text(hint,
               style: const TextStyle(
-                  color: Color(0xFF4B6080), fontSize: 14)),
+                  color: Color(0xFF8B5E52), fontSize: 14)),
         ),
       ],
     );
@@ -3010,8 +3046,8 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
       builder: (ctx, child) => Theme(
         data: ThemeData.dark().copyWith(
           colorScheme: const ColorScheme.dark(
-              primary: Color(0xFF4169E1),
-              surface: Color(0xFF0D1A3E)),
+              primary: Color(0xFFBF360C),
+              surface: Color(0xFF1A0800)),
         ),
         child: child!,
       ),
@@ -3029,8 +3065,8 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
       builder: (ctx, child) => Theme(
         data: ThemeData.dark().copyWith(
           colorScheme: const ColorScheme.dark(
-              primary: Color(0xFF4169E1),
-              surface: Color(0xFF0D1A3E)),
+              primary: Color(0xFFBF360C),
+              surface: Color(0xFF1A0800)),
         ),
         child: child!,
       ),
@@ -3069,9 +3105,9 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
       child: Container(
         width: 480,
         decoration: BoxDecoration(
-          color: const Color(0xFF0D1A3E),
+          color: const Color(0xFF1A0800),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFF1A2E55)),
+          border: Border.all(color: const Color(0xFF3A1200)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -3081,7 +3117,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
               padding: const EdgeInsets.symmetric(
                   horizontal: 20, vertical: 16),
               decoration: const BoxDecoration(
-                color: Color(0xFF1A2E55),
+                color: Color(0xFF3A1200),
                 borderRadius:
                     BorderRadius.vertical(top: Radius.circular(16)),
               ),
@@ -3156,7 +3192,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
                   horizontal: 16, vertical: 14),
               decoration: const BoxDecoration(
                   border: Border(
-                      top: BorderSide(color: Color(0xFF1A2E55)))),
+                      top: BorderSide(color: Color(0xFF3A1200)))),
               child: Row(
                 children: [
                   _actionBtn(
@@ -3182,7 +3218,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
                     _actionBtn(
                       icon: Icons.save_rounded,
                       label: 'Save',
-                      color: const Color(0xFF4169E1),
+                      color: const Color(0xFFBF360C),
                       onTap: _submit,
                     ),
                     const SizedBox(width: 8),
@@ -3244,19 +3280,19 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
             hintText: hint,
             hintStyle: const TextStyle(color: Color(0xFF30363D)),
             filled: true,
-            fillColor: const Color(0xFF0D1C45),
+            fillColor: const Color(0xFF1A0800),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF4169E1))),
+                    const BorderSide(color: Color(0xFFBF360C))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
@@ -3284,17 +3320,17 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
                   const TextStyle(color: Colors.white, fontSize: 14),
               decoration: InputDecoration(
                 suffixIcon: const Icon(Icons.calendar_today_rounded,
-                    color: Color(0xFF4169E1), size: 18),
+                    color: Color(0xFFBF360C), size: 18),
                 filled: true,
-                fillColor: const Color(0xFF0D1C45),
+                fillColor: const Color(0xFF1A0800),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF1A2E55))),
+                        const BorderSide(color: Color(0xFF3A1200))),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF1A2E55))),
+                        const BorderSide(color: Color(0xFF3A1200))),
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12, vertical: 10),
               ),
@@ -3322,10 +3358,10 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
             padding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF0D1C45),
+              color: const Color(0xFF1A0800),
               borderRadius: BorderRadius.circular(8),
               border:
-                  Border.all(color: const Color(0xFF1A2E55)),
+                  Border.all(color: const Color(0xFF3A1200)),
             ),
             child: Row(
               children: [
@@ -3340,7 +3376,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
                   ),
                 ),
                 const Icon(Icons.access_time_rounded,
-                    color: Color(0xFF4169E1), size: 18),
+                    color: Color(0xFFBF360C), size: 18),
               ],
             ),
           ),
@@ -3361,20 +3397,20 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           value: _colorOptions.contains(_color) ? _color : 'Green',
-          dropdownColor: const Color(0xFF0D1A3E),
+          dropdownColor: const Color(0xFF1A0800),
           style:
               const TextStyle(color: Colors.white, fontSize: 14),
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xFF0D1C45),
+            fillColor: const Color(0xFF1A0800),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF1A2E55))),
+                    const BorderSide(color: Color(0xFF3A1200))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
@@ -3497,12 +3533,12 @@ class _VideoConferenceWebViewState extends State<_VideoConferenceWebView> {
             WebViewWidget(controller: _controller),
             if (_isLoading)
               Container(
-                color: const Color(0xFF0D1C45),
+                color: const Color(0xFF1A0800),
                 child: const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularProgressIndicator(color: Color(0xFFFFA600)),
+                      CircularProgressIndicator(color: Color(0xFFBF360C)),
                       SizedBox(height: 16),
                       Text('Joining meeting...',
                           style: TextStyle(

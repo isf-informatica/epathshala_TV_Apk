@@ -274,7 +274,7 @@ class _TopicPageState extends State<TopicPage>
         Container(
       width: sidebarWidth,
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1A3E),
+        color: const Color(0xFF1A0800),
         // Same rounded right edge as SubjectsPage
         borderRadius: const BorderRadius.only(
           topRight: Radius.circular(32),
@@ -309,8 +309,9 @@ class _TopicPageState extends State<TopicPage>
                   horizontal: screenWidth < 600 ? 6 : 10,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFFFFF8F5),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFBF360C), width: 1.5),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -329,7 +330,7 @@ class _TopicPageState extends State<TopicPage>
                     Text(
                       'EASY LEARN',
                       style: TextStyle(
-                        color: const Color(0xFF1A3A7C),
+                        color: const Color(0xFFBF360C),
                         fontSize: screenWidth < 600 ? 9 : 11,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.2,
@@ -377,7 +378,7 @@ class _TopicPageState extends State<TopicPage>
                             width: 10,
                             height: 10,
                             color: isActive
-                                ? const Color(0xFFFFA600)
+                                ? const Color(0xFFBF360C)
                                 : Colors.white,
                           ),
                           SizedBox(width: screenWidth < 600 ? 6 : 12),
@@ -387,7 +388,7 @@ class _TopicPageState extends State<TopicPage>
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: isActive
-                                    ? const Color(0xFFFFA600)
+                                    ? const Color(0xFFBF360C)
                                     : Colors.white,
                                 fontSize: screenWidth < 600 ? 13 : 19,
                                 fontWeight: isActive
@@ -421,9 +422,9 @@ class _TopicPageState extends State<TopicPage>
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.white,
-                  Color(0xFFCCCCCC),
-                  Colors.white,
+                  Color(0xFFBF360C),
+                  Color(0xFFE64A19),
+                  Color(0xFFBF360C),
                   Colors.transparent,
                 ],
                 stops: [0.0, 0.15, 0.5, 0.85, 1.0],
@@ -458,15 +459,15 @@ class _TopicPageState extends State<TopicPage>
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: isFocused
-              ? const Color(0xFF1A4E8A)
-              : const Color(0xFF2D6FB5),
+              ? const Color(0xFFFFF8F5)
+              : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(6),
           border: isFocused
-              ? Border.all(color: const Color(0xFFFFA600), width: 2)
-              : Border.all(color: const Color(0xFF1A4A80), width: 1),
+              ? Border.all(color: const Color(0xFFBF360C), width: 2)
+              : Border.all(color: const Color(0xFFE8D5CC), width: 1),
           boxShadow: isFocused
               ? [BoxShadow(
-                  color: const Color(0xFFFFA600).withOpacity(0.25),
+                  color: const Color(0xFFBF360C).withOpacity(0.25),
                   blurRadius: 8, offset: const Offset(0, 2))]
               : [],
         ),
@@ -481,8 +482,8 @@ class _TopicPageState extends State<TopicPage>
                   (chIdx + 1).toString().padLeft(2, '0'),
                   style: TextStyle(
                     color: isFocused
-                        ? const Color(0xFFFFA600)
-                        : Colors.white,
+                        ? const Color(0xFFBF360C)
+                        : const Color(0xFF3E1000),
                     fontSize: 26,
                     fontWeight: FontWeight.w700,
                   ),
@@ -495,8 +496,8 @@ class _TopicPageState extends State<TopicPage>
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: isFocused
-                        ? const Color(0xFFFFA600)
-                        : Colors.white,
+                        ? const Color(0xFFBF360C)
+                        : const Color(0xFF3E1000),
                     fontSize: 26,
                     fontWeight: isFocused
                         ? FontWeight.w700
@@ -619,7 +620,7 @@ class _TopicPageState extends State<TopicPage>
                   ),
                 Text(subjectName,
                     style: const TextStyle(
-                      color: Color(0xFFFFA600),
+                      color: Color(0xFFBF360C),
                       fontSize: 40,
                       fontWeight: FontWeight.w800,
                     )),
@@ -631,7 +632,7 @@ class _TopicPageState extends State<TopicPage>
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Color(0xFFFFA600),
+                          color: Color(0xFFBF360C),
                           fontSize: 40,
                           fontWeight: FontWeight.w800,
                         )),
@@ -729,7 +730,7 @@ class _TopicPageState extends State<TopicPage>
                                   child: Text(
                                     'More...',
                                     style: TextStyle(
-                                      color: _focusOnMore ? const Color(0xFFFFA600) : Colors.white,
+                                      color: _focusOnMore ? const Color(0xFFBF360C) : Colors.white,
                                       fontSize: 28,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -765,7 +766,7 @@ class _TopicPageState extends State<TopicPage>
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -283,7 +283,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF0D1A3E),
+        backgroundColor: const Color(0xFF1A0800),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Submit Exam?',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
@@ -298,7 +298,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFFA600),
+              backgroundColor: const Color(0xFFBF360C),
               foregroundColor: Colors.black,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
@@ -351,7 +351,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(
             children: [
@@ -367,7 +367,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-      color: const Color(0xFF0D1A3E),
+      color: const Color(0xFF1A0800),
       child: Row(
         children: [
           GestureDetector(
@@ -397,11 +397,11 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                 ? const SizedBox(
                     width: 24, height: 24,
                     child: CircularProgressIndicator(
-                        color: Color(0xFFFFA600), strokeWidth: 2.5))
+                        color: Color(0xFFBF360C), strokeWidth: 2.5))
                 : ElevatedButton(
                     onPressed: _submitExam,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFA600),
+                      backgroundColor: const Color(0xFFBF360C),
                       foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 10),
@@ -422,7 +422,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
     if (_loading) {
       return const Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          CircularProgressIndicator(color: Color(0xFFFFA600)),
+          CircularProgressIndicator(color: Color(0xFFBF360C)),
           SizedBox(height: 16),
           Text('Loading Questions...',
               style: TextStyle(color: Colors.white70, fontSize: 16)),
@@ -441,7 +441,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
           ElevatedButton(
             onPressed: _fetchMcqQuestions,
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFA600),
+                backgroundColor: const Color(0xFFBF360C),
                 foregroundColor: Colors.black),
             child: const Text('Retry'),
           ),
@@ -481,7 +481,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
     final progress  = total > 0 ? (_currentPage + 1) / total : 0.0;
 
     return Container(
-      color: const Color(0xFF0D1A3E),
+      color: const Color(0xFF1A0800),
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
       child: Column(children: [
         Row(
@@ -507,7 +507,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
               decoration: BoxDecoration(
                 color: answered > 0
                     ? const Color(0xFF059669).withOpacity(0.2)
-                    : const Color(0xFF1A2E55),
+                    : const Color(0xFF2A0C00),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: answered > 0
@@ -533,8 +533,8 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
           borderRadius: BorderRadius.circular(6),
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor: const Color(0xFF1A2E55),
-            valueColor: const AlwaysStoppedAnimation(Color(0xFFFFA600)),
+            backgroundColor: const Color(0xFF2A0C00),
+            valueColor: const AlwaysStoppedAnimation(Color(0xFFBF360C)),
             minHeight: 10,
           ),
         ),
@@ -563,7 +563,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                   decoration: BoxDecoration(
                     gradient: isCurrent
                         ? const LinearGradient(
-                            colors: [Color(0xFFFFA600), Color(0xFFFF6B00)],
+                            colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           )
@@ -572,11 +572,11 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                                 colors: [Color(0xFF059669), Color(0xFF047857)],
                               )
                             : null,
-                    color: (!isCurrent && !isAnswered) ? const Color(0xFF1A2E55) : null,
+                    color: (!isCurrent && !isAnswered) ? const Color(0xFF2A0C00) : null,
                     borderRadius: BorderRadius.circular(isCurrent ? 12 : 8),
                     boxShadow: isCurrent
                         ? [BoxShadow(
-                            color: const Color(0xFFFFA600).withOpacity(0.6),
+                            color: const Color(0xFFBF360C).withOpacity(0.6),
                             blurRadius: 10, spreadRadius: 1)]
                         : [],
                     border: Border.all(
@@ -630,7 +630,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A2E55),
+          color: const Color(0xFF2A0C00),
           borderRadius: BorderRadius.circular(5),
           border: Border.all(color: const Color(0xFF3B82F6), width: 1),
         ),
@@ -684,7 +684,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF1E3A8A), Color(0xFF1E40AF), Color(0xFF0D1A3E)],
+                    colors: [Color(0xFF1E3A8A), Color(0xFF1E40AF), Color(0xFF1A0800)],
                   ),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: const Color(0xFF3B82F6).withOpacity(0.5), width: 1.5),
@@ -702,12 +702,12 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                       width: 36, height: 36,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFFFFA600), Color(0xFFFF6B00)],
+                          colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
                         ),
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFFFA600).withOpacity(0.5),
+                            color: const Color(0xFFBF360C).withOpacity(0.5),
                             blurRadius: 8,
                           ),
                         ],
@@ -785,7 +785,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                               colors: [optColor, optColor.withOpacity(0.7)],
                             )
                           : null,
-                      color: isSelected ? null : const Color(0xFF0D1A3E),
+                      color: isSelected ? null : const Color(0xFF1A0800),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         // TV focus = white bright border, selected = option color, default = dim
@@ -906,8 +906,8 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           decoration: const BoxDecoration(
-            color: Color(0xFF0D1A3E),
-            border: Border(top: BorderSide(color: Color(0xFF1A2E55), width: 1)),
+            color: Color(0xFF1A0800),
+            border: Border(top: BorderSide(color: Color(0xFF2A0C00), width: 1)),
           ),
           child: Row(children: [
             // Previous button
@@ -920,7 +920,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                   child: Container(
                     height: 52,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1A2E55),
+                      color: const Color(0xFF2A0C00),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: const Color(0xFF2A3E6A), width: 1.5),
                     ),
@@ -950,7 +950,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                           height: 52,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFFFFA600), Color(0xFFFF6B00)],
+                              colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
                             ),
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -968,14 +968,14 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                             height: 52,
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFFFFA600), Color(0xFFFF6B00)],
+                                colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFFFA600).withOpacity(0.5),
+                                  color: const Color(0xFFBF360C).withOpacity(0.5),
                                   blurRadius: 14, offset: const Offset(0, 4),
                                 ),
                               ],
