@@ -60,8 +60,10 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
   // TV sidebar state (same as exam page)
   bool _sidebarFocused = true;  // sidebar se start karo
   int _sidebarNavIndex = 2; // 'Video Conference' = index 2
+  int _focusedScheduleIndex = 0; // focused schedule in list
+  bool _scheduleFocused = false; // true when focus is on schedule list
   static const List<String> _navItems = [
-    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools', 'Logout',
+    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools',
   ];
 
   // ── Date format helpers ───────────────────────────────────────────────────
@@ -163,7 +165,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
         if (data['Response'] == 'OK' && data['data'] is List) {
           setState(() {
             _schedules =
-                List<Map<String, dynamic>>.from(data['data']);
+            List<Map<String, dynamic>>.from(data['data']);
             _isLoading = false;
           });
           _fadeCtrl.reset();
@@ -221,7 +223,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
         debugPrint('[Schedule] mentor response: ${mentorRes.body}');
         if (d['Response'] == 'OK' && d['data'] is List) {
           setState(() =>
-              _mentors = List<Map<String, dynamic>>.from(d['data']));
+          _mentors = List<Map<String, dynamic>>.from(d['data']));
         }
       }
     } catch (e) {
@@ -345,20 +347,28 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
     final key = event.logicalKey;
+    final daySchedules = _selectedDaySchedules;
 
     if (key == LogicalKeyboardKey.select ||
         key == LogicalKeyboardKey.enter ||
         key == LogicalKeyboardKey.gameButtonA) {
       if (_sidebarFocused) {
         _executeSidebarItem(_navItems[_sidebarNavIndex]);
-      } else if (_calendarView == _CalendarView.month && _selectedDay != null) {
-        // Enter pe selected day ki schedule show karo (already showing below)
+      } else if (_scheduleFocused && daySchedules.isNotEmpty) {
+        // Join button press
+        final s = daySchedules[_focusedScheduleIndex];
+        final meetUrl = s['meet_url']?.toString() ?? '';
+        if (meetUrl.isNotEmpty) _launchMeetUrl(meetUrl);
       }
       return KeyEventResult.handled;
     }
 
-    if (key == LogicalKeyboardKey.goBack || key == LogicalKeyboardKey.escape) {
-      if (!_sidebarFocused) {
+    if (key == LogicalKeyboardKey.goBack ||
+        key == LogicalKeyboardKey.escape ||
+        key == LogicalKeyboardKey.browserBack) {
+      if (_scheduleFocused) {
+        setState(() => _scheduleFocused = false);
+      } else if (!_sidebarFocused) {
         setState(() => _sidebarFocused = true);
       } else {
         Navigator.maybePop(context);
@@ -367,8 +377,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
     }
 
     if (key == LogicalKeyboardKey.arrowLeft) {
-      if (!_sidebarFocused) {
-        // Calendar se sidebar pe jao
+      if (_scheduleFocused) {
+        setState(() { _scheduleFocused = false; });
+      } else if (!_sidebarFocused) {
         setState(() => _sidebarFocused = true);
       }
       return KeyEventResult.handled;
@@ -376,10 +387,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
 
     if (key == LogicalKeyboardKey.arrowRight) {
       if (_sidebarFocused) {
-        // Sidebar se calendar pe jao
         setState(() => _sidebarFocused = false);
-      } else if (_calendarView == _CalendarView.month) {
-        // Calendar mein right — next day
+      } else if (!_scheduleFocused && _calendarView == _CalendarView.month) {
         setState(() {
           final base = _selectedDay ?? DateTime.now();
           _selectedDay = base.add(const Duration(days: 1));
@@ -395,6 +404,12 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
     if (key == LogicalKeyboardKey.arrowUp) {
       if (_sidebarFocused) {
         if (_sidebarNavIndex > 0) setState(() => _sidebarNavIndex--);
+      } else if (_scheduleFocused) {
+        if (_focusedScheduleIndex > 0) {
+          setState(() => _focusedScheduleIndex--);
+        } else {
+          setState(() => _scheduleFocused = false);
+        }
       } else if (_calendarView == _CalendarView.month) {
         setState(() {
           final base = _selectedDay ?? DateTime.now();
@@ -411,15 +426,24 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
     if (key == LogicalKeyboardKey.arrowDown) {
       if (_sidebarFocused) {
         if (_sidebarNavIndex < _navItems.length - 1) setState(() => _sidebarNavIndex++);
+      } else if (_scheduleFocused) {
+        if (_focusedScheduleIndex < daySchedules.length - 1) {
+          setState(() => _focusedScheduleIndex++);
+        }
       } else if (_calendarView == _CalendarView.month) {
-        setState(() {
-          final base = _selectedDay ?? DateTime.now();
-          _selectedDay = base.add(const Duration(days: 7));
-          if (_selectedDay!.month != _focusedMonth.month ||
-              _selectedDay!.year  != _focusedMonth.year) {
-            _focusedMonth = DateTime(_selectedDay!.year, _selectedDay!.month);
-          }
-        });
+        // Agar schedule list mein classes hain toh schedule focus pe jao
+        if (daySchedules.isNotEmpty) {
+          setState(() { _scheduleFocused = true; _focusedScheduleIndex = 0; });
+        } else {
+          setState(() {
+            final base = _selectedDay ?? DateTime.now();
+            _selectedDay = base.add(const Duration(days: 7));
+            if (_selectedDay!.month != _focusedMonth.month ||
+                _selectedDay!.year  != _focusedMonth.year) {
+              _focusedMonth = DateTime(_selectedDay!.year, _selectedDay!.month);
+            }
+          });
+        }
       }
       return KeyEventResult.handled;
     }
@@ -430,7 +454,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
   void _executeSidebarItem(String label) {
     switch (label) {
       case 'Video Conference':
-        // Already here
+      // Already here
         break;
       case 'Courses':
         Navigator.maybePop(context);
@@ -445,9 +469,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
       case 'Library':
         Navigator.pushReplacement(context, PageRouteBuilder(
           pageBuilder: (_, __, ___) => LibraryPage(
-          regId: (widget.loginData['reg_id'] ?? '').toString(),
-          permissions: (widget.loginData['permissions'] ?? 'School').toString(),
-        ),
+            regId: (widget.loginData['reg_id'] ?? '').toString(),
+            permissions: (widget.loginData['permissions'] ?? 'School').toString(),
+          ),
           transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
           transitionDuration: const Duration(milliseconds: 300),
         ));
@@ -490,7 +514,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(ok ? '✅ Schedule added!' : '❌ Failed to add'),
               backgroundColor:
-                  ok ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+              ok ? const Color(0xFF10B981) : const Color(0xFFEF4444),
             ));
             if (ok) _loadSchedules();
           }
@@ -514,7 +538,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
               content: Text(
                   ok ? '✅ Schedule updated!' : '❌ Update failed'),
               backgroundColor:
-                  ok ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+              ok ? const Color(0xFF10B981) : const Color(0xFFEF4444),
             ));
             if (ok) _loadSchedules();
           }
@@ -548,9 +572,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content:
-                    Text(ok ? '✅ Deleted!' : '❌ Delete failed'),
+                Text(ok ? '✅ Deleted!' : '❌ Delete failed'),
                 backgroundColor:
-                    ok ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                ok ? const Color(0xFF10B981) : const Color(0xFFEF4444),
               ));
               if (ok) _loadSchedules();
             }
@@ -798,38 +822,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                 ),
               ),
 
-          // ── Powered By Logo ──────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Powered by',
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Image.asset(
-                  'assets/images/powered_by_logo.png',
-                  height: 44,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Text(
-                    'EasyLearn',
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              // Powered by removed
             ],
           ),
         ),
@@ -892,55 +885,6 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                 fontWeight: FontWeight.w600),
           ),
           const Spacer(),
-          // + Add button (top right)
-          if (_canAddSchedule)
-            GestureDetector(
-              onTap: _showAddScheduleModal,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFBF360C),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFBF360C).withOpacity(0.4),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add_rounded, color: Colors.white, size: 18),
-                    SizedBox(width: 6),
-                    Text(
-                      '+ Add',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          const SizedBox(width: 12),
-          // Refresh
-          GestureDetector(
-            onTap: _loadSchedules,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white24, width: 1),
-              ),
-              child: const Icon(Icons.refresh_rounded,
-                  color: Colors.white, size: 18),
-            ),
-          ),
         ],
       ),
     );
@@ -1059,83 +1003,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
 
   // ── View Tabs ─────────────────────────────────────────────────────────────
   Widget _buildViewTabs() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isTv = screenWidth > 1200;
-    final tabs = [
-      (_CalendarView.month, 'month',  Icons.calendar_month_rounded),
-      (_CalendarView.week,  'week',   Icons.view_week_rounded),
-      (_CalendarView.day,   'day',    Icons.today_rounded),
-      (_CalendarView.list,  'list',   Icons.format_list_bulleted_rounded),
-    ];
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F5),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8D5CC), width: 1.5),
-      ),
-      padding: const EdgeInsets.all(4),
-      child: Row(
-        children: tabs.map((t) {
-          final isActive = _calendarView == t.$1;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() {
-                _calendarView = t.$1;
-                if (t.$1 == _CalendarView.day) {
-                  _selectedDay ??= DateTime.now();
-                }
-              }),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: EdgeInsets.symmetric(
-                    vertical: isTv ? 12 : 9),
-                decoration: BoxDecoration(
-                  gradient: isActive
-                      ? const LinearGradient(
-                          colors: [Color(0xFFBF360C), Color(0xFFE64A19)],
-                        )
-                      : null,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: isActive
-                      ? [
-                          BoxShadow(
-                            color: const Color(0xFFBF360C).withOpacity(0.35),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          )
-                        ]
-                      : null,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      t.$3,
-                      size: isTv ? 18 : 14,
-                      color: isActive
-                          ? Colors.white
-                          : const Color(0xFF8B5E52),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      t.$2,
-                      style: TextStyle(
-                        color: isActive
-                            ? Colors.white
-                            : const Color(0xFF8B5E52),
-                        fontSize: isTv ? 15 : 12,
-                        fontWeight:
-                            isActive ? FontWeight.w700 : FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
+    // Tabs removed — only month view
+    return const SizedBox.shrink();
   }
 
   // ── Week View ─────────────────────────────────────────────────────────────
@@ -1205,8 +1074,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                             color: isSelected
                                 ? const Color(0xFFBF360C)
                                 : isToday
-                                    ? const Color(0xFFBF360C).withOpacity(0.2)
-                                    : Colors.transparent,
+                                ? const Color(0xFFBF360C).withOpacity(0.2)
+                                : Colors.transparent,
                             shape: BoxShape.circle,
                             border: isToday && !isSelected
                                 ? Border.all(color: const Color(0xFFBF360C), width: 1.5)
@@ -1247,8 +1116,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                   final label = hour <= 12
                       ? '${hour}am'
                       : hour == 12
-                          ? '12pm'
-                          : '${hour - 12}pm';
+                      ? '12pm'
+                      : '${hour - 12}pm';
                   return SizedBox(
                     height: 56,
                     child: Row(
@@ -1349,8 +1218,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                   final label = hour < 12
                       ? '${hour}am'
                       : hour == 12
-                          ? '12pm'
-                          : '${hour - 12}pm';
+                      ? '12pm'
+                      : '${hour - 12}pm';
                   final hourEvts = dayEvts.where((s) {
                     final t = s['start_time']?.toString() ?? '';
                     if (t.isEmpty) return false;
@@ -1541,13 +1410,13 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                     // Events for that day
                     ...dayItems.map((s) {
                       final color =
-                          _classColor(s['class_name']?.toString());
+                      _classColor(s['class_name']?.toString());
                       final title = s['lecture_title']?.toString() ??
                           s['title']?.toString() ?? 'Untitled';
                       final startTime =
-                          _formatTime(s['start_time']?.toString());
+                      _formatTime(s['start_time']?.toString());
                       final endTime =
-                          _formatTime(s['end_time']?.toString());
+                      _formatTime(s['end_time']?.toString());
                       final meetUrl = s['meet_url']?.toString() ?? '';
                       return GestureDetector(
                         onTap: () => _showEditScheduleModal(s),
@@ -1564,7 +1433,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       '$startTime – $endTime',
@@ -1590,9 +1459,9 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                                                 color: Colors.white,
                                                 fontSize: 13,
                                                 fontWeight:
-                                                    FontWeight.w600),
+                                                FontWeight.w600),
                                             overflow:
-                                                TextOverflow.ellipsis,
+                                            TextOverflow.ellipsis,
                                           ),
                                         ),
                                       ],
@@ -1609,7 +1478,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                                     decoration: BoxDecoration(
                                       color: Colors.white.withOpacity(0.2),
                                       borderRadius:
-                                          BorderRadius.circular(6),
+                                      BorderRadius.circular(6),
                                     ),
                                     child: const Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -1622,7 +1491,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                                                 color: Colors.white,
                                                 fontSize: 11,
                                                 fontWeight:
-                                                    FontWeight.w700)),
+                                                FontWeight.w700)),
                                       ],
                                     ),
                                   ),
@@ -1729,7 +1598,7 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
     final daysInMonth = DateUtils.getDaysInMonth(
         _focusedMonth.year, _focusedMonth.month);
     final firstDay =
-        DateTime(_focusedMonth.year, _focusedMonth.month, 1);
+    DateTime(_focusedMonth.year, _focusedMonth.month, 1);
     final startWeekday = firstDay.weekday % 7; // 0=Sun
 
     const double headerH = 44.0;
@@ -1741,256 +1610,256 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
       final availableH = constraints.maxHeight - headerH - labelH;
       final cellH = (availableH / totalRows).clamp(52.0, 100.0);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F5),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8D5CC), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Month navigator
-          SizedBox(
-            height: headerH,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.chevron_left,
-                      color: Color(0xFFBF360C), size: 22),
-                  onPressed: () => setState(() {
-                    _focusedMonth = DateTime(
-                        _focusedMonth.year, _focusedMonth.month - 1);
-                    _selectedDay = null;
-                  }),
-                ),
-                Expanded(
-                  child: Text(
-                    _fmtMonthYear(_focusedMonth),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Color(0xFFBF360C),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700),
+      return Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8F5),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE8D5CC), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Month navigator
+            SizedBox(
+              height: headerH,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left,
+                        color: Color(0xFFBF360C), size: 22),
+                    onPressed: () => setState(() {
+                      _focusedMonth = DateTime(
+                          _focusedMonth.year, _focusedMonth.month - 1);
+                      _selectedDay = null;
+                    }),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.chevron_right,
-                      color: Color(0xFFBF360C), size: 22),
-                  onPressed: () => setState(() {
-                    _focusedMonth = DateTime(
-                        _focusedMonth.year, _focusedMonth.month + 1);
-                    _selectedDay = null;
-                  }),
-                ),
-              ],
-            ),
-          ),
-
-          // Day labels (S M T W T F S)
-          Container(
-            height: labelH,
-            decoration: const BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Color(0xFFE8D5CC)),
-                bottom: BorderSide(color: Color(0xFFE8D5CC)),
-              ),
-            ),
-            child: Row(
-              children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                  .map((d) => Expanded(
-                        child: Center(
-                          child: Text(d,
-                              style: const TextStyle(
-                                  color: Color(0xFFBF360C),
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700)),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-
-          // Date grid with event chips
-          Expanded(
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                mainAxisExtent: cellH,
-              ),
-              itemCount: startWeekday + daysInMonth,
-              itemBuilder: (ctx, index) {
-                if (index < startWeekday) {
-                  // Empty cell before month start
-                  return Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: const Color(0xFFE8D5CC).withOpacity(0.6),
-                          width: 0.5),
+                  Expanded(
+                    child: Text(
+                      _fmtMonthYear(_focusedMonth),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Color(0xFFBF360C),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700),
                     ),
-                  );
-                }
-                final day = index - startWeekday + 1;
-                final date = DateTime(
-                    _focusedMonth.year, _focusedMonth.month, day);
-                final dayEvents = _schedulesForDay(date);
-                final isToday = DateUtils.isSameDay(date, DateTime.now());
-                final isSelected = DateUtils.isSameDay(date, _selectedDay);
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right,
+                        color: Color(0xFFBF360C), size: 22),
+                    onPressed: () => setState(() {
+                      _focusedMonth = DateTime(
+                          _focusedMonth.year, _focusedMonth.month + 1);
+                      _selectedDay = null;
+                    }),
+                  ),
+                ],
+              ),
+            ),
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() => _selectedDay =
-                        DateUtils.isSameDay(date, _selectedDay)
-                            ? null
-                            : date);
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? const Color(0xFFBF360C).withOpacity(0.12)
-                          : isToday
-                              ? const Color(0xFFBF360C).withOpacity(0.05)
-                              : Colors.white,
-                      border: Border.all(
-                        color: isSelected
-                            ? const Color(0xFFBF360C)
-                            : isToday
-                                ? const Color(0xFFBF360C).withOpacity(0.5)
-                                : const Color(0xFFE8D5CC).withOpacity(0.8),
-                        width: isSelected || isToday ? 1.5 : 0.5,
+            // Day labels (S M T W T F S)
+            Container(
+              height: labelH,
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Color(0xFFE8D5CC)),
+                  bottom: BorderSide(color: Color(0xFFE8D5CC)),
+                ),
+              ),
+              child: Row(
+                children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                    .map((d) => Expanded(
+                  child: Center(
+                    child: Text(d,
+                        style: const TextStyle(
+                            color: Color(0xFFBF360C),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700)),
+                  ),
+                ))
+                    .toList(),
+              ),
+            ),
+
+            // Date grid with event chips
+            Expanded(
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 7,
+                  mainAxisSpacing: 0,
+                  crossAxisSpacing: 0,
+                  mainAxisExtent: cellH,
+                ),
+                itemCount: startWeekday + daysInMonth,
+                itemBuilder: (ctx, index) {
+                  if (index < startWeekday) {
+                    // Empty cell before month start
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: const Color(0xFFE8D5CC).withOpacity(0.6),
+                            width: 0.5),
                       ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Date number top-right
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            margin: const EdgeInsets.all(4),
-                            width: 22,
-                            height: 22,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? const Color(0xFFBF360C)
-                                  : isToday
-                                      ? const Color(0xFFBF360C)
-                                      : Colors.transparent,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '$day',
-                                style: TextStyle(
-                                  color: isSelected || isToday
-                                      ? Colors.white
-                                      : const Color(0xFF3E1000),
-                                  fontSize: 11,
-                                  fontWeight: isSelected || isToday
-                                      ? FontWeight.w800
-                                      : FontWeight.w500,
+                    );
+                  }
+                  final day = index - startWeekday + 1;
+                  final date = DateTime(
+                      _focusedMonth.year, _focusedMonth.month, day);
+                  final dayEvents = _schedulesForDay(date);
+                  final isToday = DateUtils.isSameDay(date, DateTime.now());
+                  final isSelected = DateUtils.isSameDay(date, _selectedDay);
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() => _selectedDay =
+                      DateUtils.isSameDay(date, _selectedDay)
+                          ? null
+                          : date);
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? const Color(0xFFBF360C).withOpacity(0.12)
+                            : isToday
+                            ? const Color(0xFFBF360C).withOpacity(0.05)
+                            : Colors.white,
+                        border: Border.all(
+                          color: isSelected
+                              ? const Color(0xFFBF360C)
+                              : isToday
+                              ? const Color(0xFFBF360C).withOpacity(0.5)
+                              : const Color(0xFFE8D5CC).withOpacity(0.8),
+                          width: isSelected || isToday ? 1.5 : 0.5,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Date number top-right
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Container(
+                              margin: const EdgeInsets.all(4),
+                              width: 22,
+                              height: 22,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? const Color(0xFFBF360C)
+                                    : isToday
+                                    ? const Color(0xFFBF360C)
+                                    : Colors.transparent,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$day',
+                                  style: TextStyle(
+                                    color: isSelected || isToday
+                                        ? Colors.white
+                                        : const Color(0xFF3E1000),
+                                    fontSize: 11,
+                                    fontWeight: isSelected || isToday
+                                        ? FontWeight.w800
+                                        : FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
 
-                        // Event chips (max 2, then "+N more")
-                        if (dayEvents.isNotEmpty)
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(2, 0, 2, 2),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  ...dayEvents.take(2).map((s) {
-                                    final color = _classColor(
-                                        s['class_name']?.toString());
-                                    final title = s['lecture_title']
+                          // Event chips (max 2, then "+N more")
+                          if (dayEvents.isNotEmpty)
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(2, 0, 2, 2),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    ...dayEvents.take(2).map((s) {
+                                      final color = _classColor(
+                                          s['class_name']?.toString());
+                                      final title = s['lecture_title']
+                                          ?.toString() ??
+                                          s['title']?.toString() ??
+                                          'Untitled';
+                                      final startTime = _formatTime(
+                                          s['start_time']?.toString());
+                                      // Short time e.g. "12:45p"
+                                      String shortTime = '';
+                                      try {
+                                        final parts = (s['start_time']
                                             ?.toString() ??
-                                        s['title']?.toString() ??
-                                        'Untitled';
-                                    final startTime = _formatTime(
-                                        s['start_time']?.toString());
-                                    // Short time e.g. "12:45p"
-                                    String shortTime = '';
-                                    try {
-                                      final parts = (s['start_time']
-                                                  ?.toString() ??
-                                              '')
-                                          .split(':');
-                                      int h = int.parse(parts[0]);
-                                      final m = parts.length > 1
-                                          ? parts[1]
-                                          : '00';
-                                      final ampm = h >= 12 ? 'p' : 'a';
-                                      if (h > 12) h -= 12;
-                                      if (h == 0) h = 12;
-                                      shortTime = '$h:${m}$ampm';
-                                    } catch (_) {
-                                      shortTime = startTime;
-                                    }
-                                    return LayoutBuilder(
-                                      builder: (ctx, bc) {
-                                        // Cell width se font size compute karo
-                                        final chipFontSize = (bc.maxWidth / 9).clamp(7.0, 11.0);
-                                        return Container(
-                                          margin: const EdgeInsets.only(bottom: 1),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 3, vertical: 1),
-                                          decoration: BoxDecoration(
-                                            color: color,
-                                            borderRadius: BorderRadius.circular(3),
-                                          ),
-                                          child: Text(
-                                            '$shortTime $title',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: chipFontSize,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        );
+                                            '')
+                                            .split(':');
+                                        int h = int.parse(parts[0]);
+                                        final m = parts.length > 1
+                                            ? parts[1]
+                                            : '00';
+                                        final ampm = h >= 12 ? 'p' : 'a';
+                                        if (h > 12) h -= 12;
+                                        if (h == 0) h = 12;
+                                        shortTime = '$h:${m}$ampm';
+                                      } catch (_) {
+                                        shortTime = startTime;
                                       }
-                                    );
-                                  }),
-                                  if (dayEvents.length > 2)
-                                    Text(
-                                      '+${dayEvents.length - 2} more',
-                                      style: const TextStyle(
-                                        color: Color(0xFF8B949E),
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.w600,
+                                      return LayoutBuilder(
+                                          builder: (ctx, bc) {
+                                            // Cell width se font size compute karo
+                                            final chipFontSize = (bc.maxWidth / 9).clamp(7.0, 11.0);
+                                            return Container(
+                                              margin: const EdgeInsets.only(bottom: 1),
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 3, vertical: 1),
+                                              decoration: BoxDecoration(
+                                                color: color,
+                                                borderRadius: BorderRadius.circular(3),
+                                              ),
+                                              child: Text(
+                                                '$shortTime $title',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: chipFontSize,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            );
+                                          }
+                                      );
+                                    }),
+                                    if (dayEvents.length > 2)
+                                      Text(
+                                        '+${dayEvents.length - 2} more',
+                                        style: const TextStyle(
+                                          color: Color(0xFF8B949E),
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
     }); // end LayoutBuilder
   }
 
@@ -2090,8 +1959,8 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
                   gradient: daySchedules.isEmpty
                       ? null
                       : const LinearGradient(
-                          colors: [Color(0xFF3A5FD5), Color(0xFF5479F7)],
-                        ),
+                    colors: [Color(0xFF3A5FD5), Color(0xFF5479F7)],
+                  ),
                   color: daySchedules.isEmpty
                       ? const Color(0xFF3A1200)
                       : null,
@@ -2114,280 +1983,285 @@ class _LectureSchedulePageState extends State<LectureSchedulePage>
         Expanded(
           child: daySchedules.isEmpty
               ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: isTv ? 70 : 54,
-                        height: isTv ? 70 : 54,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
-                          shape: BoxShape.circle,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: isTv ? 70 : 54,
+                  height: isTv ? 70 : 54,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.05),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.event_busy_rounded,
+                      color: Colors.white.withOpacity(0.25),
+                      size: isTv ? 36 : 28),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'No classes scheduled',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.35),
+                    fontSize: isTv ? 18 : 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (_canAddSchedule) ...[
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: _showAddScheduleModal,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: isTv ? 28 : 20,
+                          vertical:   isTv ? 14 : 10),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF3A5FD5), Color(0xFF5479F7)],
                         ),
-                        child: Icon(Icons.event_busy_rounded,
-                            color: Colors.white.withOpacity(0.25),
-                            size: isTv ? 36 : 28),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'No classes scheduled',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.35),
-                          fontSize: isTv ? 18 : 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      if (_canAddSchedule) ...[
-                        const SizedBox(height: 16),
-                        GestureDetector(
-                          onTap: _showAddScheduleModal,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: isTv ? 28 : 20,
-                                vertical:   isTv ? 14 : 10),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF3A5FD5), Color(0xFF5479F7)],
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFFBF360C)
-                                      .withOpacity(0.35),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.add_circle_outline_rounded,
-                                    color: Colors.white, size: isTv ? 22 : 16),
-                                SizedBox(width: isTv ? 10 : 6),
-                                Text('Add Schedule',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: isTv ? 16 : 13,
-                                        fontWeight: FontWeight.w700)),
-                              ],
-                            ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFBF360C)
+                                .withOpacity(0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add_circle_outline_rounded,
+                              color: Colors.white, size: isTv ? 22 : 16),
+                          SizedBox(width: isTv ? 10 : 6),
+                          Text('Add Schedule',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: isTv ? 16 : 13,
+                                  fontWeight: FontWeight.w700)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          )
+              : ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            itemCount: daySchedules.length,
+            itemBuilder: (ctx, i) {
+              final s = daySchedules[i];
+              final color = _classColor(s['class_name']?.toString());
+              final title = s['lecture_title']?.toString() ??
+                  s['title']?.toString() ?? 'Untitled';
+              final startTime = _formatTime(s['start_time']?.toString());
+              final endTime   = _formatTime(s['end_time']?.toString());
+              final mentor = s['mentor_name']?.toString() ??
+                  s['teacher']?.toString() ?? '';
+              final batch   = s['batch_name']?.toString() ?? '';
+              final meetUrl = s['meet_url']?.toString() ?? '';
+
+              return GestureDetector(
+                onTap: () => _showEditScheduleModal(s),
+                child: Container(
+                  margin: EdgeInsets.only(bottom: isTv ? 14 : 10),
+                  decoration: BoxDecoration(
+                    color: (_scheduleFocused && _focusedScheduleIndex == i)
+                        ? const Color(0xFF2A0C00)
+                        : const Color(0xFF1A0800),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color: (_scheduleFocused && _focusedScheduleIndex == i)
+                            ? const Color(0xFFBF360C)
+                            : const Color(0xFF3A1200),
+                        width: (_scheduleFocused && _focusedScheduleIndex == i) ? 2.5 : 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.25),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
                     ],
                   ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  itemCount: daySchedules.length,
-                  itemBuilder: (ctx, i) {
-                    final s = daySchedules[i];
-                    final color = _classColor(s['class_name']?.toString());
-                    final title = s['lecture_title']?.toString() ??
-                        s['title']?.toString() ?? 'Untitled';
-                    final startTime = _formatTime(s['start_time']?.toString());
-                    final endTime   = _formatTime(s['end_time']?.toString());
-                    final mentor = s['mentor_name']?.toString() ??
-                        s['teacher']?.toString() ?? '';
-                    final batch   = s['batch_name']?.toString() ?? '';
-                    final meetUrl = s['meet_url']?.toString() ?? '';
-
-                    return GestureDetector(
-                      onTap: () => _showEditScheduleModal(s),
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: isTv ? 14 : 10),
+                  child: Row(
+                    children: [
+                      // Color accent left bar
+                      Container(
+                        width: isTv ? 8 : 6,
+                        height: isTv ? 90 : 76,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1A0800),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                              color: const Color(0xFF3A1200), width: 1.5),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.25),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                          color: color,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            bottomLeft: Radius.circular(16),
+                          ),
                         ),
-                        child: Row(
+                      ),
+                      SizedBox(width: isTv ? 18 : 14),
+
+                      // Time block
+                      Container(
+                        width: isTv ? 90 : 72,
+                        padding: EdgeInsets.symmetric(
+                            vertical: isTv ? 10 : 8,
+                            horizontal: isTv ? 8 : 6),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: color.withOpacity(0.3)),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Color accent left bar
-                            Container(
-                              width: isTv ? 8 : 6,
-                              height: isTv ? 90 : 76,
-                              decoration: BoxDecoration(
+                            Text(
+                              startTime,
+                              style: TextStyle(
                                 color: color,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(16),
-                                  bottomLeft: Radius.circular(16),
-                                ),
+                                fontSize: isTv ? 14 : 11,
+                                fontWeight: FontWeight.w800,
                               ),
+                              textAlign: TextAlign.center,
                             ),
-                            SizedBox(width: isTv ? 18 : 14),
-
-                            // Time block
                             Container(
-                              width: isTv ? 90 : 72,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: isTv ? 10 : 8,
-                                  horizontal: isTv ? 8 : 6),
-                              decoration: BoxDecoration(
-                                color: color.withOpacity(0.12),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: color.withOpacity(0.3)),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    startTime,
-                                    style: TextStyle(
-                                      color: color,
-                                      fontSize: isTv ? 14 : 11,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 3),
-                                    color: color.withOpacity(0.3),
-                                  ),
-                                  Text(
-                                    endTime,
-                                    style: TextStyle(
-                                      color: color.withOpacity(0.7),
-                                      fontSize: isTv ? 13 : 10,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
+                              height: 1,
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 3),
+                              color: color.withOpacity(0.3),
                             ),
-                            SizedBox(width: isTv ? 16 : 12),
-
-                            // Main info
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: isTv ? 14 : 10),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      title,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: isTv ? 18 : isTab ? 15 : 13,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: isTv ? 6 : 4),
-                                    if (mentor.isNotEmpty)
-                                      Row(
-                                        children: [
-                                          Icon(Icons.person_rounded,
-                                              color: Colors.white38,
-                                              size: isTv ? 16 : 13),
-                                          const SizedBox(width: 4),
-                                          Text(mentor,
-                                              style: TextStyle(
-                                                color: Colors.white54,
-                                                fontSize: isTv ? 14 : 11,
-                                              )),
-                                        ],
-                                      ),
-                                    if (batch.isNotEmpty) ...[
-                                      const SizedBox(height: 2),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.group_rounded,
-                                              color: Colors.white38,
-                                              size: isTv ? 16 : 13),
-                                          const SizedBox(width: 4),
-                                          Flexible(
-                                            child: Text(batch,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  color: Colors.white38,
-                                                  fontSize: isTv ? 13 : 11,
-                                                )),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ],
-                                ),
+                            Text(
+                              endTime,
+                              style: TextStyle(
+                                color: color.withOpacity(0.7),
+                                fontSize: isTv ? 13 : 10,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ),
-
-                            // Right: join + chevron
-                            Padding(
-                              padding: EdgeInsets.only(right: isTv ? 16 : 12),
-                              child: Row(
-                                children: [
-                                  if (meetUrl.isNotEmpty)
-                                    GestureDetector(
-                                      onTap: () => _launchMeetUrl(meetUrl),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: isTv ? 16 : 12,
-                                            vertical:   isTv ? 10 : 7),
-                                        decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFF0EA877),
-                                              Color(0xFF14B8A6),
-                                            ],
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: const Color(0xFF14B8A6)
-                                                  .withOpacity(0.35),
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 3),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.video_call_rounded,
-                                                color: Colors.white,
-                                                size: isTv ? 20 : 15),
-                                            SizedBox(width: isTv ? 6 : 4),
-                                            Text('Join',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: isTv ? 15 : 12,
-                                                    fontWeight:
-                                                        FontWeight.w700)),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  SizedBox(width: isTv ? 10 : 8),
-                                  Icon(Icons.chevron_right_rounded,
-                                      color: Colors.white24,
-                                      size: isTv ? 26 : 20),
-                                ],
-                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
                       ),
-                    );
-                  },
+                      SizedBox(width: isTv ? 16 : 12),
+
+                      // Main info
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: isTv ? 14 : 10),
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: isTv ? 18 : isTab ? 15 : 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: isTv ? 6 : 4),
+                              if (mentor.isNotEmpty)
+                                Row(
+                                  children: [
+                                    Icon(Icons.person_rounded,
+                                        color: Colors.white38,
+                                        size: isTv ? 16 : 13),
+                                    const SizedBox(width: 4),
+                                    Text(mentor,
+                                        style: TextStyle(
+                                          color: Colors.white54,
+                                          fontSize: isTv ? 14 : 11,
+                                        )),
+                                  ],
+                                ),
+                              if (batch.isNotEmpty) ...[
+                                const SizedBox(height: 2),
+                                Row(
+                                  children: [
+                                    Icon(Icons.group_rounded,
+                                        color: Colors.white38,
+                                        size: isTv ? 16 : 13),
+                                    const SizedBox(width: 4),
+                                    Flexible(
+                                      child: Text(batch,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.white38,
+                                            fontSize: isTv ? 13 : 11,
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Right: join + chevron
+                      Padding(
+                        padding: EdgeInsets.only(right: isTv ? 16 : 12),
+                        child: Row(
+                          children: [
+                            if (meetUrl.isNotEmpty)
+                              GestureDetector(
+                                onTap: () => _launchMeetUrl(meetUrl),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: isTv ? 16 : 12,
+                                      vertical:   isTv ? 10 : 7),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFF0EA877),
+                                        Color(0xFF14B8A6),
+                                      ],
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF14B8A6)
+                                            .withOpacity(0.35),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.video_call_rounded,
+                                          color: Colors.white,
+                                          size: isTv ? 20 : 15),
+                                      SizedBox(width: isTv ? 6 : 4),
+                                      Text('Join',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: isTv ? 15 : 12,
+                                              fontWeight:
+                                              FontWeight.w700)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            SizedBox(width: isTv ? 10 : 8),
+                            Icon(Icons.chevron_right_rounded,
+                                color: Colors.white24,
+                                size: isTv ? 26 : 20),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -2460,7 +2334,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
     );
     if (d != null) {
       _dateCtrl.text =
-          '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     }
   }
 
@@ -2538,7 +2412,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
               decoration: const BoxDecoration(
                 color: Color(0xFFBF360C),
                 borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(16)),
+                BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: const Row(
                 children: [
@@ -2571,12 +2445,12 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                         Expanded(
                             child: _buildTimePick(
                                 'Start Time', _startTime,
-                                () => _pickTime(true))),
+                                    () => _pickTime(true))),
                         const SizedBox(width: 12),
                         Expanded(
                             child: _buildTimePick(
                                 'End Time', _endTime,
-                                () => _pickTime(false))),
+                                    () => _pickTime(false))),
                       ],
                     ),
                     const SizedBox(height: 14),
@@ -2589,23 +2463,23 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                     const SizedBox(height: 14),
                     widget.batches.isNotEmpty
                         ? _buildDropdown(
-                            'Batch',
-                            widget.batches,
-                            'batch_name',
-                            _batchId,
-                            (v) => setState(() => _batchId = v),
-                          )
+                      'Batch',
+                      widget.batches,
+                      'batch_name',
+                      _batchId,
+                          (v) => setState(() => _batchId = v),
+                    )
                         : _buildEmptyDropdownHint('Batch', 'No batches found'),
                     // ── Mentor dropdown — hamesha dikhao
                     const SizedBox(height: 14),
                     widget.mentors.isNotEmpty
                         ? _buildDropdown(
-                            'Mentor',
-                            widget.mentors,
-                            'name',
-                            _mentorId,
-                            (v) => setState(() => _mentorId = v),
-                          )
+                      'Mentor',
+                      widget.mentors,
+                      'name',
+                      _mentorId,
+                          (v) => setState(() => _mentorId = v),
+                    )
                         : _buildEmptyDropdownHint('Mentor', 'No mentors found'),
                   ],
                 ),
@@ -2629,7 +2503,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                         side: const BorderSide(
                             color: Color(0xFF374151)),
                         padding:
-                            const EdgeInsets.symmetric(vertical: 12),
+                        const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                       ),
@@ -2643,19 +2517,19 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFBF360C),
                         padding:
-                            const EdgeInsets.symmetric(vertical: 12),
+                        const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                       ),
                       child: _isSaving
                           ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                  color: Colors.white, strokeWidth: 2))
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                              color: Colors.white, strokeWidth: 2))
                           : const Text('Save Schedule',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700)),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700)),
                     ),
                   ),
                 ],
@@ -2689,15 +2563,15 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFFBF360C))),
+                const BorderSide(color: Color(0xFFBF360C))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
@@ -2730,11 +2604,11 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF3A1200))),
+                    const BorderSide(color: Color(0xFF3A1200))),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF3A1200))),
+                    const BorderSide(color: Color(0xFF3A1200))),
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12, vertical: 10),
               ),
@@ -2809,28 +2683,28 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
           items: _colorOptions
               .map((c) => DropdownMenuItem(
-                    value: c,
-                    child: Row(children: [
-                      Container(
-                          width: 12,
-                          height: 12,
-                          decoration: BoxDecoration(
-                              color: _colorSwatch(c),
-                              shape: BoxShape.circle)),
-                      const SizedBox(width: 8),
-                      Text(c),
-                    ]),
-                  ))
+            value: c,
+            child: Row(children: [
+              Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                      color: _colorSwatch(c),
+                      shape: BoxShape.circle)),
+              const SizedBox(width: 8),
+              Text(c),
+            ]),
+          ))
               .toList(),
           onChanged: (v) => setState(() => _color = v ?? 'Green'),
         ),
@@ -2875,22 +2749,22 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
           items: validItems
               .map((item) => DropdownMenuItem<String>(
-                    value: item['id']?.toString() ?? '',
-                    child: Text(
-                        item[nameKey]?.toString() ?? '',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.white)),
-                  ))
+            value: item['id']?.toString() ?? '',
+            child: Text(
+                item[nameKey]?.toString() ?? '',
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.white)),
+          ))
               .toList(),
           onChanged: onChanged,
         ),
@@ -2912,7 +2786,7 @@ class _AddScheduleDialogState extends State<_AddScheduleDialog> {
         Container(
           width: double.infinity,
           padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+          const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
           decoration: BoxDecoration(
             color: const Color(0xFF1A0800),
             borderRadius: BorderRadius.circular(8),
@@ -3054,7 +2928,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
     );
     if (d != null) {
       _dateCtrl.text =
-          '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     }
   }
 
@@ -3119,7 +2993,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
               decoration: const BoxDecoration(
                 color: Color(0xFF3A1200),
                 borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(16)),
+                BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Row(
                 children: [
@@ -3284,15 +3158,15 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFFBF360C))),
+                const BorderSide(color: Color(0xFFBF360C))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
@@ -3317,7 +3191,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
             child: TextField(
               controller: _dateCtrl,
               style:
-                  const TextStyle(color: Colors.white, fontSize: 14),
+              const TextStyle(color: Colors.white, fontSize: 14),
               decoration: InputDecoration(
                 suffixIcon: const Icon(Icons.calendar_today_rounded,
                     color: Color(0xFFBF360C), size: 18),
@@ -3326,11 +3200,11 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF3A1200))),
+                    const BorderSide(color: Color(0xFF3A1200))),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Color(0xFF3A1200))),
+                    const BorderSide(color: Color(0xFF3A1200))),
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12, vertical: 10),
               ),
@@ -3361,7 +3235,7 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
               color: const Color(0xFF1A0800),
               borderRadius: BorderRadius.circular(8),
               border:
-                  Border.all(color: const Color(0xFF3A1200)),
+              Border.all(color: const Color(0xFF3A1200)),
             ),
             child: Row(
               children: [
@@ -3399,35 +3273,35 @@ class _EditScheduleDialogState extends State<_EditScheduleDialog> {
           value: _colorOptions.contains(_color) ? _color : 'Green',
           dropdownColor: const Color(0xFF1A0800),
           style:
-              const TextStyle(color: Colors.white, fontSize: 14),
+          const TextStyle(color: Colors.white, fontSize: 14),
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color(0xFF1A0800),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF3A1200))),
+                const BorderSide(color: Color(0xFF3A1200))),
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 10),
           ),
           items: _colorOptions
               .map((c) => DropdownMenuItem(
-                    value: c,
-                    child: Row(children: [
-                      Container(
-                          width: 12,
-                          height: 12,
-                          decoration: BoxDecoration(
-                              color: _colorSwatch(c),
-                              shape: BoxShape.circle)),
-                      const SizedBox(width: 8),
-                      Text(c),
-                    ]),
-                  ))
+            value: c,
+            child: Row(children: [
+              Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                      color: _colorSwatch(c),
+                      shape: BoxShape.circle)),
+              const SizedBox(width: 8),
+              Text(c),
+            ]),
+          ))
               .toList(),
           onChanged: (v) =>
               setState(() => _color = v ?? 'Green'),
@@ -3518,7 +3392,7 @@ class _VideoConferenceWebViewState extends State<_VideoConferenceWebView> {
       final androidCtrl = _controller.platform as AndroidWebViewController;
       androidCtrl.setMediaPlaybackRequiresUserGesture(false);
       androidCtrl.setOnPlatformPermissionRequest(
-        (request) => request.grant(),
+            (request) => request.grant(),
       );
     }
   }

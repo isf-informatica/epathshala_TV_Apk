@@ -138,7 +138,7 @@ class _SubjectsPageState extends State<SubjectsPage>
 
     // Find which index matches the initially selected medium
     _selectedMediumIndex = _sidebarItems.indexWhere(
-      (item) => item['medium'].toString() == widget.medium,
+          (item) => item['medium'].toString() == widget.medium,
     );
     if (_selectedMediumIndex < 0) _selectedMediumIndex = 0;
 
@@ -228,12 +228,12 @@ class _SubjectsPageState extends State<SubjectsPage>
 
     // Strategy 1: medium word match
     dynamic course = courses.cast<dynamic>().firstWhere(
-      (c) => (c['course_name'] ?? '').toString().toLowerCase().contains(mediumWord),
+          (c) => (c['course_name'] ?? '').toString().toLowerCase().contains(mediumWord),
       orElse: () => null,
     );
     // Strategy 2: grade number match
     course ??= courses.cast<dynamic>().firstWhere(
-      (c) => (c['course_name'] ?? '').toString().contains(gradeStr),
+          (c) => (c['course_name'] ?? '').toString().contains(gradeStr),
       orElse: () => null,
     );
     // Strategy 3: first course fallback
@@ -626,10 +626,20 @@ class _SubjectsPageState extends State<SubjectsPage>
         });
       });
     } else if (label == 'Library') {
-      _openLibrary();
+      final regId = widget.loginData['reg_id']?.toString() ?? '';
+      final permissions = widget.loginData['permissions']?.toString() ?? 'Student';
+      Navigator.push(context, PageRouteBuilder(
+        pageBuilder: (_, __, ___) => LibraryPage(
+          regId: regId,
+          permissions: permissions,
+          loginData: widget.loginData,
+        ),
+        transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ));
     } else if (label == 'Boards') {
       _openBoards();
-   
+
     } else if (label == 'Tools') {
       _openTools();
     } else {
@@ -649,12 +659,12 @@ class _SubjectsPageState extends State<SubjectsPage>
         transitionDuration: const Duration(milliseconds: 300),
       ),
     ).then((_) {
-        if (mounted) setState(() {
-          _activeSidebarItem  = 'Courses';
-          _sidebarNavIndex    = 0;
-          _sidebarFocused     = false;
-        });
+      if (mounted) setState(() {
+        _activeSidebarItem  = 'Courses';
+        _sidebarNavIndex    = 0;
+        _sidebarFocused     = false;
       });
+    });
   }
 
   // void _openWhiteboard() {
@@ -681,12 +691,12 @@ class _SubjectsPageState extends State<SubjectsPage>
         transitionDuration: const Duration(milliseconds: 300),
       ),
     ).then((_) {
-        if (mounted) setState(() {
-          _activeSidebarItem  = 'Courses';
-          _sidebarNavIndex    = 0;
-          _sidebarFocused     = false;
-        });
+      if (mounted) setState(() {
+        _activeSidebarItem  = 'Courses';
+        _sidebarNavIndex    = 0;
+        _sidebarFocused     = false;
       });
+    });
   }
 
   // ── White Board open karo ────────────────────────────────────
@@ -717,7 +727,7 @@ class _SubjectsPageState extends State<SubjectsPage>
     setState(() { _libLoading = true; _libError = null; });
     try {
       final regId      = widget.loginData['reg_id']?.toString() ??
-                         widget.loginData['reg_id_k12']?.toString() ?? '';
+          widget.loginData['reg_id_k12']?.toString() ?? '';
       final permissions = widget.loginData['permissions']?.toString() ?? 'School';
       final books = await ApiService.getLibraryBooks(
         regId: regId, permissions: permissions,
@@ -761,7 +771,7 @@ class _SubjectsPageState extends State<SubjectsPage>
     final bookDoc  = book['book_doc']?.toString()  ?? '';
     if (bookDoc.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('PDF available nahi hai.'), backgroundColor: Colors.orange));
+          content: Text('PDF available nahi hai.'), backgroundColor: Colors.orange));
       return;
     }
     final chapterMap = {
@@ -991,10 +1001,10 @@ class _SubjectsPageState extends State<SubjectsPage>
           Expanded(child: Center(child: Text(_libError!,
               style: const TextStyle(color: Colors.red, fontSize: 16))))
         else if (_libFiltered.isEmpty)
-          const Expanded(child: Center(child: Text('No books found',
-              style: TextStyle(color: Colors.white70, fontSize: 20))))
-        else
-          _buildLibGrid(),
+            const Expanded(child: Center(child: Text('No books found',
+                style: TextStyle(color: Colors.white70, fontSize: 20))))
+          else
+            _buildLibGrid(),
       ],
     );
   }
@@ -1028,7 +1038,7 @@ class _SubjectsPageState extends State<SubjectsPage>
                 const SizedBox(width: 30),
                 Expanded(child: _libColWidget(
                     List.generate(rightCount,
-                        (i) => _libBookRow(pageStart + leftCount + i, rowH)),
+                            (i) => _libBookRow(pageStart + leftCount + i, rowH)),
                     colH, tubeW, tubeOffset)),
               ]),
             )),
@@ -1050,13 +1060,13 @@ class _SubjectsPageState extends State<SubjectsPage>
                             ? Colors.white.withOpacity(0.12) : Colors.transparent,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: _libFocusOnMore ? Colors.white54 : Colors.transparent,
-                          width: 1.5),
+                            color: _libFocusOnMore ? Colors.white54 : Colors.transparent,
+                            width: 1.5),
                       ),
                       child: Text('More...', style: TextStyle(
-                        color: _libFocusOnMore
-                            ? const Color(0xFFBF360C) : Colors.white,
-                        fontSize: 28, fontWeight: FontWeight.w700)),
+                          color: _libFocusOnMore
+                              ? const Color(0xFFBF360C) : Colors.white,
+                          fontSize: 28, fontWeight: FontWeight.w700)),
                     ),
                   ),
                 ),
@@ -1102,24 +1112,24 @@ class _SubjectsPageState extends State<SubjectsPage>
               : Border.all(color: const Color(0xFFE8D5CC), width: 1),
           boxShadow: isFocused
               ? [BoxShadow(color: const Color(0xFFBF360C).withOpacity(0.25),
-                  blurRadius: 8, offset: const Offset(0, 2))]
+              blurRadius: 8, offset: const Offset(0, 2))]
               : [],
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             SizedBox(width: 46, child: Text(displayNum, style: TextStyle(
-              color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
-              fontSize: 26, fontWeight: FontWeight.w700))),
+                color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
+                fontSize: 26, fontWeight: FontWeight.w700))),
             Expanded(child: Column(
               mainAxisAlignment:  MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(bookName, maxLines: 1, overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
-                      fontSize: 24,
-                      fontWeight: isFocused ? FontWeight.w700 : FontWeight.w600)),
+                        color: isFocused ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
+                        fontSize: 24,
+                        fontWeight: isFocused ? FontWeight.w700 : FontWeight.w600)),
                 if (author.isNotEmpty)
                   Text(author, maxLines: 1, overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: Color(0xFF8B5E52), fontSize: 14)),
@@ -1144,207 +1154,171 @@ class _SubjectsPageState extends State<SubjectsPage>
     return Stack(
       children: [
         Container(
-      width: sidebarWidth,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF1A0800), Color(0xFF3A1200)],
-        ),
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(32),
-          bottomRight: Radius.circular(32),
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x88000000),
-            blurRadius: 16,
-            offset: Offset(4, 0),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          // ── Logo box top ──────────────────────────────────────
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              screenWidth < 600 ? 8 : 14,
-              screenWidth < 600 ? 8 : 14,
-              screenWidth < 600 ? 8 : 14,
-              10,
+          width: sidebarWidth,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF1A0800), Color(0xFF3A1200)],
             ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  vertical: screenWidth < 600 ? 6 : 10,
-                  horizontal: screenWidth < 600 ? 6 : 10,
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(32),
+              bottomRight: Radius.circular(32),
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x88000000),
+                blurRadius: 16,
+                offset: Offset(4, 0),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              // ── Logo box top ──────────────────────────────────────
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  screenWidth < 600 ? 8 : 14,
+                  screenWidth < 600 ? 8 : 14,
+                  screenWidth < 600 ? 8 : 14,
+                  10,
                 ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF8F5),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3), width: 1.5),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/logo_easylearn.png',
-                      height: screenWidth < 600 ? 36 : 50,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.school,
-                        color: const Color(0xFFBF360C),
-                        size: screenWidth < 600 ? 30 : 42,
-                      ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenWidth < 600 ? 6 : 10,
+                      horizontal: screenWidth < 600 ? 6 : 10,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'EASY LEARN',
-                      style: TextStyle(
-                        color: const Color(0xFFBF360C),
-                        fontSize: screenWidth < 600 ? 9 : 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
-                      ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF8F5),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3), width: 1.5),
                     ),
-                    Text(
-                      'EDUCATION FOR ALL',
-                      style: TextStyle(
-                        color: const Color(0xFFBF7060),
-                        fontSize: screenWidth < 600 ? 6 : 7.5,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.8,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/logo_easylearn.png',
+                          height: screenWidth < 600 ? 36 : 50,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.school,
+                            color: const Color(0xFFBF360C),
+                            size: screenWidth < 600 ? 30 : 42,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'EASY LEARN',
+                          style: TextStyle(
+                            color: const Color(0xFFBF360C),
+                            fontSize: screenWidth < 600 ? 9 : 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        Text(
+                          'EDUCATION FOR ALL',
+                          style: TextStyle(
+                            color: const Color(0xFFBF7060),
+                            fontSize: screenWidth < 600 ? 6 : 7.5,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
 
-          // ── Nav items — evenly fill all remaining height ──────
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _navItems.asMap().entries.map((entry) {
-                  final navIdx = entry.key;
-                  final label  = entry.value;
-                  final isActive   = label == _activeSidebarItem;
-                  final isTvFocus  = _sidebarFocused &&
-                      _sidebarZone == 'nav' &&
-                      navIdx == _sidebarNavIndex;
-                  return GestureDetector(
-                    onTap: () => _executeSidebarNavItem(label),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 130),
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth < 600 ? 10 : 20,
-                        vertical: isTvFocus ? 6 : 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isTvFocus
-                            ? Colors.white.withOpacity(0.10)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isTvFocus
-                              ? Colors.white38
-                              : Colors.transparent,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: isTvFocus ? 12 : 10,
-                            height: isTvFocus ? 12 : 10,
-                            decoration: BoxDecoration(
-                              color: isActive
-                                  ? const Color(0xFFBF360C)
-                                  : isTvFocus
+              // ── Nav items — evenly fill all remaining height ──────
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _navItems.asMap().entries.map((entry) {
+                      final navIdx = entry.key;
+                      final label  = entry.value;
+                      final isActive   = label == _activeSidebarItem;
+                      final isTvFocus  = _sidebarFocused &&
+                          _sidebarZone == 'nav' &&
+                          navIdx == _sidebarNavIndex;
+                      return GestureDetector(
+                        onTap: () => _executeSidebarNavItem(label),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 130),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth < 600 ? 10 : 20,
+                            vertical: isTvFocus ? 6 : 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isTvFocus
+                                ? Colors.white.withOpacity(0.10)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isTvFocus
+                                  ? Colors.white38
+                                  : Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: isTvFocus ? 12 : 10,
+                                height: isTvFocus ? 12 : 10,
+                                decoration: BoxDecoration(
+                                  color: isActive
+                                      ? const Color(0xFFBF360C)
+                                      : isTvFocus
                                       ? Colors.white
                                       : Colors.white60,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          SizedBox(width: screenWidth < 600 ? 6 : 12),
-                          Expanded(
-                            child: Text(
-                              label,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: isActive
-                                    ? const Color(0xFFBF360C)
-                                    : isTvFocus
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              SizedBox(width: screenWidth < 600 ? 6 : 12),
+                              Expanded(
+                                child: Text(
+                                  label,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: isActive
+                                        ? const Color(0xFFBF360C)
+                                        : isTvFocus
                                         ? Colors.white
                                         : Colors.white70,
-                                fontSize: screenWidth < 600
-                                    ? (isTvFocus ? 14 : 13)
-                                    : (isTvFocus ? 20 : 19),
-                                fontWeight: (isActive || isTvFocus)
-                                    ? FontWeight.w700
-                                    : FontWeight.w400,
+                                    fontSize: screenWidth < 600
+                                        ? (isTvFocus ? 14 : 13)
+                                        : (isTvFocus ? 20 : 19),
+                                    fontWeight: (isActive || isTvFocus)
+                                        ? FontWeight.w700
+                                        : FontWeight.w400,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
-            ),
-          ),
 
-          // ── Powered By Logo ───────────────────────────────────
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              screenWidth < 600 ? 8 : 12,
-              0,
-              screenWidth < 600 ? 8 : 12,
-              screenWidth < 600 ? 10 : 14,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Powered by',
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: screenWidth < 600 ? 7 : 9,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Image.asset(
-                  'assets/images/powered_by_logo.png',
-                  height: screenWidth < 600 ? 36 : 44,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Text(
-                    'EasyLearn',
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: screenWidth < 600 ? 8 : 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              // Powered by section removed
+            ],
           ),
-        ],
-      ),
         ),
         // ── Right side vertical border line ─────────────────────
         Positioned(
@@ -1468,35 +1442,35 @@ class _SubjectsPageState extends State<SubjectsPage>
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isFocused ? Colors.white : const Color(0xFFFFF3EE),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isFocused
                       ? const Color(0xFFBF360C)
-                      : const Color(0xFFE8D5CC),
-                  width: isFocused ? 3.5 : 1.5,
+                      : const Color(0xFFD4A090),
+                  width: isFocused ? 5.0 : 1.5,
                 ),
                 boxShadow: isFocused
                     ? [
-                        BoxShadow(
-                          color: const Color(0xFFBF360C).withOpacity(0.45),
-                          blurRadius: 24,
-                          spreadRadius: 3,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
+                  BoxShadow(
+                    color: const Color(0xFFBF360C).withOpacity(0.6),
+                    blurRadius: 28,
+                    spreadRadius: 4,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
                     : [
-                        const BoxShadow(
-                          color: Color(0x33000000),
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
+                  const BoxShadow(
+                    color: Color(0x55000000),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(14.5),
+                borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  color: const Color(0xFFFFF8F5),
+                  color: isFocused ? Colors.white : const Color(0xFFFFF3EE),
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1508,9 +1482,9 @@ class _SubjectsPageState extends State<SubjectsPage>
                         style: TextStyle(
                           color: isFocused
                               ? const Color(0xFFBF360C)
-                              : const Color(0xFF3E1000),
-                          fontSize: 22,
-                          fontWeight: isFocused ? FontWeight.w800 : FontWeight.w700,
+                              : const Color(0xFF5A2000),
+                          fontSize: isFocused ? 24 : 22,
+                          fontWeight: isFocused ? FontWeight.w900 : FontWeight.w700,
                           letterSpacing: 0.2,
                         ),
                       ),
@@ -1547,20 +1521,20 @@ class _SubjectsPageState extends State<SubjectsPage>
                 child: _showLibrary
                     ? _buildLibraryPanel()
                     : Container(
-                        color: const Color(0xFF1A0800),
-                        child: Column(
-                          children: [
-                            _buildHeader(),
-                            Expanded(
-                              child: isLoading
-                                  ? _buildLoadingState()
-                                  : topics.isEmpty
-                                      ? _buildEmptyState()
-                                      : _buildSubjectGrid(screenSize),
-                            ),
-                          ],
-                        ),
+                  color: const Color(0xFF1A0800),
+                  child: Column(
+                    children: [
+                      _buildHeader(),
+                      Expanded(
+                        child: isLoading
+                            ? _buildLoadingState()
+                            : topics.isEmpty
+                            ? _buildEmptyState()
+                            : _buildSubjectGrid(screenSize),
                       ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

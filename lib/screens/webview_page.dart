@@ -1,15 +1,19 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import 'webview_io_stub.dart'
-    if (dart.library.html) 'dart:ui_web' as ui_web;
+if (dart.library.html) 'dart:ui_web' as ui_web;
 import 'webview_io_stub.dart'
-    if (dart.library.html) 'dart:html' as html;
+if (dart.library.html) 'dart:html' as html;
 
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// ─── YouTube ke liye naya player import ────────────────────────────────────
+import 'youtube_player_page.dart';
 
 class WebViewPage extends StatefulWidget {
   final String url;
@@ -24,255 +28,232 @@ class WebViewPage extends StatefulWidget {
 
 class _WebViewPageState extends State<WebViewPage> {
   WebViewController? _controller;
-  bool    _isLoading      = true;
-  double  _progress       = 0;
   String? _viewId;
+  bool _disposed = false;
+  bool _videoStarted = false;
+  final FocusNode _playBtnFocus = FocusNode();
 
-  bool    _hasError       = false;
-  bool    _errorShownOnce = false;
-  bool    _disposed       = false;
+  // ─── Helpers ────────────────────────────────────────────────────────────
+  String? _extractYouTubeId(String url) {
+    for (final p in [
+      RegExp(r'youtube\.com/embed/([a-zA-Z0-9_-]+)'),
+      RegExp(r'youtu\.be/([a-zA-Z0-9_-]+)'),
+      RegExp(r'youtube\.com/watch\?v=([a-zA-Z0-9_-]+)'),
+    ]) {
+      final m = p.firstMatch(url);
+      if (m != null) return m.group(1);
+    }
+    return null;
+  }
 
-  Timer?  _timeoutTimer;
-  static const _timeoutSeconds = 15; // 15 sec no response = network issue
+  bool _isYouTubeUrl(String url) {
+    final lower = url.toLowerCase();
+    return lower.contains('youtube.com') || lower.contains('youtu.be');
+  }
 
+  bool _isDirectVideoUrl(String url) {
+    final lower = url.toLowerCase();
+    return (lower.contains('.mp4') ||
+        lower.contains('.m3u8') ||
+        lower.contains('.webm') ||
+        lower.contains('.ogg')) &&
+        !lower.contains('youtube') &&
+        !lower.contains('youtu.be') &&
+        !lower.contains('drive.google') &&
+        !lower.contains('docs.google');
+  }
+
+  // ─── HTML for direct video files (.mp4, .m3u8, etc.) ───────────────────
+  String _buildVideoHtml(String url) {
+    return '''<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:100vw; height:100vh; background:#000; overflow:hidden; }
+  video { width:100%; height:100%; object-fit:contain; display:block; }
+  #loader {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:#1A0800;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    z-index:999; transition:opacity 0.4s ease;
+  }
+  #loader.hidden { opacity:0; pointer-events:none; }
+  .spinner {
+    width:72px; height:72px;
+    border:6px solid rgba(255,120,40,0.25);
+    border-top-color:#FB8C00; border-radius:50%;
+    animation:spin 0.9s linear infinite; margin-bottom:20px;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loader-text { color:#FFA040; font-size:20px; font-family:sans-serif; font-weight:600; }
+  .loader-sub  { color:rgba(255,255,255,0.45); font-size:14px; font-family:sans-serif; margin-top:8px; }
+</style>
+</head>
+<body>
+<div id="loader">
+  <div class="spinner"></div>
+  <div class="loader-text">Loading Video…</div>
+  <div class="loader-sub">Please wait</div>
+</div>
+<video id="v" autoplay playsinline preload="auto" src="$url"></video>
+<script>
+  var v = document.getElementById('v');
+  var loader = document.getElementById('loader');
+  function hideLoader() {
+    loader.classList.add('hidden');
+    setTimeout(function(){ loader.style.display='none'; }, 450);
+    v.setAttribute('controls','');
+  }
+  v.addEventListener('playing', hideLoader);
+  v.addEventListener('canplay', function(){ v.play().catch(function(){}); });
+  setTimeout(hideLoader, 25000);
+</script>
+</body>
+</html>''';
+  }
+
+  // ─── initState ──────────────────────────────────────────────────────────
   @override
   void initState() {
     super.initState();
+
+    // ── YouTube URL → YouTubePlayerPage pe redirect karo ──────────────────
+    // (initState me direct navigate nahi kar sakte, postFrameCallback use karo)
+    if (!kIsWeb && _isYouTubeUrl(widget.url)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => YouTubePlayerPage(
+              url: widget.url,
+              title: widget.title,
+            ),
+          ),
+        );
+      });
+      return; // WebView setup skip karo YouTube ke liye
+    }
 
     if (kIsWeb) {
       _viewId = 'wvp_${widget.url.hashCode.abs()}';
       try {
         ui_web.platformViewRegistry.registerViewFactory(
           _viewId!,
-          (_) => html.IFrameElement()
+              (_) => html.IFrameElement()
             ..src = widget.url
             ..style.border = 'none'
-            ..style.width  = '100%'
+            ..style.width = '100%'
             ..style.height = '100%'
             ..allowFullscreen = true
             ..setAttribute('allow', 'fullscreen'),
         );
       } catch (_) {}
-    } else {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        WebViewPlatform.instance ??= AndroidWebViewPlatform();
-      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-        WebViewPlatform.instance ??= WebKitWebViewPlatform();
-      }
-
-      _controller = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(const Color(0x00000000))
-        ..setUserAgent(
-          'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 '
-          '(KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-        )
-        ..setNavigationDelegate(NavigationDelegate(
-          onPageStarted: (_) {
-            if (_disposed || !mounted) return;
-            _startTimeout(); // ✅ Timer shuru
-            setState(() {
-              _isLoading      = true;
-              _hasError       = false;
-              _errorShownOnce = false;
-              _progress       = 0;
-            });
-          },
-          onProgress: (v) {
-            if (_disposed || !mounted) return;
-            setState(() => _progress = v / 100);
-            // Kuch progress aa rahi hai — timeout reset karo
-            if (v > 10) _cancelTimeout();
-          },
-          onPageFinished: (_) {
-            if (_disposed || !mounted) return;
-            _cancelTimeout(); // ✅ Load ho gaya — timer cancel
-            setState(() => _isLoading = false);
-          },
-          onWebResourceError: (WebResourceError e) {
-            if (_disposed || !mounted) return;
-            if (e.isForMainFrame != true) return;
-            if (_errorShownOnce) return;
-            _cancelTimeout();
-            _showNetworkError();
-          },
-          onHttpError: (HttpResponseError e) {
-            if (_disposed || !mounted) return;
-            if (_errorShownOnce) return;
-            _cancelTimeout();
-            _showNetworkError();
-          },
-        ))
-        ..loadRequest(Uri.parse(widget.url));
-
-      // Start timeout for the first load
-      _startTimeout();
-
-      if (_controller!.platform is AndroidWebViewController) {
-        AndroidWebViewController.enableDebugging(false);
-        final androidCtrl = _controller!.platform as AndroidWebViewController;
-        androidCtrl.setMediaPlaybackRequiresUserGesture(false);
-        androidCtrl.setOnPlatformPermissionRequest((req) => req.grant());
-      }
+      return;
     }
-  }
 
-  void _startTimeout() {
-    _cancelTimeout();
-    _timeoutTimer = Timer(const Duration(seconds: _timeoutSeconds), () {
-      if (_disposed || !mounted) return;
-      if (!_hasError && _isLoading) {
-        _showNetworkError();
-      }
-    });
-  }
+    // ── Native Android (non-YouTube) WebView setup ────────────────────────
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      WebViewPlatform.instance ??= AndroidWebViewPlatform();
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      WebViewPlatform.instance ??= WebKitWebViewPlatform();
+    }
 
-  void _cancelTimeout() {
-    _timeoutTimer?.cancel();
-    _timeoutTimer = null;
-  }
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0xFF000000))
+      ..setUserAgent(
+        'Mozilla/5.0 (Linux; Android 11; Android TV) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/120.0.0.0 Mobile Safari/537.36',
+      )
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageStarted: (url) {},
+        onProgress: (v) {},
+        onPageFinished: (url) {
+          if (_disposed || !mounted) return;
+          _controller?.runJavaScript('''
+            (function() {
+              var videos = document.querySelectorAll('video');
+              videos.forEach(function(v) {
+                v.preload = 'auto';
+                v.setAttribute('playsinline','');
+                if (v.paused) { v.play().catch(function(){}); }
+              });
+            })();
+          ''');
+        },
+        onWebResourceError: (WebResourceError e) {
+          debugPrint('[WebView Error] ${e.description}');
+        },
+        onHttpError: (HttpResponseError e) {},
+      ))
+      ..loadRequest(Uri.parse('about:blank'));
 
-  void _showNetworkError() {
-    if (_disposed || !mounted || _errorShownOnce) return;
-    setState(() {
-      _isLoading      = false;
-      _hasError       = true;
-      _errorShownOnce = true;
-    });
+    if (_controller!.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(false);
+      final androidCtrl = _controller!.platform as AndroidWebViewController;
+      androidCtrl.setMediaPlaybackRequiresUserGesture(false);
+      androidCtrl.setOnPlatformPermissionRequest((req) => req.grant());
+    }
+
+    // ── Load URL ──────────────────────────────────────────────────────────
+    if (_isDirectVideoUrl(widget.url)) {
+      _controller!.loadHtmlString(
+        _buildVideoHtml(widget.url),
+        baseUrl: widget.url,
+      );
+    } else {
+      // Any other URL (PDF, PPT viewer, etc.)
+      _controller!.loadRequest(Uri.parse(widget.url));
+    }
   }
 
   @override
   void dispose() {
     _disposed = true;
-    _cancelTimeout();
+    _videoStarted = false;
+    _playBtnFocus.dispose();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
-  }
-
-  void _retry() {
-    if (_disposed || !mounted) return;
-    setState(() {
-      _isLoading      = true;
-      _hasError       = false;
-      _errorShownOnce = false;
-      _progress       = 0;
-    });
-    _controller?.reload();
   }
 
   @override
   Widget build(BuildContext context) {
+    // YouTube redirect pending — loading spinner dikhao
+    if (!kIsWeb && _isYouTubeUrl(widget.url)) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: CircularProgressIndicator(color: Color(0xFFFF0000)),
+        ),
+      );
+    }
+
     if (kIsWeb && _viewId != null) {
       return HtmlElementView(viewType: _viewId!);
     }
 
     if (!kIsWeb && _controller != null) {
-      return Stack(
-        children: [
-          SizedBox.expand(child: WebViewWidget(controller: _controller!)),
-
-          // ✅ Loading — English only
-          if (_isLoading && !_hasError)
-            Column(
-              children: [
-                LinearProgressIndicator(
-                  value: _progress,
-                  backgroundColor: Colors.grey[800],
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color(0xFFFFA600)),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        CircularProgressIndicator(color: Color(0xFFFFA600)),
-                        SizedBox(height: 16),
-                        Text(
-                          'Loading video...',
-                          style: TextStyle(
-                            color: Colors.white60,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+      return Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          return KeyEventResult.ignored;
+        },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: WebViewWidget(controller: _controller!),
             ),
-
-          // ✅ Network Issue — 1st fail pe hi, English only, shows once
-          if (_hasError && !_isLoading)
-            Container(
-              color: const Color(0xFF0D1C45),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.wifi_off_rounded,
-                      color: Color(0xFFFF6B6B),
-                      size: 72,
-                    ),
-                    const SizedBox(height: 20),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32),
-                      child: Text(
-                        'Network Issue\nVideo could not be loaded.\nPlease check your internet connection.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          height: 1.6,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    GestureDetector(
-                      onTap: _retry,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFA600),
-                          borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFFFFA600).withOpacity(0.4),
-                              blurRadius: 16,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.refresh_rounded,
-                                color: Colors.white, size: 24),
-                            SizedBox(width: 10),
-                            Text(
-                              'Retry',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
+          ],
+        ),
       );
     }
 
     return const Center(
-        child: CircularProgressIndicator(color: Color(0xFFFFA600)));
+      child: CircularProgressIndicator(color: Color(0xFFFFA600)),
+    );
   }
 }

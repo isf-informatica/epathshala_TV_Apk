@@ -10,8 +10,8 @@ import 'tools_page.dart';
 
 // Conditional import: web-only shim vs mobile stub
 import 'web_shim_stub.dart'
-  if (dart.library.html) 'web_shim_web.dart'
-  as webShim;
+if (dart.library.html) 'web_shim_web.dart'
+as webShim;
 
 import 'whiteboard_page.dart';
 
@@ -44,7 +44,7 @@ class _BoardsPageState extends State<BoardsPage> {
   ];
 
   static const List<String> _navItems = [
-    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools', 'Logout',
+    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools',
   ];
 
   int get _cols {
@@ -152,9 +152,9 @@ class _BoardsPageState extends State<BoardsPage> {
       case 'Library':
         Navigator.pushReplacement(context, PageRouteBuilder(
           pageBuilder: (_, __, ___) => LibraryPage(
-          regId: (widget.loginData['reg_id'] ?? '').toString(),
-          permissions: (widget.loginData['permissions'] ?? 'School').toString(),
-        ),
+            regId: (widget.loginData['reg_id'] ?? '').toString(),
+            permissions: (widget.loginData['permissions'] ?? 'School').toString(),
+          ),
           transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
           transitionDuration: const Duration(milliseconds: 300),
         ));
@@ -376,38 +376,7 @@ class _BoardsPageState extends State<BoardsPage> {
                 ),
               ),
 
-          // ── Powered By Logo ──────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Powered by',
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Image.asset(
-                  'assets/images/powered_by_logo.png',
-                  height: 44,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Text(
-                    'EasyLearn',
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              // Powered by removed
             ],
           ),
         ),

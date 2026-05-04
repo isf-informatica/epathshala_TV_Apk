@@ -131,7 +131,7 @@ class _TopicPageState extends State<TopicPage>
         setState(() { _sidebarFocused = false; _focusOnMore = false; });
       } else if (_focusOnMore) {
         // More... button press
-        setState(() { _showExpanded = true; _focusOnMore = false; _focusedChapterIndex = 12; }); // expanded items start at index 12
+        setState(() { _showExpanded = true; _focusOnMore = false; _focusedChapterIndex = 10; }); // expanded items start at index 12
         _fadeController.reset(); _fadeController.forward();
       } else if (_focusedChapterIndex < chapters.length) {
         _openChapterContent(chapters[_focusedChapterIndex] as Map<String, dynamic>);
@@ -161,9 +161,9 @@ class _TopicPageState extends State<TopicPage>
     // Normal mode:   displays index 0..11  (leftCount = ceil(12/2) = 6)
     // Expanded mode: displays index 12..N  (leftCount = ceil(remaining/2))
     // _focusedChapterIndex is always the GLOBAL chapter index
-    const firstExpanded = 12;
+    const firstExpanded = 10;
     final startIdx      = _showExpanded ? firstExpanded : 0;
-    final endIdx        = _showExpanded ? chapters.length : chapters.length.clamp(0, 12);
+    final endIdx        = _showExpanded ? chapters.length : chapters.length.clamp(0, 10);
     final visibleCount  = endIdx - startIdx;
     final leftCount     = (visibleCount / 2).ceil();
     // local index within the current display (0-based)
@@ -215,7 +215,7 @@ class _TopicPageState extends State<TopicPage>
     if (key == LogicalKeyboardKey.arrowUp) {
       if (_focusOnMore) {
         // More button se upar → last visible chapter pe jao (always normal mode last = index 11)
-        setState(() { _focusOnMore = false; _focusedChapterIndex = (chapters.length.clamp(0,12) - 1).clamp(0, chapters.length - 1); });
+        setState(() { _focusOnMore = false; _focusedChapterIndex = (chapters.length.clamp(0,10) - 1).clamp(0, chapters.length - 1); });
         return KeyEventResult.handled;
       }
       if (_sidebarFocused) {
@@ -250,7 +250,7 @@ class _TopicPageState extends State<TopicPage>
       final colSize    = inLeftCol ? leftCount : rightCount;
       if (rowInCol >= colSize - 1) {
         // Last row of this column
-        final needsMore = !_showExpanded && chapters.length > 12;
+        final needsMore = !_showExpanded && chapters.length > 10;
         if (needsMore && !inLeftCol) setState(() => _focusOnMore = true);
         // Left col last row — do nothing (right col may have more)
       } else {
@@ -477,14 +477,14 @@ class _TopicPageState extends State<TopicPage>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: 46,
+                width: 36,
                 child: Text(
                   (chIdx + 1).toString().padLeft(2, '0'),
                   style: TextStyle(
                     color: isFocused
                         ? const Color(0xFFBF360C)
                         : const Color(0xFF3E1000),
-                    fontSize: 26,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -498,7 +498,7 @@ class _TopicPageState extends State<TopicPage>
                     color: isFocused
                         ? const Color(0xFFBF360C)
                         : const Color(0xFF3E1000),
-                    fontSize: 26,
+                    fontSize: 16,
                     fontWeight: isFocused
                         ? FontWeight.w700
                         : FontWeight.w600,
@@ -555,7 +555,7 @@ class _TopicPageState extends State<TopicPage>
     final subjectName = _currentSubject['subject'].toString();
     final totalCount  = chapters.length;
 
-    const maxVisible = 12;
+    const maxVisible = 10;
     final needsMore  = !_showExpanded && totalCount > maxVisible;
 
     // Normal: pehle 12, More click: sirf 13 ke baad wale
@@ -799,3 +799,4 @@ class _TriangleUpPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

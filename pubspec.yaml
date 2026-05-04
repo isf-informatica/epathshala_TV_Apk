@@ -8,6 +8,8 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
+  youtube_explode_dart: ^2.3.6
+  video_player: ^2.8.6
   flutter:
     sdk: flutter
 
@@ -22,7 +24,7 @@ dependencies:
   webview_flutter_web: ^0.2.3+4
   
   # URL & Links
-  url_launcher: ^6.2.1
+  url_launcher: ^6.2.5
 
   # Video Player
   vdocipher_flutter: ^2.7.8

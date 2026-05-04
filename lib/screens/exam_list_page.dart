@@ -88,7 +88,7 @@ class _ExamListPageState extends State<ExamListPage>
   bool _sidebarFocused = false;
   int _sidebarNavIndex = 1; // 'Exams' default selected
   static const List<String> _navItems = [
-    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools', 'Logout',
+    'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools',
   ];
 
   late AnimationController _fadeController;
@@ -138,7 +138,7 @@ class _ExamListPageState extends State<ExamListPage>
           _courses = courses;
           _loadingCourses = false;
         });
-            // Courses fetch hone ke baad cards dikhao (auto-select nahi)
+        // Courses fetch hone ke baad cards dikhao (auto-select nahi)
         _fadeController.reset();
         _fadeController.forward();
       } else {
@@ -366,7 +366,7 @@ class _ExamListPageState extends State<ExamListPage>
   void _executeSidebarItem(String label) {
     switch (label) {
       case 'Exams':
-        // Already here
+      // Already here
         break;
       case 'Courses':
         Navigator.maybePop(context);
@@ -381,9 +381,9 @@ class _ExamListPageState extends State<ExamListPage>
       case 'Library':
         Navigator.pushReplacement(context, PageRouteBuilder(
           pageBuilder: (_, __, ___) => LibraryPage(
-          regId: (widget.loginData['reg_id'] ?? '').toString(),
-          permissions: (widget.loginData['permissions'] ?? 'School').toString(),
-        ),
+            regId: (widget.loginData['reg_id'] ?? '').toString(),
+            permissions: (widget.loginData['permissions'] ?? 'School').toString(),
+          ),
           transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
           transitionDuration: const Duration(milliseconds: 300),
         ));
@@ -471,191 +471,160 @@ class _ExamListPageState extends State<ExamListPage>
     return Stack(
       children: [
         Container(
-      width: sidebarWidth,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF1A0800), Color(0xFF3A1200)],
-        ),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(32),
-          bottomRight: Radius.circular(32),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x88000000),
-            blurRadius: 16,
-            offset: Offset(4, 0),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Logo box
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              screenSize.width < 600 ? 8 : 14,
-              screenSize.width < 600 ? 8 : 14,
-              screenSize.width < 600 ? 8 : 14,
-              10,
+          width: sidebarWidth,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF1A0800), Color(0xFF3A1200)],
             ),
-            child: GestureDetector(
-              onTap: () => Navigator.maybePop(context),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  vertical: screenSize.width < 600 ? 6 : 10,
-                  horizontal: screenSize.width < 600 ? 6 : 10,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF8F5),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3), width: 1.5),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/logo_easylearn.png',
-                      height: screenSize.width < 600 ? 36 : 50,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.school,
-                        color: const Color(0xFFBF360C),
-                        size: screenSize.width < 600 ? 30 : 42,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'EASY LEARN',
-                      style: TextStyle(
-                        color: const Color(0xFFBF360C),
-                        fontSize: screenSize.width < 600 ? 9 : 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                    Text(
-                      'EDUCATION FOR ALL',
-                      style: TextStyle(
-                        color: const Color(0xFFBF7060),
-                        fontSize: screenSize.width < 600 ? 6 : 7.5,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ],
-                ),
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(32),
+              bottomRight: Radius.circular(32),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x88000000),
+                blurRadius: 16,
+                offset: Offset(4, 0),
               ),
-            ),
+            ],
           ),
-
-          // Nav items
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _navItems.asMap().entries.map((entry) {
-                  final navIdx  = entry.key;
-                  final label   = entry.value;
-                  final isActive = label == 'Exams';
-                  final isTvFocus = _sidebarFocused && navIdx == _sidebarNavIndex;
-                  return GestureDetector(
-                    onTap: () => _executeSidebarItem(label),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 130),
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenSize.width < 600 ? 10 : 20,
-                        vertical: isTvFocus ? 6 : 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isTvFocus
-                            ? Colors.white.withOpacity(0.10)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isTvFocus ? Colors.white38 : Colors.transparent,
-                          width: 1.5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Logo box
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  screenSize.width < 600 ? 8 : 14,
+                  screenSize.width < 600 ? 8 : 14,
+                  screenSize.width < 600 ? 8 : 14,
+                  10,
+                ),
+                child: GestureDetector(
+                  onTap: () => Navigator.maybePop(context),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenSize.width < 600 ? 6 : 10,
+                      horizontal: screenSize.width < 600 ? 6 : 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF8F5),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFBF360C).withOpacity(0.3), width: 1.5),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/logo_easylearn.png',
+                          height: screenSize.width < 600 ? 36 : 50,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.school,
+                            color: const Color(0xFFBF360C),
+                            size: screenSize.width < 600 ? 30 : 42,
+                          ),
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: isTvFocus ? 12 : 10,
-                            height: isTvFocus ? 12 : 10,
-                            decoration: BoxDecoration(
-                              color: isActive
-                                  ? const Color(0xFFBF360C)
-                                  : Colors.white60,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'EASY LEARN',
+                          style: TextStyle(
+                            color: const Color(0xFFBF360C),
+                            fontSize: screenSize.width < 600 ? 9 : 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
                           ),
-                          SizedBox(width: screenSize.width < 600 ? 6 : 12),
-                          Expanded(
-                            child: Text(
-                              label,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: isActive
-                                    ? const Color(0xFFBF360C)
-                                    : Colors.white70,
-                                fontSize: screenSize.width < 600
-                                    ? (isTvFocus ? 14 : 13)
-                                    : (isTvFocus ? 20 : 19),
-                                fontWeight: (isActive || isTvFocus)
-                                    ? FontWeight.w700
-                                    : FontWeight.w400,
-                              ),
-                            ),
+                        ),
+                        Text(
+                          'EDUCATION FOR ALL',
+                          style: TextStyle(
+                            color: const Color(0xFFBF7060),
+                            fontSize: screenSize.width < 600 ? 6 : 7.5,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.8,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                }).toList(),
+                  ),
+                ),
               ),
-            ),
-          ),
-          // ── Powered By Logo ──────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Powered by',
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
+
+              // Nav items
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _navItems.asMap().entries.map((entry) {
+                      final navIdx  = entry.key;
+                      final label   = entry.value;
+                      final isActive = label == 'Exams';
+                      final isTvFocus = _sidebarFocused && navIdx == _sidebarNavIndex;
+                      return GestureDetector(
+                        onTap: () => _executeSidebarItem(label),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 130),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenSize.width < 600 ? 10 : 20,
+                            vertical: isTvFocus ? 6 : 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isTvFocus
+                                ? Colors.white.withOpacity(0.10)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isTvFocus ? Colors.white38 : Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: isTvFocus ? 12 : 10,
+                                height: isTvFocus ? 12 : 10,
+                                decoration: BoxDecoration(
+                                  color: isActive
+                                      ? const Color(0xFFBF360C)
+                                      : Colors.white60,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              SizedBox(width: screenSize.width < 600 ? 6 : 12),
+                              Expanded(
+                                child: Text(
+                                  label,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: isActive
+                                        ? const Color(0xFFBF360C)
+                                        : Colors.white70,
+                                    fontSize: screenSize.width < 600
+                                        ? (isTvFocus ? 14 : 13)
+                                        : (isTvFocus ? 20 : 19),
+                                    fontWeight: (isActive || isTvFocus)
+                                        ? FontWeight.w700
+                                        : FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
-                const SizedBox(height: 6),
-                Image.asset(
-                  'assets/images/powered_by_logo.png',
-                  height: 44,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Text(
-                    'EasyLearn',
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              // Powered by removed
+            ],
           ),
-        ],
-      ),
-      ),
+        ),
 
         // ── Right side white border line ─────────────────────────
         Positioned(
@@ -818,13 +787,13 @@ class _ExamListPageState extends State<ExamListPage>
                 ),
                 boxShadow: isFocused
                     ? [BoxShadow(
-                        color: const Color(0xFFBF360C).withOpacity(0.45),
-                        blurRadius: 24, spreadRadius: 3, offset: const Offset(0, 4),
-                      )]
+                  color: const Color(0xFFBF360C).withOpacity(0.45),
+                  blurRadius: 24, spreadRadius: 3, offset: const Offset(0, 4),
+                )]
                     : [const BoxShadow(
-                        color: Color(0x33000000),
-                        blurRadius: 10, offset: Offset(0, 4),
-                      )],
+                  color: Color(0x33000000),
+                  blurRadius: 10, offset: Offset(0, 4),
+                )],
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(14.5),
@@ -979,13 +948,13 @@ class _ExamListPageState extends State<ExamListPage>
                 ),
                 boxShadow: isFocused
                     ? [BoxShadow(
-                        color: const Color(0xFFBF360C).withOpacity(0.45),
-                        blurRadius: 24, spreadRadius: 3, offset: const Offset(0, 4),
-                      )]
+                  color: const Color(0xFFBF360C).withOpacity(0.45),
+                  blurRadius: 24, spreadRadius: 3, offset: const Offset(0, 4),
+                )]
                     : [const BoxShadow(
-                        color: Color(0x33000000),
-                        blurRadius: 10, offset: Offset(0, 4),
-                      )],
+                  color: Color(0x33000000),
+                  blurRadius: 10, offset: Offset(0, 4),
+                )],
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(14.5),

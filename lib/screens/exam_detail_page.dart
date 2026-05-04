@@ -395,24 +395,24 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
           if (!_loading && _questions.isNotEmpty)
             _submitting
                 ? const SizedBox(
-                    width: 24, height: 24,
-                    child: CircularProgressIndicator(
-                        color: Color(0xFFBF360C), strokeWidth: 2.5))
+                width: 24, height: 24,
+                child: CircularProgressIndicator(
+                    color: Color(0xFFBF360C), strokeWidth: 2.5))
                 : ElevatedButton(
-                    onPressed: _submitExam,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFBF360C),
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      elevation: 0,
-                    ),
-                    child: const Text('Submit',
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w800)),
-                  ),
+              onPressed: _submitExam,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFBF360C),
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+                elevation: 0,
+              ),
+              child: const Text('Submit',
+                  style: TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w800)),
+            ),
         ],
       ),
     );
@@ -482,13 +482,13 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
 
     return Container(
       color: const Color(0xFF1A0800),
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
       child: Column(children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFF6366F1), Color(0xFF3B82F6)],
@@ -498,12 +498,12 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
               child: Text(
                 'Q ${_currentPage + 1} of $total',
                 style: const TextStyle(
-                  color: Colors.white, fontSize: 13, fontWeight: FontWeight.w800,
+                  color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800,
                 ),
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
               decoration: BoxDecoration(
                 color: answered > 0
                     ? const Color(0xFF059669).withOpacity(0.2)
@@ -516,29 +516,29 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                 ),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.check_circle_rounded, size: 13,
+                Icon(Icons.check_circle_rounded, size: 11,
                     color: answered > 0 ? const Color(0xFF059669) : Colors.white38),
                 const SizedBox(width: 4),
                 Text('$answered answered',
                     style: TextStyle(
                       color: answered > 0 ? const Color(0xFF4ADE80) : Colors.white38,
-                      fontSize: 12, fontWeight: FontWeight.w600,
+                      fontSize: 10, fontWeight: FontWeight.w600,
                     )),
               ]),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         ClipRRect(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: progress,
             backgroundColor: const Color(0xFF2A0C00),
             valueColor: const AlwaysStoppedAnimation(Color(0xFFBF360C)),
-            minHeight: 10,
+            minHeight: 6,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 4),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -557,34 +557,34 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: isCurrent ? 40 : 32,
-                  height: isCurrent ? 40 : 32,
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: isCurrent ? 32 : 26,
+                  height: isCurrent ? 32 : 26,
                   decoration: BoxDecoration(
                     gradient: isCurrent
                         ? const LinearGradient(
-                            colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          )
+                      colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
                         : isAnswered
-                            ? const LinearGradient(
-                                colors: [Color(0xFF059669), Color(0xFF047857)],
-                              )
-                            : null,
+                        ? const LinearGradient(
+                      colors: [Color(0xFF059669), Color(0xFF047857)],
+                    )
+                        : null,
                     color: (!isCurrent && !isAnswered) ? const Color(0xFF2A0C00) : null,
-                    borderRadius: BorderRadius.circular(isCurrent ? 12 : 8),
+                    borderRadius: BorderRadius.circular(isCurrent ? 10 : 6),
                     boxShadow: isCurrent
                         ? [BoxShadow(
-                            color: const Color(0xFFBF360C).withOpacity(0.6),
-                            blurRadius: 10, spreadRadius: 1)]
+                        color: const Color(0xFFBF360C).withOpacity(0.6),
+                        blurRadius: 8, spreadRadius: 1)]
                         : [],
                     border: Border.all(
                       color: isCurrent
                           ? const Color(0xFFFFD700)
                           : isAnswered
-                              ? const Color(0xFF34D399)
-                              : Colors.white12,
+                          ? const Color(0xFF34D399)
+                          : Colors.white12,
                       width: isCurrent ? 2 : 1,
                     ),
                   ),
@@ -592,7 +592,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                     child: Text('${i + 1}',
                         style: TextStyle(
                           color: (isCurrent || isAnswered) ? Colors.white : Colors.white38,
-                          fontSize: isCurrent ? 15 : 12,
+                          fontSize: isCurrent ? 13 : 10,
                           fontWeight: FontWeight.w800,
                         )),
                   ),
@@ -671,223 +671,154 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
             .where((e) => e.value.isNotEmpty)
             .toList();
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Question card — gradient banner ───────────────
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF1E3A8A), Color(0xFF1E40AF), Color(0xFF1A0800)],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFF3B82F6).withOpacity(0.5), width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF3B82F6).withOpacity(0.2),
-                      blurRadius: 16, offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 36, height: 36,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFBF360C).withOpacity(0.5),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${questionIdx + 1}',
-                          style: const TextStyle(
-                            color: Colors.white, fontSize: 16, fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        question.questionTitle,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 19,
-                          fontWeight: FontWeight.w700,
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Question image
-              if (question.questionImage.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.network(
-                    question.questionImage,
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Question card ─────────────────────────────
+                  Container(
                     width: double.infinity,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                  ),
-                ),
-              ],
-
-              const SizedBox(height: 16),
-
-              // ── Options — colorful A/B/C/D cards ─────────────
-              ...visibleOptions.map((entry) {
-                final optIdx    = entry.key;
-                final optText   = entry.value;
-                final isSelected  = selectedOptionIdx == optIdx;
-                // TV remote: ye option highlight hai?
-                final isTvFocused = _focusedOptionIndex == visibleOptions.indexOf(entry);
-                final label     = optIdx < _optionLabels.length
-                    ? _optionLabels[optIdx]
-                    : '${optIdx + 1}';
-                final optColor  = optIdx < _optionColors.length
-                    ? _optionColors[optIdx]
-                    : const Color(0xFF6366F1);
-
-                return GestureDetector(
-                  onTap: () {
-                    _selectOption(questionIdx, optIdx);
-                    setCardState(() {});
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      gradient: isSelected
-                          ? LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [optColor, optColor.withOpacity(0.7)],
-                            )
-                          : null,
-                      color: isSelected ? null : const Color(0xFF1A0800),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        // TV focus = white bright border, selected = option color, default = dim
-                        color: isTvFocused && !isSelected
-                            ? Colors.white
-                            : isSelected
-                                ? optColor
-                                : optColor.withOpacity(0.3),
-                        width: isTvFocused || isSelected ? 2.5 : 1.5,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF1E3A8A), Color(0xFF1E40AF), Color(0xFF1A0800)],
                       ),
-                      boxShadow: isSelected
-                          ? [BoxShadow(
-                              color: optColor.withOpacity(0.45),
-                              blurRadius: 14, spreadRadius: 1,
-                              offset: const Offset(0, 4),
-                            )]
-                          : isTvFocused
-                              ? [BoxShadow(
-                                  color: Colors.white.withOpacity(0.15),
-                                  blurRadius: 10, spreadRadius: 1,
-                                )]
-                              : [],
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFF3B82F6).withOpacity(0.5), width: 1.5),
                     ),
-                    child: Row(children: [
-                      // Option label circle
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        width: 38, height: 38,
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? Colors.white
-                              : isTvFocused
-                                  ? optColor.withOpacity(0.35)
-                                  : optColor.withOpacity(0.15),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: isSelected
-                                ? Colors.transparent
-                                : isTvFocused
-                                    ? Colors.white
-                                    : optColor.withOpacity(0.6),
-                            width: 1.5,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 32, height: 32,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
+                            ),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            label,
-                            style: TextStyle(
-                              color: isSelected ? optColor : optColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
+                          child: Center(
+                            child: Text(
+                              '${questionIdx + 1}',
+                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Text(
-                          optText,
-                          style: TextStyle(
-                            color: isSelected
-                                ? Colors.white
-                                : isTvFocused
-                                    ? Colors.white
-                                    : Colors.white70,
-                            fontSize: 16,
-                            fontWeight: isSelected || isTvFocused
-                                ? FontWeight.w700
-                                : FontWeight.w400,
-                            height: 1.4,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            question.questionTitle,
+                            style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700, height: 1.4),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                      // TV focus indicator (right side arrow)
-                      if (isTvFocused && !isSelected)
-                        Container(
-                          width: 30, height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.12),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.arrow_forward_ios_rounded,
-                              color: Colors.white70, size: 14),
-                        ),
-                      if (isSelected)
-                        Container(
-                          width: 30, height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.25),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.check_rounded,
-                              color: Colors.white, size: 18),
-                        ),
-                    ]),
+                      ],
+                    ),
                   ),
-                );
-              }),
 
-              const SizedBox(height: 20),
-            ],
-          ),
+                  const SizedBox(height: 10),
+
+                  // ── Options — evenly fill remaining space ─────
+                  Expanded(
+                    child: Column(
+                      children: List.generate(visibleOptions.length, (i) {
+                        final entry = visibleOptions[i];
+                        final optIdx = entry.key;
+                        final optText = entry.value;
+                        final isSelected = selectedOptionIdx == optIdx;
+                        final isTvFocused = _focusedOptionIndex == i;
+                        final label = optIdx < _optionLabels.length ? _optionLabels[optIdx] : '${optIdx + 1}';
+                        final optColor = optIdx < _optionColors.length ? _optionColors[optIdx] : const Color(0xFF6366F1);
+
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              _selectOption(questionIdx, optIdx);
+                              setCardState(() {});
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              decoration: BoxDecoration(
+                                gradient: isSelected
+                                    ? LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [optColor, optColor.withOpacity(0.7)],
+                                )
+                                    : null,
+                                color: isSelected ? null : const Color(0xFF1A0800),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isTvFocused && !isSelected ? Colors.white : isSelected ? optColor : optColor.withOpacity(0.3),
+                                  width: isTvFocused || isSelected ? 2.5 : 1.5,
+                                ),
+                                boxShadow: isSelected
+                                    ? [BoxShadow(color: optColor.withOpacity(0.45), blurRadius: 14, spreadRadius: 1, offset: const Offset(0, 4))]
+                                    : isTvFocused
+                                    ? [BoxShadow(color: Colors.white.withOpacity(0.15), blurRadius: 10, spreadRadius: 1)]
+                                    : [],
+                              ),
+                              child: Row(children: [
+                                Container(
+                                  width: 34, height: 34,
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? Colors.white : isTvFocused ? optColor.withOpacity(0.35) : optColor.withOpacity(0.15),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected ? Colors.transparent : isTvFocused ? Colors.white : optColor.withOpacity(0.6),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(label, style: TextStyle(color: optColor, fontSize: 14, fontWeight: FontWeight.w900)),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    optText,
+                                    style: TextStyle(
+                                      color: isSelected || isTvFocused ? Colors.white : Colors.white70,
+                                      fontSize: 15,
+                                      fontWeight: isSelected || isTvFocused ? FontWeight.w700 : FontWeight.w400,
+                                      height: 1.3,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (isTvFocused && !isSelected)
+                                  Container(
+                                    width: 26, height: 26,
+                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.12), shape: BoxShape.circle),
+                                    child: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white70, size: 12),
+                                  ),
+                                if (isSelected)
+                                  Container(
+                                    width: 26, height: 26,
+                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.25), shape: BoxShape.circle),
+                                    child: const Icon(Icons.check_rounded, color: Colors.white, size: 16),
+                                  ),
+                              ]),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -904,7 +835,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
         // TV remote hint bar
         _buildTvHintBar(),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           decoration: const BoxDecoration(
             color: Color(0xFF1A0800),
             border: Border(top: BorderSide(color: Color(0xFF2A0C00), width: 1)),
@@ -918,21 +849,21 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                 child: GestureDetector(
                   onTap: isFirst ? null : _prevQuestion,
                   child: Container(
-                    height: 52,
+                    height: 42,
                     decoration: BoxDecoration(
                       color: const Color(0xFF2A0C00),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0xFF2A3E6A), width: 1.5),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.arrow_back_ios_rounded, color: Colors.white70, size: 18),
+                        Icon(Icons.arrow_back_ios_rounded, color: Colors.white70, size: 16),
                         SizedBox(width: 6),
                         Text('Previous',
                             style: TextStyle(
                                 color: Colors.white70,
-                                fontSize: 15,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w700)),
                       ],
                     ),
@@ -946,88 +877,88 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
             Expanded(
               child: isLast
                   ? _submitting
-                      ? Container(
-                          height: 52,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
-                            ),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const Center(
-                            child: SizedBox(
-                              width: 22, height: 22,
-                              child: CircularProgressIndicator(
-                                  color: Colors.white, strokeWidth: 2.5),
-                            ),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: _submitExam,
-                          child: Container(
-                            height: 52,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(14),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFFBF360C).withOpacity(0.5),
-                                  blurRadius: 14, offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.emoji_events_rounded,
-                                    color: Colors.white, size: 22),
-                                SizedBox(width: 8),
-                                Text('Submit Exam',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w900)),
-                              ],
-                            ),
-                          ),
-                        )
+                  ? Container(
+                height: 42,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Center(
+                  child: SizedBox(
+                    width: 22, height: 22,
+                    child: CircularProgressIndicator(
+                        color: Colors.white, strokeWidth: 2.5),
+                  ),
+                ),
+              )
                   : GestureDetector(
-                      onTap: _nextQuestion,
-                      child: Container(
-                        height: 52,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF3B82F6).withOpacity(0.4),
-                              blurRadius: 12, offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Next',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700)),
-                            SizedBox(width: 6),
-                            Icon(Icons.arrow_forward_ios_rounded,
-                                color: Colors.white, size: 18),
-                          ],
-                        ),
-                      ),
+                onTap: _submitExam,
+                child: Container(
+                  height: 42,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFBF360C).withOpacity(0.5),
+                        blurRadius: 14, offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.emoji_events_rounded,
+                          color: Colors.white, size: 22),
+                      SizedBox(width: 8),
+                      Text('Submit Exam',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900)),
+                    ],
+                  ),
+                ),
+              )
+                  : GestureDetector(
+                onTap: _nextQuestion,
+                child: Container(
+                  height: 42,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF3B82F6).withOpacity(0.4),
+                        blurRadius: 12, offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Next',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700)),
+                      SizedBox(width: 6),
+                      Icon(Icons.arrow_forward_ios_rounded,
+                          color: Colors.white, size: 18),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ]),
         ),

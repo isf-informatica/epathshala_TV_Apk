@@ -52,7 +52,7 @@ class _LibraryPageState extends State<LibraryPage>
     'Courses', 'Exams', 'Video Conference', 'Library', 'Boards', 'Tools',
   ];
 
-  static const int _pageSize = 12;
+  static const int _pageSize = 10;
 
   late AnimationController _fadeController;
   late Animation<double>   _fadeAnimation;
@@ -308,27 +308,27 @@ class _LibraryPageState extends State<LibraryPage>
         return KeyEventResult.handled;
       }
       final localIdx = _focusedIndex - _currentPage * _pageSize;
-      if (localIdx < cols) {
+      if (localIdx == 0) {
         setState(() => _sidebarFocused = true);
       } else {
         setState(() => _focusedIndex =
-            (_focusedIndex - cols).clamp(0, _activeBooks.length - 1));
+            (_focusedIndex - 1).clamp(0, _activeBooks.length - 1));
       }
       return KeyEventResult.handled;
     }
 
     if (key == LogicalKeyboardKey.arrowDown) {
       if (_sidebarFocused) {
-        if (_sidebarNavIndex > 0) setState(() => _sidebarNavIndex--);
+        if (_sidebarNavIndex < _navItems.length - 1) setState(() => _sidebarNavIndex++);
         return KeyEventResult.handled;
       }
-      if (_focusOnMore)    return KeyEventResult.handled;
+      if (_focusOnMore) return KeyEventResult.handled;
       final localIdx  = _focusedIndex - _currentPage * _pageSize;
-      final nextLocal = localIdx + cols;
+      final nextLocal = localIdx + 1;
       if (nextLocal >= pageLen) {
         if (_hasNextPage) setState(() => _focusOnMore = true);
       } else {
-        setState(() => _focusedIndex = _focusedIndex + cols);
+        setState(() => _focusedIndex = _focusedIndex + 1);
       }
       return KeyEventResult.handled;
     }
@@ -341,7 +341,7 @@ class _LibraryPageState extends State<LibraryPage>
   void _executeSidebarNavItem(String label) {
     switch (label) {
       case 'Library':
-        // Already here
+      // Already here
         break;
       case 'Courses':
         Navigator.maybePop(context);
@@ -390,167 +390,136 @@ class _LibraryPageState extends State<LibraryPage>
     return Stack(
       children: [
         Container(
-      width: sidebarWidth,
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A0800),
-        borderRadius: BorderRadius.only(
-          topRight:    Radius.circular(32),
-          bottomRight: Radius.circular(32),
-        ),
-        boxShadow: [
-          BoxShadow(color: Color(0x55000000), blurRadius: 12, offset: Offset(3, 0)),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              screenWidth < 600 ? 8 : 14,
-              screenWidth < 600 ? 8 : 14,
-              screenWidth < 600 ? 8 : 14,
-              10,
+          width: sidebarWidth,
+          decoration: const BoxDecoration(
+            color: Color(0xFF1A0800),
+            borderRadius: BorderRadius.only(
+              topRight:    Radius.circular(32),
+              bottomRight: Radius.circular(32),
             ),
-            child: GestureDetector(
-              onTap: () => Navigator.maybePop(context),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  vertical:   screenWidth < 600 ? 6 : 10,
-                  horizontal: screenWidth < 600 ? 6 : 10,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF8F5),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFBF360C), width: 1.5),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      height: screenWidth < 600 ? 36 : 50,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.school,
-                        color: const Color(0xFF1A3A7C),
-                        size:  screenWidth < 600 ? 30 : 42,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text('EASY LEARN',
-                        style: TextStyle(
-                          color:        const Color(0xFFBF360C),
-                          fontSize:     screenWidth < 600 ? 9 : 11,
-                          fontWeight:   FontWeight.w900,
-                          letterSpacing: 1.2,
-                        )),
-                    Text('EDUCATION FOR ALL',
-                        style: TextStyle(
-                          color:        const Color(0xFF6B8AB5),
-                          fontSize:     screenWidth < 600 ? 6 : 7.5,
-                          fontWeight:   FontWeight.w600,
-                          letterSpacing: 0.8,
-                        )),
-                  ],
-                ),
-              ),
-            ),
+            boxShadow: [
+              BoxShadow(color: Color(0x55000000), blurRadius: 12, offset: Offset(3, 0)),
+            ],
           ),
-          // ── Nav items — same as SubjectsPage ──────────────────
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 24, bottom: 16),
-              child: Column(
-                mainAxisAlignment:  MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _navItems.asMap().entries.map((entry) {
-                  final navIdx  = entry.key;
-                  final label   = entry.value;
-                  final isActive   = label == 'Library';
-                  final isTvFocus  = _sidebarFocused && navIdx == _sidebarNavIndex;
-                  return GestureDetector(
-                    onTap: () => _executeSidebarNavItem(label),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 130),
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth < 600 ? 10 : 20,
-                        vertical: isTvFocus ? 6 : 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isTvFocus ? Colors.white.withOpacity(0.10) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isTvFocus ? Colors.white38 : Colors.transparent,
-                          width: 1.5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  screenWidth < 600 ? 8 : 14,
+                  screenWidth < 600 ? 8 : 14,
+                  screenWidth < 600 ? 8 : 14,
+                  10,
+                ),
+                child: GestureDetector(
+                  onTap: () => Navigator.maybePop(context),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      vertical:   screenWidth < 600 ? 6 : 10,
+                      horizontal: screenWidth < 600 ? 6 : 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF8F5),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFBF360C), width: 1.5),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/logo.png',
+                          height: screenWidth < 600 ? 36 : 50,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.school,
+                            color: const Color(0xFF1A3A7C),
+                            size:  screenWidth < 600 ? 30 : 42,
+                          ),
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width:  isTvFocus ? 12 : 10,
-                            height: isTvFocus ? 12 : 10,
-                            decoration: BoxDecoration(
-                              color: isActive ? const Color(0xFFBF360C) : Colors.white,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          SizedBox(width: screenWidth < 600 ? 6 : 12),
-                          Expanded(
-                            child: Text(
-                              label,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: isActive ? const Color(0xFFBF360C) : Colors.white,
-                                fontSize: screenWidth < 600 ? (isTvFocus ? 14 : 13) : (isTvFocus ? 20 : 19),
-                                fontWeight: (isActive || isTvFocus) ? FontWeight.w700 : FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        const SizedBox(height: 4),
+                        Text('EASY LEARN',
+                            style: TextStyle(
+                              color:        const Color(0xFFBF360C),
+                              fontSize:     screenWidth < 600 ? 9 : 11,
+                              fontWeight:   FontWeight.w900,
+                              letterSpacing: 1.2,
+                            )),
+                        Text('EDUCATION FOR ALL',
+                            style: TextStyle(
+                              color:        const Color(0xFF6B8AB5),
+                              fontSize:     screenWidth < 600 ? 6 : 7.5,
+                              fontWeight:   FontWeight.w600,
+                              letterSpacing: 0.8,
+                            )),
+                      ],
                     ),
-                  );
-                }).toList(),
+                  ),
+                ),
               ),
-            ),
-          ),
-          // ── Powered By Logo ──────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Powered by',
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
+              // ── Nav items — same as SubjectsPage ──────────────────
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 24, bottom: 16),
+                  child: Column(
+                    mainAxisAlignment:  MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _navItems.asMap().entries.map((entry) {
+                      final navIdx  = entry.key;
+                      final label   = entry.value;
+                      final isActive   = label == 'Library';
+                      final isTvFocus  = _sidebarFocused && navIdx == _sidebarNavIndex;
+                      return GestureDetector(
+                        onTap: () => _executeSidebarNavItem(label),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 130),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth < 600 ? 10 : 20,
+                            vertical: isTvFocus ? 6 : 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isTvFocus ? Colors.white.withOpacity(0.10) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isTvFocus ? Colors.white38 : Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width:  isTvFocus ? 12 : 10,
+                                height: isTvFocus ? 12 : 10,
+                                decoration: BoxDecoration(
+                                  color: isActive ? const Color(0xFFBF360C) : Colors.white,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              SizedBox(width: screenWidth < 600 ? 6 : 12),
+                              Expanded(
+                                child: Text(
+                                  label,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: isActive ? const Color(0xFFBF360C) : Colors.white,
+                                    fontSize: screenWidth < 600 ? (isTvFocus ? 14 : 13) : (isTvFocus ? 20 : 19),
+                                    fontWeight: (isActive || isTvFocus) ? FontWeight.w700 : FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
-                const SizedBox(height: 6),
-                Image.asset(
-                  'assets/images/powered_by_logo.png',
-                  height: 44,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Text(
-                    'EasyLearn',
-                    style: TextStyle(
-                      color: Colors.white38,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              // Powered by removed
+            ],
           ),
-        ],
-      ),
-      ),
+        ),
 
         // ── Right side white border line ─────────────────────────
         Positioned(
@@ -585,14 +554,14 @@ class _LibraryPageState extends State<LibraryPage>
     final books     = _activeBooks;
     final book      = books[globalIdx];
     final isFocused = !_sidebarFocused && !_focusOnMore &&
-                      globalIdx == _focusedIndex;
+        globalIdx == _focusedIndex;
     final bookName  = book['book_name']?.toString() ?? 'Unknown Book';
     final author    = book['author_name']?.toString() ?? '';
     final hasDoc    = (book['book_doc']?.toString() ?? '').isNotEmpty;
 
     // Serial number: use original index from _books for display
     final originalIdx = _books.indexWhere(
-        (b) => b['id']?.toString() == book['id']?.toString());
+            (b) => b['id']?.toString() == book['id']?.toString());
     final displayNum  = (originalIdx >= 0 ? originalIdx + 1 : globalIdx + 1)
         .toString()
         .padLeft(2, '0');
@@ -620,9 +589,9 @@ class _LibraryPageState extends State<LibraryPage>
               : Border.all(color: const Color(0xFFE8D5CC), width: 1),
           boxShadow: isFocused
               ? [BoxShadow(
-                  color:      const Color(0xFFBF360C).withOpacity(0.25),
-                  blurRadius: 8,
-                  offset:     const Offset(0, 2))]
+              color:      const Color(0xFFBF360C).withOpacity(0.25),
+              blurRadius: 8,
+              offset:     const Offset(0, 2))]
               : [],
         ),
         child: Padding(
@@ -631,13 +600,13 @@ class _LibraryPageState extends State<LibraryPage>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: 46,
+                width: 36,
                 child: Text(
                   displayNum,
                   style: TextStyle(
                     color:      isFocused
                         ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
-                    fontSize:   26,
+                    fontSize:   16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -654,7 +623,7 @@ class _LibraryPageState extends State<LibraryPage>
                       style: TextStyle(
                         color:      isFocused
                             ? const Color(0xFFBF360C) : const Color(0xFF3E1000),
-                        fontSize:   24,
+                        fontSize:   16,
                         fontWeight: isFocused
                             ? FontWeight.w700 : FontWeight.w600,
                         height: 1.2,
@@ -665,7 +634,7 @@ class _LibraryPageState extends State<LibraryPage>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              color: Color(0xFF8B5E52), fontSize: 14)),
+                              color: Color(0xFF8B5E52), fontSize: 12)),
                   ],
                 ),
               ),
@@ -715,107 +684,13 @@ class _LibraryPageState extends State<LibraryPage>
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Title
-          const Text(
-            'Library Collection',
-            style: TextStyle(
-              color:      Color(0xFFBF360C),
-              fontSize:   40,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const Spacer(),
-
-          // ── Search area ───────────────────────────────────────
-          if (_searchActive)
-            // Search input field
-            Expanded(
-              child: Container(
-                height: 48,
-                margin: const EdgeInsets.only(left: 16),
-                decoration: BoxDecoration(
-                  color:        const Color(0xFF2A0C00),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: const Color(0xFFBF360C), width: 2),
-                ),
-                child: Row(
-                  children: [
-                    const SizedBox(width: 12),
-                    const Icon(Icons.search,
-                        color: Color(0xFFBF360C), size: 22),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller:  _searchController,
-                        focusNode:   _searchFocusNode,
-                        style: const TextStyle(
-                          color:      Colors.white,
-                          fontSize:   18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        cursorColor: const Color(0xFFBF360C),
-                        decoration: const InputDecoration(
-                          hintText:      'Search by name or author...',
-                          hintStyle:     TextStyle(
-                              color: Colors.white38, fontSize: 16),
-                          border:        InputBorder.none,
-                          isDense:       true,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                        onChanged: _applySearch,
-                      ),
-                    ),
-                    // Clear / Close button
-                    GestureDetector(
-                      onTap: _closeSearch,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Icon(Icons.close,
-                            color: Color(0xFFBF360C), size: 22),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            // Search icon button — inactive state
-            GestureDetector(
-              onTap: _openSearch,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  color:        const Color(0xFF2A0C00),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: const Color(0xFFBF360C).withOpacity(0.5),
-                      width: 1.5),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.search,
-                        color: Color(0xFFBF360C), size: 24),
-                    SizedBox(width: 8),
-                    Text(
-                      'Search',
-                      style: TextStyle(
-                        color:      Color(0xFFBF360C),
-                        fontSize:   20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
+      child: const Text(
+        'Library Collection',
+        style: TextStyle(
+          color:      Color(0xFFBF360C),
+          fontSize:   40,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }
@@ -949,7 +824,7 @@ class _LibraryPageState extends State<LibraryPage>
 
                 final rowH = leftCount > 0
                     ? ((usableH - buffer) / leftCount - rowGap)
-                        .clamp(48.0, 120.0)
+                    .clamp(48.0, 120.0)
                     : 70.0;
                 final colH = (leftCount * (rowH + rowGap)).clamp(0.0, usableH);
 
@@ -968,7 +843,7 @@ class _LibraryPageState extends State<LibraryPage>
                               Expanded(
                                 child: _buildColumn(
                                   rows: List.generate(leftCount,
-                                      (i) => _bookRow(pageStart + i, rowH)),
+                                          (i) => _bookRow(pageStart + i, rowH)),
                                   totalHeight: colH,
                                   tubeWidth:   tubeW,
                                   tubeOffset:  tubeOffset,
@@ -978,7 +853,7 @@ class _LibraryPageState extends State<LibraryPage>
                               Expanded(
                                 child: _buildColumn(
                                   rows: List.generate(rightCount,
-                                      (i) => _bookRow(
+                                          (i) => _bookRow(
                                           pageStart + leftCount + i, rowH)),
                                   totalHeight: colH,
                                   tubeWidth:   tubeW,
@@ -1002,7 +877,7 @@ class _LibraryPageState extends State<LibraryPage>
                                 onTap: _goNextPage,
                                 child: AnimatedContainer(
                                   duration:
-                                      const Duration(milliseconds: 130),
+                                  const Duration(milliseconds: 130),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 6),
                                   decoration: BoxDecoration(
@@ -1010,7 +885,7 @@ class _LibraryPageState extends State<LibraryPage>
                                         ? Colors.white.withOpacity(0.12)
                                         : Colors.transparent,
                                     borderRadius:
-                                        BorderRadius.circular(8),
+                                    BorderRadius.circular(8),
                                     border: Border.all(
                                       color: _focusOnMore
                                           ? Colors.white54

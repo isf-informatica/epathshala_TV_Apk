@@ -399,61 +399,84 @@ class _AppEntryPointState extends State<AppEntryPoint> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0B0E13),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF4F46E5).withOpacity(0.3),
-                    blurRadius: 24,
-                    offset: const Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Container(
-                    decoration: BoxDecoration(
-                      gradient: const RadialGradient(
-                        colors: [Color(0xFF4F46E5), Color(0xFF3B82F6)],
-                      ),
-                      borderRadius: BorderRadius.circular(24),
+      backgroundColor: const Color(0xFF1A0800),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.center,
+            radius: 1.2,
+            colors: [Color(0xFF3A1200), Color(0xFF1A0800)],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo box
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFBF360C).withOpacity(0.4),
+                      blurRadius: 30,
+                      offset: const Offset(0, 12),
                     ),
-                    child: const Icon(
-                      Icons.school_rounded,
-                      size: 40,
-                      color: Colors.white,
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Image.asset(
+                    'assets/images/logo_easylearn.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFBF360C), Color(0xFFFF6B00)],
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: const Icon(Icons.school_rounded, size: 50, color: Colors.white),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 30),
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              strokeWidth: 3,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Education for all',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 24),
+              // App name
+              const Text(
+                'EASY LEARN',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 3,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 6),
+              const Text(
+                'Education For All',
+                style: TextStyle(
+                  color: Color(0xFFFFB74D),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(height: 40),
+              // Orange spinner
+              const SizedBox(
+                width: 36,
+                height: 36,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFBF360C)),
+                  strokeWidth: 3.5,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

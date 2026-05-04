@@ -78,17 +78,18 @@ class _ExamResultPageState extends State<ExamResultPage> {
   }
 
   String get _resultMessage {
-    if (_percentage >= 90) return 'Outstanding! 🎉';
-    if (_percentage >= 75) return 'Great Job! 👏';
-    if (_percentage >= 50) return 'Good Effort! 👍';
-    return 'Keep Practicing! 💪';
+    if (_percentage >= 90) return 'Outstanding Performance';
+    if (_percentage >= 75) return 'Great Job';
+    if (_percentage >= 50) return 'Good Effort';
+    return 'Keep Practicing';
   }
 
-  String get _starsEmoji {
-    if (_percentage >= 90) return '⭐⭐⭐';
-    if (_percentage >= 60) return '⭐⭐';
-    if (_percentage >= 30) return '⭐';
-    return '💪';
+  String get _resultGrade {
+    if (_percentage >= 90) return 'A+';
+    if (_percentage >= 75) return 'A';
+    if (_percentage >= 50) return 'B';
+    if (_percentage >= 35) return 'C';
+    return 'D';
   }
 
   // ── TV Remote Navigation ──────────────────────────────────────
@@ -118,9 +119,9 @@ class _ExamResultPageState extends State<ExamResultPage> {
     }
 
     if (key == LogicalKeyboardKey.goBack ||
-        key == LogicalKeyboardKey.escape) {
-      // Back = exam list pe jao
-      Navigator.of(context).popUntil((r) => r.isFirst);
+        key == LogicalKeyboardKey.escape ||
+        key == LogicalKeyboardKey.browserBack) {
+      Navigator.of(context).pop();
       return KeyEventResult.handled;
     }
 
@@ -131,7 +132,7 @@ class _ExamResultPageState extends State<ExamResultPage> {
       final atEnd = _scrollController.hasClients &&
           _scrollController.offset >= _scrollController.position.maxScrollExtent - 10;
       if (atEnd) {
-        Navigator.of(context).popUntil((r) => r.isFirst);
+        Navigator.of(context).pop();
       } else {
         // Scroll down karo
         final target = (_scrollController.offset + _scrollStep)
@@ -151,7 +152,7 @@ class _ExamResultPageState extends State<ExamResultPage> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1C45),
+        backgroundColor: const Color(0xFF1A0800),
         body: SafeArea(
           child: Column(
             children: [
@@ -185,16 +186,14 @@ class _ExamResultPageState extends State<ExamResultPage> {
   // ── TV hint bar ───────────────────────────────────────────────
   Widget _buildTvHintBar() {
     return Container(
-      color: const Color(0xFF060F28),
+      color: const Color(0xFF1A0800),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _hintChip('▲▼', 'Scroll'),
           const SizedBox(width: 20),
-          _hintChip('▲▼ / OK', 'Scroll'),
-          const SizedBox(width: 20),
-          _hintChip('Back', 'Home pe jao'),
+          _hintChip('Back', 'Go to Exams'),
         ],
       ),
     );
@@ -205,13 +204,13 @@ class _ExamResultPageState extends State<ExamResultPage> {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A2E55),
+          color: const Color(0xFF2A0C00),
           borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: const Color(0xFF3B82F6), width: 1),
+          border: Border.all(color: const Color(0xFFBF360C), width: 1),
         ),
         child: Text(key,
             style: const TextStyle(
-                color: Color(0xFF93C5FD), fontSize: 11, fontWeight: FontWeight.w700)),
+                color: Color(0xFFFFB74D), fontSize: 11, fontWeight: FontWeight.w700)),
       ),
       const SizedBox(width: 5),
       Text(label,
@@ -222,12 +221,12 @@ class _ExamResultPageState extends State<ExamResultPage> {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-      color: const Color(0xFF0D1A3E),
+      color: const Color(0xFF2A0800),
       child: Row(
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).popUntil((r) => r.isFirst),
-            child: const Icon(Icons.home_rounded, color: Colors.white, size: 26),
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 26),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -246,30 +245,6 @@ class _ExamResultPageState extends State<ExamResultPage> {
               ],
             ),
           ),
-          // Home button (TV remote ke liye clearly visible)
-          GestureDetector(
-            onTap: () => Navigator.of(context).popUntil((r) => r.isFirst),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1A2E55),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFF3B82F6), width: 1.5),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.home_rounded, color: Color(0xFF93C5FD), size: 18),
-                  SizedBox(width: 6),
-                  Text('Home',
-                      style: TextStyle(
-                          color: Color(0xFF93C5FD),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700)),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -284,9 +259,9 @@ class _ExamResultPageState extends State<ExamResultPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF0D1A3E),
+            const Color(0xFF2A0800),
             _resultColor.withOpacity(0.2),
-            const Color(0xFF0D1C45),
+            const Color(0xFF1A0800),
           ],
         ),
         borderRadius: BorderRadius.circular(24),
@@ -300,7 +275,15 @@ class _ExamResultPageState extends State<ExamResultPage> {
       ),
       child: Column(
         children: [
-          Text(_starsEmoji, style: const TextStyle(fontSize: 32)),
+          Text(
+            _resultGrade,
+            style: TextStyle(
+              color: _resultColor,
+              fontSize: 36,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+            ),
+          ),
           const SizedBox(height: 8),
           Text(
             _resultMessage,
@@ -320,7 +303,7 @@ class _ExamResultPageState extends State<ExamResultPage> {
                   child: CircularProgressIndicator(
                     value: _percentage / 100,
                     strokeWidth: 14,
-                    backgroundColor: const Color(0xFF1A2E55),
+                    backgroundColor: const Color(0xFF2A0C00),
                     valueColor: AlwaysStoppedAnimation(_resultColor),
                   ),
                 ),
@@ -374,7 +357,7 @@ class _ExamResultPageState extends State<ExamResultPage> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF0D1A3E),
+          color: const Color(0xFF2A0800),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withOpacity(0.4), width: 1.5),
         ),
@@ -400,7 +383,7 @@ class _ExamResultPageState extends State<ExamResultPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: const Color(0xFF0D1A3E),
+            color: const Color(0xFF2A0800),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(children: const [
@@ -429,14 +412,14 @@ class _ExamResultPageState extends State<ExamResultPage> {
           return Container(
             margin: const EdgeInsets.only(bottom: 14),
             decoration: BoxDecoration(
-              color: const Color(0xFF0D1A3E),
+              color: const Color(0xFF2A0800),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSkipped
-                    ? const Color(0xFF1A2E55)
+                    ? const Color(0xFF2A0C00)
                     : isCorrect
-                        ? const Color(0xFF059669).withOpacity(0.5)
-                        : const Color(0xFFDC2626).withOpacity(0.5),
+                    ? const Color(0xFF059669).withOpacity(0.5)
+                    : const Color(0xFFDC2626).withOpacity(0.5),
                 width: 1.5,
               ),
             ),
@@ -451,18 +434,18 @@ class _ExamResultPageState extends State<ExamResultPage> {
                         width: 26, height: 26,
                         decoration: BoxDecoration(
                           color: isSkipped
-                              ? const Color(0xFF1A2E55)
+                              ? const Color(0xFF2A0C00)
                               : isCorrect
-                                  ? const Color(0xFF059669)
-                                  : const Color(0xFFDC2626),
+                              ? const Color(0xFF059669)
+                              : const Color(0xFFDC2626),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
                           child: isSkipped
                               ? const Icon(Icons.remove, color: Colors.white54, size: 14)
                               : Icon(
-                                  isCorrect ? Icons.check : Icons.close,
-                                  color: Colors.white, size: 14),
+                              isCorrect ? Icons.check : Icons.close,
+                              color: Colors.white, size: 14),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -498,7 +481,7 @@ class _ExamResultPageState extends State<ExamResultPage> {
                         optNum == studentOpt || text.trim() == studentOpt.trim());
 
                     Color? bgColor;
-                    Color borderColor = const Color(0xFF1A2E55);
+                    Color borderColor = const Color(0xFF2A0C00);
                     Color textColor   = Colors.white54;
 
                     if (isCorrectOpt && isSelectedOpt) {
@@ -532,8 +515,8 @@ class _ExamResultPageState extends State<ExamResultPage> {
                               color: isCorrectOpt
                                   ? const Color(0xFF059669)
                                   : (isSelectedOpt && !isCorrectOpt)
-                                      ? const Color(0xFFDC2626)
-                                      : const Color(0xFF1A2E55),
+                                  ? const Color(0xFFDC2626)
+                                  : const Color(0xFF2A0C00),
                               shape: BoxShape.circle,
                             ),
                             child: Center(
